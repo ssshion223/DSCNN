@@ -1,0 +1,8 @@
+<DSCNN name="DSCNN" parent="0" type="proj">
+ <model name="model" parent="DSCNN" type="folder"/>
+ <test name="test" parent="DSCNN" type="folder"/>
+ <const name="const" parent="DSCNN" type="folder"/>
+ <verilog name="verilog" parent="DSCNN" type="folder">
+  <mem_ctrl.v name="mem_ctrl.v" parent="verilog" type="verilog"/>
+ </verilog>
+</DSCNN>
