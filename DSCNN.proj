@@ -4,5 +4,6 @@
  <const name="const" parent="DSCNN" type="folder"/>
  <verilog name="verilog" parent="DSCNN" type="folder">
   <mem_ctrl.v name="mem_ctrl.v" parent="verilog" type="verilog"/>
+  <FSM.v name="FSM.v" parent="verilog" type="verilog"/>
  </verilog>
 </DSCNN>
