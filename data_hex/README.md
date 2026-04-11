@@ -1,6 +1,6 @@
-所有bias只有一个维度，顺序储存
+所有bias只有一个维度，顺序储存 int32类型，按8位hex补码存储
 
-dw权重逐kernel连续存储，每个kernel按行存储
+dw权重逐kernel连续存储，每个kernel按行存储 uint8 2位hex存储
 
 pw权重逐通道存储，每个通道64个权重低到高存储
 
