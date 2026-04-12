@@ -3,8 +3,8 @@
 //==============================================================================
 
 module matrix_conv2d_stream #(
-    parameter integer DATA_W   = 8,                         
-    parameter integer COEFF_W  = 8,                                                     
+    parameter integer DATA_W   = 8,
+    parameter integer COEFF_W  = 8,
     parameter integer ACC_W    = 32,
     parameter integer COL      = 20,
     parameter integer ROW      = 20,
@@ -12,9 +12,9 @@ module matrix_conv2d_stream #(
     parameter integer STRIDE   = 1,
     parameter integer OUT_CH   = 3,
     parameter integer MAC_PIPELINE = 1,
-    parameter         COEFF_INIT_FILE = "D:/vivado/exp/SmartCar/sim/coeff_init.memh",
-    parameter integer COEFF_ADDR_W = (((K*K)<=1)?1:$clog2(K*K)),
-    parameter integer COEFF_CH_W   = ((OUT_CH<=1)?1:$clog2(OUT_CH))
+    parameter         COEFF_INIT_FILE = "E:/WorkSpace/Robei/DSCNN/test/coeff_int.memh",
+    parameter integer COEFF_ADDR_W = (((K * K) <= 1) ? 1 : $clog2(K * K)),
+    parameter integer COEFF_CH_W   = ((OUT_CH <= 1) ? 1 : $clog2(OUT_CH))
 )(
     input  wire                             clk,
     input  wire                             rst_n,
