@@ -1,3 +1,9 @@
+/*
+输入要读取通道，输出相应通道的卷积核
+
+*/
+
+
 module conv_coeff_store #(
     parameter integer COEFF_W      = 8,
     parameter integer K            = 3,
