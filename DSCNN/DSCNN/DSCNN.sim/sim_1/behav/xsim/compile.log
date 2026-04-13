@@ -1,0 +1,28 @@
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_memory.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bias_memory
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_process_wrapper.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bias_process_wrapper
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_quant_relu.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module bias_quant_relu
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_coeff_store.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module conv_coeff_store
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_mac_tree.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module conv_mac_tree
+INFO: [VRFC 10-311] analyzing module conv_mult_products
+INFO: [VRFC 10-311] analyzing module conv_adder_tree
+INFO: [VRFC 10-311] analyzing module adder_comb
+INFO: [VRFC 10-311] analyzing module conv_adder_tree_comb
+INFO: [VRFC 10-311] analyzing module adder_pipe
+INFO: [VRFC 10-311] analyzing module conv_adder_tree_pipe
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_sliding_padding.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module conv_sliding_padding
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/main/depthwiseConv2D.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module depthwiseConv2D
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/fifo_reg/fwft_fifo_reg.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module fwft_fifo_reg
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/linebuf_bank_ram.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module linebuf_bank_ram
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/matrix_conv2d_stream_parallel.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module matrix_conv2d_stream_parallel
+INFO: [VRFC 10-2263] Analyzing Verilog file "D:/vivado/exp/DSCNN/sim/tb_depthwiseConv2D.v" into library xil_defaultlib
+INFO: [VRFC 10-311] analyzing module tb_depthwiseConv2D

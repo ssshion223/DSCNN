@@ -1,0 +1,1609 @@
+Vivado Simulator 2019.1
+Time resolution is 1 ps
+
+===============================================
+[TB] depthwiseConv2D Test Start
+[TB] COL=10 ROW=49 K=10x4 STRIDE=2
+[TB] PAD_TOP=4 PAD_BOTTOM=5 PAD_LEFT=1 PAD_RIGHT=1
+[TB] OUT_W=5 OUT_H=25 beats/frame=125
+[TB] FRAMES_PER_ROUND=1, LOOP_ROUNDS=64
+[TB] SHIFT_VAL=16 OUT_WIDTH=8
+===============================================
+
+[TB][RANDOM] Random stress test ENABLED
+[TB][RANDOM] IN_VALID_RND_PROB=70%
+[TB][RANDOM] OUT_READY_RND_PROB=70%
+
+[TB] Input image (49x10):
+[TB]   Row 0:  100  125 -127 -127 -127 -127 -127 -127 -127 -128 
+[TB]   Row 1:   96  127 -125 -128 -127 -127 -127 -128 -127 -127 
+[TB]   Row 2:   95  127 -126 -126 -126 -127 -127 -128 -128 -128 
+[TB]   Row 3:   94  127 -126 -127 -127 -127 -127 -127 -128 -128 
+[TB]   Row 4:   95  126 -126 -127 -127 -127 -127 -128 -128 -128 
+[TB]   Row 5:   95  127 -127 -127 -127 -127 -127 -127 -127 -127 
+[TB]   Row 6:   94  126 -127 -127 -127 -127 -127 -127 -127 -127 
+[TB]   Row 7:   95  127 -126 -126 -127 -128 -127 -127 -128 -127 
+[TB]   Row 8:   99  124 -125 -127 -127 -127 -127 -127 -127 -127 
+[TB]   Row 9:   97  127 -126 -127 -127 -126 -127 -127 -128 -127 
+[TB]   Row 10:   95  127 -126 -127 -127  127 -128 -128 -128  127 
+[TB]   Row 11:   94  127 -126 -126 -127 -128 -127 -126 -128 -127 
+[TB]   Row 12:   93  127 -126 -126 -127 -127 -127 -128 -128 -128 
+[TB]   Row 13:   95  127 -126 -127 -127 -128 -127 -126 -128 -128 
+[TB]   Row 14:   96 -128 -126 -127 -127 -128 -127 -128 -128 -128 
+[TB]   Row 15:   95  127 -127 -127 -127 -127 -128 -128 -127 -128 
+[TB]   Row 16:   95  127 -126 -127 -127 -128 -127 -127 -128 -128 
+[TB]   Row 17:   94  127 -126 -127 -126 -127 -127 -127 -127 -128 
+[TB]   Row 18:   95  127 -126 -127 -127 -127 -127 -127 -128 -128 
+[TB]   Row 19:  100  125 -125 -127 -128 -126 -127 -127 -128 -127 
+[TB]   Row 20:  102  127 -123  127 -127  127  127 -128  127 -128 
+[TB]   Row 21:  108  124 -121  125 -127  127  127 -128  127 -127 
+[TB]   Row 22:  112  122 -120  124 -128 -128  127 -127  127 -128 
+[TB]   Row 23:  116  121 -121  124  127  127  127 -126 -128 -128 
+[TB]   Row 24:  121  120 -123  124  126 -128  127 -126 -127 -128 
+[TB]   Row 25:  122  120 -124  124  126 -127 -128 -127 -127 -128 
+[TB]   Row 26:  125  120 -126  125  126 -127 -127 -127 -127 -128 
+[TB]   Row 27:  124  121 -127  125  126 -127 -126 -127 -128 -128 
+[TB]   Row 28:  123  121 -128  126  126 -127 -126 -127  127 -127 
+[TB]   Row 29:  122  122  127  126  127 -128 -126 -127  127 -127 
+[TB]   Row 30:  119  124  127  125  127 -128 -126 -127  126 -127 
+[TB]   Row 31:  112  126  127  126 -128 -128 -126 -127  126 -127 
+[TB]   Row 32:  105  125 -128  127 -127 -127 -126 -126  127 -127 
+[TB]   Row 33:  100  125 -126 -128 -126 -128 -126 -127 -128 -126 
+[TB]   Row 34:   99  124 -125  127 -126 -128 -127 -128 -127 -127 
+[TB]   Row 35:   99  124 -124 -128 -125 -127 -127 -127 -127 -127 
+[TB]   Row 36:  100  124 -123  127 -126 -128 -126 -128 -128 -127 
+[TB]   Row 37:  100  123 -123 -128 -126 -127 -127 -127 -127 -128 
+[TB]   Row 38:  100  123 -124 -128 -126 -128 -127 -127 -127 -128 
+[TB]   Row 39:   99  124 -124 -128 -125 -128 -127 -128 -127 -127 
+[TB]   Row 40:   99  123 -124 -128 -127 -128 -126 -127 -127 -127 
+[TB]   Row 41:  100  123 -124 -128 -125 -128 -127 -128 -128 -127 
+[TB]   Row 42:   99  124 -124  127 -125  127 -126 -127 -128 -128 
+[TB]   Row 43:   99  123 -124 -128 -126 -128 -126 -127 -128 -127 
+[TB]   Row 44:   99  123 -125  127 -126 -128 -127 -128 -128 -127 
+[TB]   Row 45:   98  123 -125 -128 -125 -128 -126 -127 -128 -127 
+[TB]   Row 46:   98  125 -125  127 -126 -128 -126 -128 -127 -127 
+[TB]   Row 47:   96  126 -125 -128 -126 -128 -127 -127 -127 -128 
+[TB]   Row 48:   95  127 -126 -127 -127 -128 -126 -127 -128 -128 
+
+[TB] Padded image (58x12):
+[TB]   Row 0:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 1:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 2:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 3:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 4:    0  100  125 -127 -127 -127 -127 -127 -127 -127 -128    0 
+[TB]   Row 5:    0   96  127 -125 -128 -127 -127 -127 -128 -127 -127    0 
+[TB]   Row 6:    0   95  127 -126 -126 -126 -127 -127 -128 -128 -128    0 
+[TB]   Row 7:    0   94  127 -126 -127 -127 -127 -127 -127 -128 -128    0 
+[TB]   Row 8:    0   95  126 -126 -127 -127 -127 -127 -128 -128 -128    0 
+[TB]   Row 9:    0   95  127 -127 -127 -127 -127 -127 -127 -127 -127    0 
+[TB]   Row 10:    0   94  126 -127 -127 -127 -127 -127 -127 -127 -127    0 
+[TB]   Row 11:    0   95  127 -126 -126 -127 -128 -127 -127 -128 -127    0 
+[TB]   Row 12:    0   99  124 -125 -127 -127 -127 -127 -127 -127 -127    0 
+[TB]   Row 13:    0   97  127 -126 -127 -127 -126 -127 -127 -128 -127    0 
+[TB]   Row 14:    0   95  127 -126 -127 -127  127 -128 -128 -128  127    0 
+[TB]   Row 15:    0   94  127 -126 -126 -127 -128 -127 -126 -128 -127    0 
+[TB]   Row 16:    0   93  127 -126 -126 -127 -127 -127 -128 -128 -128    0 
+[TB]   Row 17:    0   95  127 -126 -127 -127 -128 -127 -126 -128 -128    0 
+[TB]   Row 18:    0   96 -128 -126 -127 -127 -128 -127 -128 -128 -128    0 
+[TB]   Row 19:    0   95  127 -127 -127 -127 -127 -128 -128 -127 -128    0 
+[TB]   Row 20:    0   95  127 -126 -127 -127 -128 -127 -127 -128 -128    0 
+[TB]   Row 21:    0   94  127 -126 -127 -126 -127 -127 -127 -127 -128    0 
+[TB]   Row 22:    0   95  127 -126 -127 -127 -127 -127 -127 -128 -128    0 
+[TB]   Row 23:    0  100  125 -125 -127 -128 -126 -127 -127 -128 -127    0 
+[TB]   Row 24:    0  102  127 -123  127 -127  127  127 -128  127 -128    0 
+[TB]   Row 25:    0  108  124 -121  125 -127  127  127 -128  127 -127    0 
+[TB]   Row 26:    0  112  122 -120  124 -128 -128  127 -127  127 -128    0 
+[TB]   Row 27:    0  116  121 -121  124  127  127  127 -126 -128 -128    0 
+[TB]   Row 28:    0  121  120 -123  124  126 -128  127 -126 -127 -128    0 
+[TB]   Row 29:    0  122  120 -124  124  126 -127 -128 -127 -127 -128    0 
+[TB]   Row 30:    0  125  120 -126  125  126 -127 -127 -127 -127 -128    0 
+[TB]   Row 31:    0  124  121 -127  125  126 -127 -126 -127 -128 -128    0 
+[TB]   Row 32:    0  123  121 -128  126  126 -127 -126 -127  127 -127    0 
+[TB]   Row 33:    0  122  122  127  126  127 -128 -126 -127  127 -127    0 
+[TB]   Row 34:    0  119  124  127  125  127 -128 -126 -127  126 -127    0 
+[TB]   Row 35:    0  112  126  127  126 -128 -128 -126 -127  126 -127    0 
+[TB]   Row 36:    0  105  125 -128  127 -127 -127 -126 -126  127 -127    0 
+[TB]   Row 37:    0  100  125 -126 -128 -126 -128 -126 -127 -128 -126    0 
+[TB]   Row 38:    0   99  124 -125  127 -126 -128 -127 -128 -127 -127    0 
+[TB]   Row 39:    0   99  124 -124 -128 -125 -127 -127 -127 -127 -127    0 
+[TB]   Row 40:    0  100  124 -123  127 -126 -128 -126 -128 -128 -127    0 
+[TB]   Row 41:    0  100  123 -123 -128 -126 -127 -127 -127 -127 -128    0 
+[TB]   Row 42:    0  100  123 -124 -128 -126 -128 -127 -127 -127 -128    0 
+[TB]   Row 43:    0   99  124 -124 -128 -125 -128 -127 -128 -127 -127    0 
+[TB]   Row 44:    0   99  123 -124 -128 -127 -128 -126 -127 -127 -127    0 
+[TB]   Row 45:    0  100  123 -124 -128 -125 -128 -127 -128 -128 -127    0 
+[TB]   Row 46:    0   99  124 -124  127 -125  127 -126 -127 -128 -128    0 
+[TB]   Row 47:    0   99  123 -124 -128 -126 -128 -126 -127 -128 -127    0 
+[TB]   Row 48:    0   99  123 -125  127 -126 -128 -127 -128 -128 -127    0 
+[TB]   Row 49:    0   98  123 -125 -128 -125 -128 -126 -127 -128 -127    0 
+[TB]   Row 50:    0   98  125 -125  127 -126 -128 -126 -128 -127 -127    0 
+[TB]   Row 51:    0   96  126 -125 -128 -126 -128 -127 -127 -127 -128    0 
+[TB]   Row 52:    0   95  127 -126 -127 -127 -128 -126 -127 -128 -128    0 
+[TB]   Row 53:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 54:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 55:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 56:    0    0    0    0    0    0    0    0    0    0    0    0 
+[TB]   Row 57:    0    0    0    0    0    0    0    0    0    0    0    0 
+
+[TB] Kernel Group 0:
+[TB]       10    1  -32   13 
+[TB]       27   -3    3    7 
+[TB]       25   -7   34   30 
+[TB]        7  -18   44   37 
+[TB]       -7  -16   28    8 
+[TB]       -3  -26  -20  -21 
+[TB]      -21   25  -37  -41 
+[TB]      -25   -9   19  -15 
+[TB]      -19   43   58  -36 
+[TB]       13   30   18  -54 
+
+[TB] Kernel Group 1:
+[TB]        3    1  -22   32 
+[TB]       -3   -7  -17  -19 
+[TB]       19    6  -17  -61 
+[TB]       34   27  -56  -10 
+[TB]       56   34  -53   36 
+[TB]       45  -33  -25   94 
+[TB]       -8  -63   33   64 
+[TB]      -28  -36   57   11 
+[TB]      -29    6   58  -40 
+[TB]      -22   65    6  -64 
+
+[TB] Kernel Group 2:
+[TB]       -1   -3    4   -5 
+[TB]       -3    1    4   -6 
+[TB]       -5    3    4  -13 
+[TB]       -8   10    3  -21 
+[TB]        0   21    3  -19 
+[TB]        2   10   -7   -8 
+[TB]        2    5  -12  -12 
+[TB]        2    8  -12   -8 
+[TB]        3   -3   -3    0 
+[TB]       -4  -10    5    7 
+
+[TB] Kernel Group 3:
+[TB]       -3  -12   -8   27 
+[TB]       22  -17  -41    7 
+[TB]       43   -8  -45    6 
+[TB]       41   23  -23   32 
+[TB]       19   23   -6   22 
+[TB]        0   32   28    2 
+[TB]      -30   14   29  -15 
+[TB]      -47   -1   11  -25 
+[TB]      -32  -17   20  -18 
+[TB]      -13   -7   21   -3 
+
+[TB] Kernel Group 4:
+[TB]        6   -3  -11   -5 
+[TB]      -18  -10   -6  -12 
+[TB]      -28   -1    3  -11 
+[TB]      -18  -21   18   10 
+[TB]      -22  -27   22  -13 
+[TB]      -18    2    9  -69 
+[TB]      -29   31   -8  -37 
+[TB]      -27   29  -17  -28 
+[TB]      -29  -10   -2   -7 
+[TB]      -23   -9   -8    5 
+
+[TB] Kernel Group 5:
+[TB]      -19   33   11    3 
+[TB]      -14  -18   -6   12 
+[TB]      -25  -24   -5  -12 
+[TB]      -36  -38  -12   -1 
+[TB]      -27   -6   -3   -6 
+[TB]        8   -2    1   -5 
+[TB]        0    8   51   -6 
+[TB]      -10   -1   37  -22 
+[TB]       -4   25   16  -39 
+[TB]        3   29   12  -45 
+
+[TB] Kernel Group 6:
+[TB]       41   10  -28  -22 
+[TB]       47  -16  -12   13 
+[TB]       10  -32    8   36 
+[TB]      -21  -33   22    2 
+[TB]      -31    2    1  -38 
+[TB]      -22   -6  -17  -30 
+[TB]      -19    8  -18  -19 
+[TB]       19   14  -11  -25 
+[TB]       46   17   20    7 
+[TB]       31   23   18   -9 
+
+[TB] Kernel Group 7:
+[TB]      -61   17   12  -19 
+[TB]      -52   19   -7  -16 
+[TB]      -16  -12  -13  -16 
+[TB]       -7   -5    3    2 
+[TB]        7   -2   26   15 
+[TB]       -5   11   38   29 
+[TB]      -11    8   15   29 
+[TB]       16    6  -13    9 
+[TB]        4   13   -7    3 
+[TB]       -3   -7   -4    3 
+
+[TB] Kernel Group 8:
+[TB]        7    8   16  -20 
+[TB]        0   -1   19  -12 
+[TB]       16   22   12  -12 
+[TB]       22   22   20   -7 
+[TB]       20   22   19  -11 
+[TB]        8    7    1   -3 
+[TB]       -5  -10    7   10 
+[TB]      -13   -8   -3   17 
+[TB]      -20  -25   -3   13 
+[TB]        0  -17   -6   14 
+
+[TB] Kernel Group 9:
+[TB]      -30   26   31  -14 
+[TB]      -20    7   33  -11 
+[TB]        4   18   51   -6 
+[TB]       -8    7   42   16 
+[TB]       -7   15   15   17 
+[TB]        5  -10   -1   29 
+[TB]        1  -31  -56   14 
+[TB]       13   -4  -60  -17 
+[TB]       16   -3  -40  -47 
+[TB]        1  -24  -24  -30 
+
+[TB] Kernel Group 10:
+[TB]       -9   12    7   17 
+[TB]       10  -32   25   28 
+[TB]       -2  -46   58  -15 
+[TB]      -30   29   41  -57 
+[TB]      -58   74   13  -26 
+[TB]      -35   42   10    6 
+[TB]      -20  -10   -8   40 
+[TB]       18  -29  -20   52 
+[TB]       21  -13   -9    6 
+[TB]       40   -9  -11  -29 
+
+[TB] Kernel Group 11:
+[TB]       11   -8   13   16 
+[TB]        1   -3   -2   20 
+[TB]        2  -11   -6    5 
+[TB]        8   -7  -14    0 
+[TB]        9  -14  -14    3 
+[TB]        9   -9   -3   -6 
+[TB]        2   -8   -8    5 
+[TB]       -3    7   -7   -1 
+[TB]       -2    2  -17  -10 
+[TB]        2    4  -15    2 
+
+[TB] Kernel Group 12:
+[TB]       53   -7    8   -9 
+[TB]       11  -24   27   -1 
+[TB]      -14  -33    3    0 
+[TB]      -37   -2  -44   33 
+[TB]      -51   31  -13   83 
+[TB]      -36   13   36   46 
+[TB]       -8   23   10  -13 
+[TB]       -5  -11   -3   -4 
+[TB]        0    8   17  -17 
+[TB]       -9   23   20  -12 
+
+[TB] Kernel Group 13:
+[TB]      -17    1    7  -16 
+[TB]       -7  -42   10    8 
+[TB]        2  -45  -15   -1 
+[TB]        7    8  -14  -30 
+[TB]       17   15   -2  -17 
+[TB]       10    4   -3   13 
+[TB]       -8   -1    4   21 
+[TB]      -21   11   -8   41 
+[TB]      -19   16    3   30 
+[TB]        1    0   -9   27 
+
+[TB] Kernel Group 14:
+[TB]       -1   16   -4  -12 
+[TB]       -7   -3   -3   -6 
+[TB]       -4  -23   -4  -28 
+[TB]       -3   -8  -11  -41 
+[TB]        1   20  -15  -49 
+[TB]        1   40  -11   -7 
+[TB]        4   28  -49   46 
+[TB]       21   -1  -23   48 
+[TB]       18  -27   -2   20 
+[TB]       10  -11   27   -9 
+
+[TB] Kernel Group 15:
+[TB]       -4    2  -27    5 
+[TB]       -3    5  -23   -3 
+[TB]        2   12   -1  -21 
+[TB]        2    6   -2  -23 
+[TB]        0   -4   -2   -5 
+[TB]        2   -7   23    7 
+[TB]        4   -5   28   10 
+[TB]       -8    6   21    2 
+[TB]       -3   23   17   -2 
+[TB]        9   15    1    1 
+
+[TB] Kernel Group 16:
+[TB]       43   37   17   26 
+[TB]       20   31   30    8 
+[TB]       24   17   22  -28 
+[TB]        7  -15   -9    4 
+[TB]      -21  -32  -12    2 
+[TB]        0  -46  -13   -7 
+[TB]      -30  -18  -53   -9 
+[TB]       -6    0  -37  -20 
+[TB]      -25   -1    7   -4 
+[TB]      -25   22   26   -1 
+
+[TB] Kernel Group 17:
+[TB]      -20   -9   20    4 
+[TB]      -15  -28    1  -18 
+[TB]        0   -6  -20  -41 
+[TB]       14   34    5  -30 
+[TB]       21   59   23   -2 
+[TB]       10   25    8    4 
+[TB]      -11  -11   -3   -9 
+[TB]       -7  -15   -7    2 
+[TB]       -6   -8    1   25 
+[TB]        1  -14    0   31 
+
+[TB] Kernel Group 18:
+[TB]      -49   40   29  -14 
+[TB]      -17    6   29   -2 
+[TB]      -18   -7   30   29 
+[TB]        5   13   20   38 
+[TB]        2   -1  -13   15 
+[TB]        9    8  -49  -18 
+[TB]       37  -22  -66  -26 
+[TB]       23    8  -58  -40 
+[TB]       26  -17  -17  -30 
+[TB]       31  -15   -2   21 
+
+[TB] Kernel Group 19:
+[TB]        0    8   -4  -17 
+[TB]      -13   23   33  -23 
+[TB]      -12    5   64  -20 
+[TB]      -27   -8   75    9 
+[TB]        1    9   36   21 
+[TB]       30  -27  -19   22 
+[TB]       24  -31  -71   12 
+[TB]      -13    3  -51    7 
+[TB]       10  -14  -27   18 
+[TB]       -4    5  -17    0 
+
+[TB] Kernel Group 20:
+[TB]       -4   -5  -17   -4 
+[TB]      -10  -17  -10   -2 
+[TB]        4  -25   -5   -4 
+[TB]       -3  -17    3    0 
+[TB]       -5   -5    5   -1 
+[TB]        2   -7   13    8 
+[TB]        4    9   -2   -4 
+[TB]        6    7   -2   13 
+[TB]      -12    5   -2    8 
+[TB]       -4   25    5   10 
+
+[TB] Kernel Group 21:
+[TB]       16    4  -13  -27 
+[TB]       15  -16    2  -11 
+[TB]       -1    4   29   13 
+[TB]      -24   17   24    2 
+[TB]       -6   19   11  -44 
+[TB]       28   21  -26  -45 
+[TB]       23    0  -72  -24 
+[TB]        3  -15  -44   -9 
+[TB]       -8   -5   13   17 
+[TB]       -6    9   40   -2 
+
+[TB] Kernel Group 22:
+[TB]       16    5   11   36 
+[TB]      -36    9   36   74 
+[TB]      -34    4   54   41 
+[TB]        9   19    9  -45 
+[TB]       19   19  -19  -52 
+[TB]        5    5   -4  -52 
+[TB]       -8   -2    0   -8 
+[TB]      -16   -6  -12   19 
+[TB]        0  -28  -33    0 
+[TB]      -10  -40  -22   -6 
+
+[TB] Kernel Group 23:
+[TB]       -4    5  -25   -6 
+[TB]       27    0   -7    6 
+[TB]       -1  -12   13  -16 
+[TB]      -25  -40   19  -63 
+[TB]       -2  -47   -6  -15 
+[TB]       54   23   -5  102 
+[TB]       25   54   27   37 
+[TB]       -4   19   10  -31 
+[TB]      -30  -14   -2  -63 
+[TB]      -18  -22   22  -33 
+
+[TB] Kernel Group 24:
+[TB]        4   -5   11  -16 
+[TB]        1  -10    5   15 
+[TB]       -2  -23   10   37 
+[TB]        4  -18   -5   28 
+[TB]        3  -11   -7    9 
+[TB]        7    7   -3  -12 
+[TB]        2   24    0  -33 
+[TB]        4   18    3  -27 
+[TB]        7   23   -8  -11 
+[TB]       11   12   -3  -10 
+
+[TB] Kernel Group 25:
+[TB]      -14   15   -5    7 
+[TB]       -8    8  -16   10 
+[TB]       -8   -6   -7  -12 
+[TB]       -5  -11   -8   -8 
+[TB]        4   -2   10   -2 
+[TB]       12   -7   12   -7 
+[TB]       20  -12   17    9 
+[TB]       -1  -26   15    8 
+[TB]       30   -5   -5   21 
+[TB]       35    3  -40    6 
+
+[TB] Kernel Group 26:
+[TB]       -3    0  -36   16 
+[TB]       -7   -9  -32   16 
+[TB]        4   -3  -43   28 
+[TB]       -7  -29  -40   10 
+[TB]      -19  -25    1    4 
+[TB]       -1  -11   17   -2 
+[TB]       14   20   28    9 
+[TB]       20   34   36   -9 
+[TB]       15   30   28  -28 
+[TB]       17    3   17  -25 
+
+[TB] Kernel Group 27:
+[TB]        7  -14   18  -12 
+[TB]       -2  -15   19    2 
+[TB]        0  -15    2    1 
+[TB]       25  -15   -6   14 
+[TB]      -13   -3  -20   31 
+[TB]        3    0  -27   45 
+[TB]       30   -1  -29   20 
+[TB]       19    9  -18    2 
+[TB]       35   25  -17   25 
+[TB]        4   11    7   29 
+
+[TB] Kernel Group 28:
+[TB]      -18  -16  -20   -4 
+[TB]        3    7  -77  -38 
+[TB]       27   20  -84  -39 
+[TB]       18  -10  -48   -4 
+[TB]       11  -25   -6   28 
+[TB]      -22   -3    3   63 
+[TB]       -4    3   14   61 
+[TB]        1   31   25   36 
+[TB]       -9   18    3   40 
+[TB]       23   -8   11   33 
+
+[TB] Kernel Group 29:
+[TB]       43   21   25    1 
+[TB]      -26   -5   53   33 
+[TB]      -27  -60  -14   22 
+[TB]        7  -53  -95  -53 
+[TB]       66   91    2   -1 
+[TB]       47   48   60   53 
+[TB]       -6   -3   37   35 
+[TB]        8  -27   20   -8 
+[TB]       26  -11  -42  -48 
+[TB]       27    6    1  -56 
+
+[TB] Kernel Group 30:
+[TB]        3    4   -2  -19 
+[TB]       11    0  -12   -1 
+[TB]       -1    4  -14    4 
+[TB]        0   -4   -5   -9 
+[TB]       12   -9  -16  -10 
+[TB]       14   -5   -4   -1 
+[TB]       -7  -24   -6    4 
+[TB]        3  -17   -9   11 
+[TB]      -18   -3    6   15 
+[TB]      -12    7    5    5 
+
+[TB] Kernel Group 31:
+[TB]        4   46  -30  -71 
+[TB]        4   26  -29 -127 
+[TB]       -9  -25   27  -74 
+[TB]        9   -9   31  -23 
+[TB]       11  -37   -4  -20 
+[TB]       -9   11   40   26 
+[TB]      -19   20   27   68 
+[TB]      -13  -10   -6   62 
+[TB]       -7  -12    0   52 
+[TB]      -24   19    2   69 
+
+[TB] Kernel Group 32:
+[TB]      -20   -9  -11    3 
+[TB]      -22  -13   -3    8 
+[TB]      -16  -12    9   16 
+[TB]      -29   10   26   21 
+[TB]      -23   18   31    1 
+[TB]      -17   10   19  -10 
+[TB]       -1   28    8   -8 
+[TB]       18   19    8   -9 
+[TB]       35    1   -4  -24 
+[TB]       23  -17  -10  -24 
+
+[TB] Kernel Group 33:
+[TB]        8   34  -15  -23 
+[TB]       14   12   19    3 
+[TB]        6   22   35   39 
+[TB]        9    7   19   48 
+[TB]      -13  -14    8   28 
+[TB]      -10  -14    2   -7 
+[TB]        0   -8   -6    0 
+[TB]       -2  -19   -3   -2 
+[TB]      -12  -15    3   19 
+[TB]      -17   -7    7   23 
+
+[TB] Kernel Group 34:
+[TB]      -22   17  -31  -45 
+[TB]      -15   15  -25    2 
+[TB]       -5   15  -12   40 
+[TB]       -5    5  -25   35 
+[TB]       11  -10  -35   32 
+[TB]       33    7  -11   22 
+[TB]       18   -8  -10   33 
+[TB]       15   -7  -25    2 
+[TB]       16  -18   10   21 
+[TB]       17  -19    3   25 
+
+[TB] Kernel Group 35:
+[TB]      -15   17   20   12 
+[TB]       -6    9   12   16 
+[TB]       -7   19   -9   12 
+[TB]        1   14   -2   -7 
+[TB]      -13   20    4   -9 
+[TB]      -11    1   -1    8 
+[TB]       -4   -8    9   15 
+[TB]        9  -13    4   18 
+[TB]       12  -16    9    0 
+[TB]       -5  -17    2   -3 
+
+[TB] Kernel Group 36:
+[TB]      -19   10   11   -5 
+[TB]       -5   19    8  -15 
+[TB]       -4   16   -7  -17 
+[TB]      -10   13    2  -16 
+[TB]        2    5    6    2 
+[TB]       -2  -26    0    4 
+[TB]        7  -10    5    9 
+[TB]       12   -5    0    7 
+[TB]       28    4    3    1 
+[TB]       28   23   12    1 
+
+[TB] Kernel Group 37:
+[TB]       23  -13  -23  -59 
+[TB]       74   -6  -37  -77 
+[TB]       32  -13  -10  -26 
+[TB]       -7  -11   14   16 
+[TB]      -37  -19   25   57 
+[TB]      -38  -21   16   61 
+[TB]      -36    4  -16   43 
+[TB]      -21   44   -3   27 
+[TB]        0   27   -7   11 
+[TB]        4    5  -11   24 
+
+[TB] Kernel Group 38:
+[TB]      -12   24  -21   -3 
+[TB]       18   -9   32  -38 
+[TB]       25  -27   68   22 
+[TB]       31  -61   -4   90 
+[TB]        7    0  -62  107 
+[TB]       -5   52  -55   44 
+[TB]      -33   46  -14  -31 
+[TB]      -28   20    9  -49 
+[TB]      -14  -21   39  -42 
+[TB]       -2   -9   14  -16 
+
+[TB] Kernel Group 39:
+[TB]      -14  -15  -26  -27 
+[TB]        6    3  -13  -34 
+[TB]      -11  -27  -40  -34 
+[TB]        9  -17   24   -1 
+[TB]        3  -13   48  -11 
+[TB]        4   -4  -29  -52 
+[TB]       10   12  -19   14 
+[TB]        8    3   73   90 
+[TB]        9   27   75   23 
+[TB]       -2   27   -5  -54 
+
+[TB] Kernel Group 40:
+[TB]       41  -49  -65  -64 
+[TB]       27  -38  -73  -64 
+[TB]       -9   -7  -20  -27 
+[TB]        3   26   13   14 
+[TB]       -4   25   41   25 
+[TB]      -34   24   43   18 
+[TB]      -11   14   35   12 
+[TB]        2  -25    8    0 
+[TB]       -2   -4    4    2 
+[TB]      -12   20    7   23 
+
+[TB] Kernel Group 41:
+[TB]        7  -15   -6  -12 
+[TB]        9  -17    7  -19 
+[TB]       12   -4   29  -16 
+[TB]       27   28   46   -8 
+[TB]       13   35   18  -16 
+[TB]       -1    9    0    9 
+[TB]       -7   13  -23   -2 
+[TB]       -2    0  -33  -18 
+[TB]      -14   -5  -29    4 
+[TB]       -7   -9  -11   20 
+
+[TB] Kernel Group 42:
+[TB]       21   20  -20    3 
+[TB]       35   11  -12  -37 
+[TB]       13   19   -6  -33 
+[TB]      -17   25   12  -12 
+[TB]      -45    7   29   -7 
+[TB]      -34  -29   43   11 
+[TB]       -6  -25   39   25 
+[TB]       14  -22    0   37 
+[TB]       15  -13  -54   25 
+[TB]        7   10  -56   -2 
+
+[TB] Kernel Group 43:
+[TB]        0   24   31   -3 
+[TB]        6   28   24   13 
+[TB]       12   18   -2    3 
+[TB]        0   -7  -57  -28 
+[TB]      -15  -11  -55  -36 
+[TB]      -35  -13  -17   -5 
+[TB]      -31  -19    2   10 
+[TB]       -5   -3   -9   -4 
+[TB]       -5  -19  -16    6 
+[TB]       -6   -3   -2    5 
+
+[TB] Kernel Group 44:
+[TB]       -1    4   19   15 
+[TB]      -24   -1   23    8 
+[TB]      -37   -6   31    0 
+[TB]      -31   -1    8  -16 
+[TB]      -10  -13   -9   -4 
+[TB]       -4   -5    9   -9 
+[TB]       -9    5   12   -2 
+[TB]      -14   -6   18  -14 
+[TB]      -14   -3    7    5 
+[TB]      -18   -2    4   -6 
+
+[TB] Kernel Group 45:
+[TB]      -32  -10   23  -19 
+[TB]      -27   -5    9    4 
+[TB]      -15  -24  -24   -4 
+[TB]       -5  -19  -30    1 
+[TB]        5   -5  -30    7 
+[TB]       23   15  -18   -2 
+[TB]       33   14    1   -7 
+[TB]       32   14   15   13 
+[TB]       15   27   15   27 
+[TB]      -16   14   11   15 
+
+[TB] Kernel Group 46:
+[TB]      -27   16   17   26 
+[TB]        0   23   12   -8 
+[TB]       27   34    7  -32 
+[TB]       30  -10  -33    0 
+[TB]       -7  -41  -29   21 
+[TB]      -17    2  -26  -46 
+[TB]       29   36  -47  -75 
+[TB]       24   -2  -23  -31 
+[TB]      -17  -16   21   30 
+[TB]       -6  -13   27   25 
+
+[TB] Kernel Group 47:
+[TB]       -6    3   -7    4 
+[TB]        4   -1  -10   17 
+[TB]      -16   -1  -15    5 
+[TB]       11    0  -28   10 
+[TB]       18    4  -47   11 
+[TB]       27   -3  -40   27 
+[TB]       13   -1  -13   13 
+[TB]       14  -21    0   29 
+[TB]      -30  -24   33   32 
+[TB]      -23    2   38  -13 
+
+[TB] Kernel Group 48:
+[TB]        8   13  -19   -8 
+[TB]      -31   28   21  -21 
+[TB]      -38   12   54  -13 
+[TB]      -30    9   44   26 
+[TB]      -30   -6   13   42 
+[TB]       -9  -38  -25   55 
+[TB]      -12  -27  -22    2 
+[TB]       12  -14   -7   -5 
+[TB]        2    0    7    7 
+[TB]       -6   20  -12   13 
+
+[TB] Kernel Group 49:
+[TB]        6   40   13  -37 
+[TB]        2   16   29  -30 
+[TB]       -7   15   25  -19 
+[TB]        2    1   15   13 
+[TB]       -5   -6   -1   28 
+[TB]      -17  -17   -6   26 
+[TB]       -1   -4  -13   16 
+[TB]       -4    2    0    8 
+[TB]       -2   -4   -8   11 
+[TB]       -5  -10   -3   27 
+
+[TB] Kernel Group 50:
+[TB]       30   12  -11   15 
+[TB]        4   30  -24    9 
+[TB]      -16   43   14  -33 
+[TB]      -31    6   30  -57 
+[TB]      -24  -22   30  -40 
+[TB]       -1  -29   14   -4 
+[TB]       25   -6  -11   13 
+[TB]       13   -3  -21    3 
+[TB]      -10   -4  -11   -3 
+[TB]      -23   -9    2   -1 
+
+[TB] Kernel Group 51:
+[TB]       -6   16    2   -7 
+[TB]      -14   17    6   -2 
+[TB]       -6   21    4  -12 
+[TB]        0   15    7  -17 
+[TB]      -10    9   10    0 
+[TB]       -7   -7   10   -1 
+[TB]        4  -11    5   -2 
+[TB]       10  -10   -1   -6 
+[TB]       18  -10    0   -1 
+[TB]        8  -10    4   10 
+
+[TB] Kernel Group 52:
+[TB]       67   20   -4   -7 
+[TB]       50   22    2   -8 
+[TB]       22  -12   23   13 
+[TB]        0  -12   24    4 
+[TB]       -3  -12    8   -7 
+[TB]       22   -5   -5   17 
+[TB]       20   -8  -13   44 
+[TB]       -2   -7   14   28 
+[TB]      -33   -4    9   14 
+[TB]      -49  -12   -5   23 
+
+[TB] Kernel Group 53:
+[TB]      -10  -11    9    4 
+[TB]      -22   12    8   14 
+[TB]      -20   39   25   16 
+[TB]      -12   29   29   18 
+[TB]       -7   -1   11   23 
+[TB]       -3    2  -23    7 
+[TB]       -2   -8  -28  -11 
+[TB]       -2  -15   -2  -35 
+[TB]       -4   -7   10  -38 
+[TB]       25   -5   28  -28 
+
+[TB] Kernel Group 54:
+[TB]       -5   -1  -16   11 
+[TB]      -11  -10   -4   20 
+[TB]      -17  -12   28   22 
+[TB]      -23   12   45   19 
+[TB]        8   46   23   -3 
+[TB]       38   47   10  -26 
+[TB]       34    9   -4  -15 
+[TB]        7  -16  -24   -6 
+[TB]      -18  -30  -30  -17 
+[TB]      -10  -23  -18    1 
+
+[TB] Kernel Group 55:
+[TB]        5   -8   10    9 
+[TB]       12   -1   -1   -4 
+[TB]       13    8  -15  -10 
+[TB]       14   12  -28  -10 
+[TB]       13    6  -20    0 
+[TB]       -5    4   -4   12 
+[TB]      -19   -2   18   14 
+[TB]      -11    8   24    2 
+[TB]      -21    9   18    0 
+[TB]      -24   12    8   -8 
+
+[TB] Kernel Group 56:
+[TB]       -1  -12    6   19 
+[TB]        5  -29   -2   28 
+[TB]       -7  -33  -12   19 
+[TB]       -3  -15  -16   16 
+[TB]       -1   18   -4    8 
+[TB]       -7   13   -2    1 
+[TB]       -7   17    1   -5 
+[TB]        3   16   12  -10 
+[TB]        5   13    5  -16 
+[TB]       10    2   -4  -20 
+
+[TB] Kernel Group 57:
+[TB]        6   13    9   15 
+[TB]      -24  -17    3   16 
+[TB]      -41   -8    1   18 
+[TB]       -8   -5    6   17 
+[TB]        6   11  -23    4 
+[TB]       13    5  -45   -7 
+[TB]       12   11  -41  -22 
+[TB]       10    6  -18  -11 
+[TB]       -2   14  -12  -20 
+[TB]       -4    3  -20  -15 
+
+[TB] Kernel Group 58:
+[TB]       -8  -37    9   27 
+[TB]        3  -16   12   22 
+[TB]       22  -14   11  -16 
+[TB]       28   14   -5  -19 
+[TB]       23   -4  -24  -22 
+[TB]       14    0  -22  -28 
+[TB]      -10   16   -3   -5 
+[TB]       -5   14    3   -7 
+[TB]      -27   19    1   23 
+[TB]      -24   18   -2    0 
+
+[TB] Kernel Group 59:
+[TB]       37    9   36   34 
+[TB]       36  -18   -6   30 
+[TB]       32   12   -5   11 
+[TB]       15    6  -15   25 
+[TB]       -4  -14  -19   31 
+[TB]      -41   17   11   11 
+[TB]      -79   10   26   -9 
+[TB]      -54   -1   28  -23 
+[TB]      -69   16  -14  -70 
+[TB]      -31   -9  -36  -96 
+
+[TB] Kernel Group 60:
+[TB]       -6  -12   19    7 
+[TB]        2  -22   18    3 
+[TB]       13  -30   -5   18 
+[TB]       -7  -16    7   11 
+[TB]        2   17    6    8 
+[TB]       18   35   18    1 
+[TB]       -1   38    4  -21 
+[TB]      -13    6  -13   -3 
+[TB]       -2    2  -20  -14 
+[TB]      -13   -5  -18   -2 
+
+[TB] Kernel Group 61:
+[TB]        5   11   -8    6 
+[TB]      -14   14   20    4 
+[TB]      -24   13   39   -9 
+[TB]      -19   -8   24  -18 
+[TB]       -3   -3    3  -18 
+[TB]        9    7   -5  -27 
+[TB]        8   11   -6  -16 
+[TB]        9    8    6  -19 
+[TB]        2    1    7    4 
+[TB]       -6   -2    8    8 
+
+[TB] Kernel Group 62:
+[TB]       -2  -27    6   -2 
+[TB]       -9  -12   16   -3 
+[TB]      -10   -8   13  -12 
+[TB]       10   -6   -2   -9 
+[TB]        4   12   -8    1 
+[TB]       -5   12    1   -6 
+[TB]       -8    8    1   -4 
+[TB]       -7    1    4  -10 
+[TB]       -1   15    7   -6 
+[TB]       -8   33   -5    9 
+
+[TB] Kernel Group 63:
+[TB]       -8   -1   25   -4 
+[TB]       16    2   21    6 
+[TB]       13   -4   13   25 
+[TB]       -8  -10   -3   15 
+[TB]       -6  -13   -9    2 
+[TB]        0   -9  -38  -12 
+[TB]       35   15  -62  -20 
+[TB]       35   10  -52    7 
+[TB]       16    3  -58   34 
+[TB]        5  -11  -72   68 
+
+[TB] Bias table (addr: value):
+[TB]   bias[0] = 37
+[TB]   bias[1] = -207
+[TB]   bias[2] = 205
+[TB]   bias[3] = 325
+[TB]   bias[4] = -27
+[TB]   bias[5] = 103
+[TB]   bias[6] = -57
+[TB]   bias[7] = 307
+[TB]   bias[8] = 230
+[TB]   bias[9] = 158
+[TB]   bias[10] = 247
+[TB]   bias[11] = -276
+[TB]   bias[12] = 141
+[TB]   bias[13] = -60
+[TB]   bias[14] = 304
+[TB]   bias[15] = 297
+[TB]   bias[16] = -39
+[TB]   bias[17] = 479
+[TB]   bias[18] = 101
+[TB]   bias[19] = -117
+[TB]   bias[20] = -187
+[TB]   bias[21] = 295
+[TB]   bias[22] = -30
+[TB]   bias[23] = -195
+[TB]   bias[24] = 147
+[TB]   bias[25] = -213
+[TB]   bias[26] = -8
+[TB]   bias[27] = -104
+[TB]   bias[28] = 276
+[TB]   bias[29] = 45
+[TB]   bias[30] = -179
+[TB]   bias[31] = 144
+[TB]   bias[32] = 188
+[TB]   bias[33] = 11
+[TB]   bias[34] = 14
+[TB]   bias[35] = 185
+[TB]   bias[36] = 140
+[TB]   bias[37] = 122
+[TB]   bias[38] = 127
+[TB]   bias[39] = -199
+[TB]   bias[40] = 60
+[TB]   bias[41] = 290
+[TB]   bias[42] = 30
+[TB]   bias[43] = 58
+[TB]   bias[44] = -142
+[TB]   bias[45] = 44
+[TB]   bias[46] = 115
+[TB]   bias[47] = -30
+[TB]   bias[48] = 94
+[TB]   bias[49] = 300
+[TB]   bias[50] = 101
+[TB]   bias[51] = 190
+[TB]   bias[52] = -216
+[TB]   bias[53] = 100
+[TB]   bias[54] = 311
+[TB]   bias[55] = 336
+[TB]   bias[56] = 32
+[TB]   bias[57] = 364
+[TB]   bias[58] = 207
+[TB]   bias[59] = 328
+[TB]   bias[60] = 113
+[TB]   bias[61] = 327
+[TB]   bias[62] = 117
+[TB]   bias[63] = -29
+[TB]   bias[64] = x
+[TB]   bias[65] = x
+[TB]   bias[66] = x
+[TB]   bias[67] = x
+[TB]   bias[68] = x
+[TB]   bias[69] = x
+[TB]   bias[70] = x
+[TB]   bias[71] = x
+[TB]   bias[72] = x
+[TB]   bias[73] = x
+[TB]   bias[74] = x
+[TB]   bias[75] = x
+[TB]   bias[76] = x
+[TB]   bias[77] = x
+[TB]   bias[78] = x
+[TB]   bias[79] = x
+[TB]   bias[80] = x
+[TB]   bias[81] = x
+[TB]   bias[82] = x
+[TB]   bias[83] = x
+[TB]   bias[84] = x
+[TB]   bias[85] = x
+[TB]   bias[86] = x
+[TB]   bias[87] = x
+[TB]   bias[88] = x
+[TB]   bias[89] = x
+[TB]   bias[90] = x
+[TB]   bias[91] = x
+[TB]   bias[92] = x
+[TB]   bias[93] = x
+[TB]   bias[94] = x
+[TB]   bias[95] = x
+[TB]   bias[96] = x
+[TB]   bias[97] = x
+[TB]   bias[98] = x
+[TB]   bias[99] = x
+[TB]   bias[100] = x
+[TB]   bias[101] = x
+[TB]   bias[102] = x
+[TB]   bias[103] = x
+[TB]   bias[104] = x
+[TB]   bias[105] = x
+[TB]   bias[106] = x
+[TB]   bias[107] = x
+[TB]   bias[108] = x
+[TB]   bias[109] = x
+[TB]   bias[110] = x
+[TB]   bias[111] = x
+[TB]   bias[112] = x
+[TB]   bias[113] = x
+[TB]   bias[114] = x
+[TB]   bias[115] = x
+[TB]   bias[116] = x
+[TB]   bias[117] = x
+[TB]   bias[118] = x
+[TB]   bias[119] = x
+[TB]   bias[120] = x
+[TB]   bias[121] = x
+[TB]   bias[122] = x
+[TB]   bias[123] = x
+[TB]   bias[124] = x
+[TB]   bias[125] = x
+[TB]   bias[126] = x
+[TB]   bias[127] = x
+
+[TB] Expected output preview, total beats=8000:
+[TB]   exp beat=3874 pixel=49 end_frame=1 end_all_frame=0
+[TB]   exp beat=3875 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3876 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3877 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3878 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3879 pixel=21 end_frame=0 end_all_frame=0
+[TB]   exp beat=3880 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3881 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3882 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3883 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3884 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3885 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3886 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3887 pixel=8 end_frame=0 end_all_frame=0
+[TB]   exp beat=3888 pixel=8 end_frame=0 end_all_frame=0
+[TB]   exp beat=3889 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3890 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3891 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3892 pixel=7 end_frame=0 end_all_frame=0
+[TB]   exp beat=3893 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3894 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3895 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3896 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3897 pixel=103 end_frame=0 end_all_frame=0
+[TB]   exp beat=3898 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3899 pixel=36 end_frame=0 end_all_frame=0
+[TB]   exp beat=3900 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3901 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3902 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3903 pixel=48 end_frame=0 end_all_frame=0
+[TB]   exp beat=3904 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3905 pixel=117 end_frame=0 end_all_frame=0
+[TB]   exp beat=3906 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3907 pixel=103 end_frame=0 end_all_frame=0
+[TB]   exp beat=3908 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3909 pixel=37 end_frame=0 end_all_frame=0
+[TB]   exp beat=3910 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3911 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3912 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3913 pixel=23 end_frame=0 end_all_frame=0
+[TB]   exp beat=3914 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3915 pixel=122 end_frame=0 end_all_frame=0
+[TB]   exp beat=3916 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3917 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3918 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3919 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3920 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3921 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3922 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3923 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3924 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3925 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3926 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3927 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3928 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3929 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3930 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3931 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3932 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3933 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3934 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3935 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3936 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3937 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3938 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3939 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3940 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3941 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3942 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3943 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3944 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3945 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3946 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3947 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3948 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3949 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3950 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3951 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3952 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3953 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3954 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3955 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3956 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3957 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3958 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3959 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3960 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3961 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3962 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3963 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3964 pixel=108 end_frame=0 end_all_frame=0
+[TB]   exp beat=3965 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3966 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3967 pixel=28 end_frame=0 end_all_frame=0
+[TB]   exp beat=3968 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3969 pixel=103 end_frame=0 end_all_frame=0
+[TB]   exp beat=3970 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3971 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3972 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3973 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3974 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3975 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3976 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3977 pixel=29 end_frame=0 end_all_frame=0
+[TB]   exp beat=3978 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3979 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3980 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3981 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3982 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3983 pixel=46 end_frame=0 end_all_frame=0
+[TB]   exp beat=3984 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3985 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3986 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3987 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3988 pixel=97 end_frame=0 end_all_frame=0
+[TB]   exp beat=3989 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3990 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3991 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3992 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3993 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3994 pixel=0 end_frame=0 end_all_frame=0
+[TB]   exp beat=3995 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3996 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3997 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3998 pixel=127 end_frame=0 end_all_frame=0
+[TB]   exp beat=3999 pixel=0 end_frame=1 end_all_frame=0
+
+
+[TB][ROUND] ===== round=1/64 =====
+[TB][PASS] round=1 all matched
+
+[TB][ROUND] ===== round=2/64 =====
+[TB][PASS] round=2 all matched
+
+[TB][ROUND] ===== round=3/64 =====
+[TB][PASS] round=3 all matched
+
+[TB][ROUND] ===== round=4/64 =====
+[TB][PASS] round=4 all matched
+
+[TB][ROUND] ===== round=5/64 =====
+[TB][PASS] round=5 all matched
+
+[TB][ROUND] ===== round=6/64 =====
+[TB][PASS] round=6 all matched
+
+[TB][ROUND] ===== round=7/64 =====
+[TB][PASS] round=7 all matched
+
+[TB][ROUND] ===== round=8/64 =====
+[TB][PASS] round=8 all matched
+
+[TB][ROUND] ===== round=9/64 =====
+[TB][PASS] round=9 all matched
+
+[TB][ROUND] ===== round=10/64 =====
+[TB][PASS] round=10 all matched
+
+[TB][ROUND] ===== round=11/64 =====
+[TB][PASS] round=11 all matched
+
+[TB][ROUND] ===== round=12/64 =====
+[TB][PASS] round=12 all matched
+
+[TB][ROUND] ===== round=13/64 =====
+[TB][PASS] round=13 all matched
+
+[TB][ROUND] ===== round=14/64 =====
+[TB][PASS] round=14 all matched
+
+[TB][ROUND] ===== round=15/64 =====
+[TB][PASS] round=15 all matched
+
+[TB][ROUND] ===== round=16/64 =====
+[TB][PASS] round=16 all matched
+
+[TB][ROUND] ===== round=17/64 =====
+[TB][PASS] round=17 all matched
+
+[TB][ROUND] ===== round=18/64 =====
+[TB][PASS] round=18 all matched
+
+[TB][ROUND] ===== round=19/64 =====
+[TB][PASS] round=19 all matched
+
+[TB][ROUND] ===== round=20/64 =====
+[TB][PASS] round=20 all matched
+
+[TB][ROUND] ===== round=21/64 =====
+[TB][PASS] round=21 all matched
+
+[TB][ROUND] ===== round=22/64 =====
+[TB][PASS] round=22 all matched
+
+[TB][ROUND] ===== round=23/64 =====
+[TB][PASS] round=23 all matched
+
+[TB][ROUND] ===== round=24/64 =====
+[TB][PASS] round=24 all matched
+
+[TB][ROUND] ===== round=25/64 =====
+[TB][PASS] round=25 all matched
+
+[TB][ROUND] ===== round=26/64 =====
+[TB][PASS] round=26 all matched
+
+[TB][ROUND] ===== round=27/64 =====
+[TB][PASS] round=27 all matched
+
+[TB][ROUND] ===== round=28/64 =====
+[TB][PASS] round=28 all matched
+
+[TB][ROUND] ===== round=29/64 =====
+[TB][PASS] round=29 all matched
+
+[TB][ROUND] ===== round=30/64 =====
+[TB][PASS] round=30 all matched
+
+[TB][ROUND] ===== round=31/64 =====
+[TB][OK] beat=3874 ch=0 got=49
+[TB][OK] beat=3874 end_frame=1 end_all_frame=0
+[TB][PASS] round=31 all matched
+
+[TB][ROUND] ===== round=32/64 =====
+[TB][OK] beat=3875 ch=0 got=0
+[TB][OK] beat=3875 end_frame=0 end_all_frame=0
+[TB][OK] beat=3876 ch=0 got=0
+[TB][OK] beat=3876 end_frame=0 end_all_frame=0
+[TB][OK] beat=3877 ch=0 got=0
+[TB][OK] beat=3877 end_frame=0 end_all_frame=0
+[TB][OK] beat=3878 ch=0 got=0
+[TB][OK] beat=3878 end_frame=0 end_all_frame=0
+[TB][OK] beat=3879 ch=0 got=21
+[TB][OK] beat=3879 end_frame=0 end_all_frame=0
+[TB][OK] beat=3880 ch=0 got=0
+[TB][OK] beat=3880 end_frame=0 end_all_frame=0
+[TB][OK] beat=3881 ch=0 got=0
+[TB][OK] beat=3881 end_frame=0 end_all_frame=0
+[TB][OK] beat=3882 ch=0 got=0
+[TB][OK] beat=3882 end_frame=0 end_all_frame=0
+[TB][OK] beat=3883 ch=0 got=0
+[TB][OK] beat=3883 end_frame=0 end_all_frame=0
+[TB][OK] beat=3884 ch=0 got=0
+[TB][OK] beat=3884 end_frame=0 end_all_frame=0
+[TB][OK] beat=3885 ch=0 got=127
+[TB][OK] beat=3885 end_frame=0 end_all_frame=0
+[TB][OK] beat=3886 ch=0 got=0
+[TB][OK] beat=3886 end_frame=0 end_all_frame=0
+[TB][OK] beat=3887 ch=0 got=8
+[TB][OK] beat=3887 end_frame=0 end_all_frame=0
+[TB][OK] beat=3888 ch=0 got=8
+[TB][OK] beat=3888 end_frame=0 end_all_frame=0
+[TB][OK] beat=3889 ch=0 got=0
+[TB][OK] beat=3889 end_frame=0 end_all_frame=0
+[TB][OK] beat=3890 ch=0 got=127
+[TB][OK] beat=3890 end_frame=0 end_all_frame=0
+[TB][OK] beat=3891 ch=0 got=0
+[TB][OK] beat=3891 end_frame=0 end_all_frame=0
+[TB][OK] beat=3892 ch=0 got=7
+[TB][OK] beat=3892 end_frame=0 end_all_frame=0
+[TB][OK] beat=3893 ch=0 got=0
+[TB][OK] beat=3893 end_frame=0 end_all_frame=0
+[TB][OK] beat=3894 ch=0 got=0
+[TB][OK] beat=3894 end_frame=0 end_all_frame=0
+[TB][OK] beat=3895 ch=0 got=127
+[TB][OK] beat=3895 end_frame=0 end_all_frame=0
+[TB][OK] beat=3896 ch=0 got=0
+[TB][OK] beat=3896 end_frame=0 end_all_frame=0
+[TB][OK] beat=3897 ch=0 got=103
+[TB][OK] beat=3897 end_frame=0 end_all_frame=0
+[TB][OK] beat=3898 ch=0 got=0
+[TB][OK] beat=3898 end_frame=0 end_all_frame=0
+[TB][OK] beat=3899 ch=0 got=36
+[TB][OK] beat=3899 end_frame=0 end_all_frame=0
+[TB][OK] beat=3900 ch=0 got=127
+[TB][OK] beat=3900 end_frame=0 end_all_frame=0
+[TB][OK] beat=3901 ch=0 got=0
+[TB][OK] beat=3901 end_frame=0 end_all_frame=0
+[TB][OK] beat=3902 ch=0 got=0
+[TB][OK] beat=3902 end_frame=0 end_all_frame=0
+[TB][OK] beat=3903 ch=0 got=48
+[TB][OK] beat=3903 end_frame=0 end_all_frame=0
+[TB][OK] beat=3904 ch=0 got=0
+[TB][OK] beat=3904 end_frame=0 end_all_frame=0
+[TB][OK] beat=3905 ch=0 got=117
+[TB][OK] beat=3905 end_frame=0 end_all_frame=0
+[TB][OK] beat=3906 ch=0 got=0
+[TB][OK] beat=3906 end_frame=0 end_all_frame=0
+[TB][OK] beat=3907 ch=0 got=103
+[TB][OK] beat=3907 end_frame=0 end_all_frame=0
+[TB][OK] beat=3908 ch=0 got=0
+[TB][OK] beat=3908 end_frame=0 end_all_frame=0
+[TB][OK] beat=3909 ch=0 got=37
+[TB][OK] beat=3909 end_frame=0 end_all_frame=0
+[TB][OK] beat=3910 ch=0 got=127
+[TB][OK] beat=3910 end_frame=0 end_all_frame=0
+[TB][OK] beat=3911 ch=0 got=0
+[TB][OK] beat=3911 end_frame=0 end_all_frame=0
+[TB][OK] beat=3912 ch=0 got=0
+[TB][OK] beat=3912 end_frame=0 end_all_frame=0
+[TB][OK] beat=3913 ch=0 got=23
+[TB][OK] beat=3913 end_frame=0 end_all_frame=0
+[TB][OK] beat=3914 ch=0 got=0
+[TB][OK] beat=3914 end_frame=0 end_all_frame=0
+[TB][OK] beat=3915 ch=0 got=122
+[TB][OK] beat=3915 end_frame=0 end_all_frame=0
+[TB][OK] beat=3916 ch=0 got=0
+[TB][OK] beat=3916 end_frame=0 end_all_frame=0
+[TB][OK] beat=3917 ch=0 got=127
+[TB][OK] beat=3917 end_frame=0 end_all_frame=0
+[TB][OK] beat=3918 ch=0 got=127
+[TB][OK] beat=3918 end_frame=0 end_all_frame=0
+[TB][OK] beat=3919 ch=0 got=0
+[TB][OK] beat=3919 end_frame=0 end_all_frame=0
+[TB][OK] beat=3920 ch=0 got=127
+[TB][OK] beat=3920 end_frame=0 end_all_frame=0
+[TB][OK] beat=3921 ch=0 got=127
+[TB][OK] beat=3921 end_frame=0 end_all_frame=0
+[TB][OK] beat=3922 ch=0 got=127
+[TB][OK] beat=3922 end_frame=0 end_all_frame=0
+[TB][OK] beat=3923 ch=0 got=127
+[TB][OK] beat=3923 end_frame=0 end_all_frame=0
+[TB][OK] beat=3924 ch=0 got=0
+[TB][OK] beat=3924 end_frame=0 end_all_frame=0
+[TB][OK] beat=3925 ch=0 got=127
+[TB][OK] beat=3925 end_frame=0 end_all_frame=0
+[TB][OK] beat=3926 ch=0 got=127
+[TB][OK] beat=3926 end_frame=0 end_all_frame=0
+[TB][OK] beat=3927 ch=0 got=127
+[TB][OK] beat=3927 end_frame=0 end_all_frame=0
+[TB][OK] beat=3928 ch=0 got=127
+[TB][OK] beat=3928 end_frame=0 end_all_frame=0
+[TB][OK] beat=3929 ch=0 got=0
+[TB][OK] beat=3929 end_frame=0 end_all_frame=0
+[TB][OK] beat=3930 ch=0 got=127
+[TB][OK] beat=3930 end_frame=0 end_all_frame=0
+[TB][OK] beat=3931 ch=0 got=127
+[TB][OK] beat=3931 end_frame=0 end_all_frame=0
+[TB][OK] beat=3932 ch=0 got=127
+[TB][OK] beat=3932 end_frame=0 end_all_frame=0
+[TB][OK] beat=3933 ch=0 got=0
+[TB][OK] beat=3933 end_frame=0 end_all_frame=0
+[TB][OK] beat=3934 ch=0 got=0
+[TB][OK] beat=3934 end_frame=0 end_all_frame=0
+[TB][OK] beat=3935 ch=0 got=127
+[TB][OK] beat=3935 end_frame=0 end_all_frame=0
+[TB][OK] beat=3936 ch=0 got=127
+[TB][OK] beat=3936 end_frame=0 end_all_frame=0
+[TB][OK] beat=3937 ch=0 got=0
+[TB][OK] beat=3937 end_frame=0 end_all_frame=0
+[TB][OK] beat=3938 ch=0 got=0
+[TB][OK] beat=3938 end_frame=0 end_all_frame=0
+[TB][OK] beat=3939 ch=0 got=127
+[TB][OK] beat=3939 end_frame=0 end_all_frame=0
+[TB][OK] beat=3940 ch=0 got=127
+[TB][OK] beat=3940 end_frame=0 end_all_frame=0
+[TB][OK] beat=3941 ch=0 got=0
+[TB][OK] beat=3941 end_frame=0 end_all_frame=0
+[TB][OK] beat=3942 ch=0 got=0
+[TB][OK] beat=3942 end_frame=0 end_all_frame=0
+[TB][OK] beat=3943 ch=0 got=127
+[TB][OK] beat=3943 end_frame=0 end_all_frame=0
+[TB][OK] beat=3944 ch=0 got=127
+[TB][OK] beat=3944 end_frame=0 end_all_frame=0
+[TB][OK] beat=3945 ch=0 got=127
+[TB][OK] beat=3945 end_frame=0 end_all_frame=0
+[TB][OK] beat=3946 ch=0 got=0
+[TB][OK] beat=3946 end_frame=0 end_all_frame=0
+[TB][OK] beat=3947 ch=0 got=0
+[TB][OK] beat=3947 end_frame=0 end_all_frame=0
+[TB][OK] beat=3948 ch=0 got=127
+[TB][OK] beat=3948 end_frame=0 end_all_frame=0
+[TB][OK] beat=3949 ch=0 got=0
+[TB][OK] beat=3949 end_frame=0 end_all_frame=0
+[TB][OK] beat=3950 ch=0 got=127
+[TB][OK] beat=3950 end_frame=0 end_all_frame=0
+[TB][OK] beat=3951 ch=0 got=0
+[TB][OK] beat=3951 end_frame=0 end_all_frame=0
+[TB][OK] beat=3952 ch=0 got=0
+[TB][OK] beat=3952 end_frame=0 end_all_frame=0
+[TB][OK] beat=3953 ch=0 got=0
+[TB][OK] beat=3953 end_frame=0 end_all_frame=0
+[TB][OK] beat=3954 ch=0 got=0
+[TB][OK] beat=3954 end_frame=0 end_all_frame=0
+[TB][OK] beat=3955 ch=0 got=0
+[TB][OK] beat=3955 end_frame=0 end_all_frame=0
+[TB][OK] beat=3956 ch=0 got=0
+[TB][OK] beat=3956 end_frame=0 end_all_frame=0
+[TB][OK] beat=3957 ch=0 got=127
+[TB][OK] beat=3957 end_frame=0 end_all_frame=0
+[TB][OK] beat=3958 ch=0 got=0
+[TB][OK] beat=3958 end_frame=0 end_all_frame=0
+[TB][OK] beat=3959 ch=0 got=0
+[TB][OK] beat=3959 end_frame=0 end_all_frame=0
+[TB][OK] beat=3960 ch=0 got=0
+[TB][OK] beat=3960 end_frame=0 end_all_frame=0
+[TB][OK] beat=3961 ch=0 got=0
+[TB][OK] beat=3961 end_frame=0 end_all_frame=0
+[TB][OK] beat=3962 ch=0 got=127
+[TB][OK] beat=3962 end_frame=0 end_all_frame=0
+[TB][OK] beat=3963 ch=0 got=0
+[TB][OK] beat=3963 end_frame=0 end_all_frame=0
+[TB][OK] beat=3964 ch=0 got=108
+[TB][OK] beat=3964 end_frame=0 end_all_frame=0
+[TB][OK] beat=3965 ch=0 got=127
+[TB][OK] beat=3965 end_frame=0 end_all_frame=0
+[TB][OK] beat=3966 ch=0 got=0
+[TB][OK] beat=3966 end_frame=0 end_all_frame=0
+[TB][OK] beat=3967 ch=0 got=28
+[TB][OK] beat=3967 end_frame=0 end_all_frame=0
+[TB][OK] beat=3968 ch=0 got=0
+[TB][OK] beat=3968 end_frame=0 end_all_frame=0
+[TB][OK] beat=3969 ch=0 got=103
+[TB][OK] beat=3969 end_frame=0 end_all_frame=0
+[TB][OK] beat=3970 ch=0 got=127
+[TB][OK] beat=3970 end_frame=0 end_all_frame=0
+[TB][OK] beat=3971 ch=0 got=0
+[TB][OK] beat=3971 end_frame=0 end_all_frame=0
+[TB][OK] beat=3972 ch=0 got=0
+[TB][OK] beat=3972 end_frame=0 end_all_frame=0
+[TB][OK] beat=3973 ch=0 got=0
+[TB][OK] beat=3973 end_frame=0 end_all_frame=0
+[TB][OK] beat=3974 ch=0 got=0
+[TB][OK] beat=3974 end_frame=0 end_all_frame=0
+[TB][OK] beat=3975 ch=0 got=127
+[TB][OK] beat=3975 end_frame=0 end_all_frame=0
+[TB][OK] beat=3976 ch=0 got=0
+[TB][OK] beat=3976 end_frame=0 end_all_frame=0
+[TB][OK] beat=3977 ch=0 got=29
+[TB][OK] beat=3977 end_frame=0 end_all_frame=0
+[TB][OK] beat=3978 ch=0 got=0
+[TB][OK] beat=3978 end_frame=0 end_all_frame=0
+[TB][OK] beat=3979 ch=0 got=0
+[TB][OK] beat=3979 end_frame=0 end_all_frame=0
+[TB][OK] beat=3980 ch=0 got=127
+[TB][OK] beat=3980 end_frame=0 end_all_frame=0
+[TB][OK] beat=3981 ch=0 got=0
+[TB][OK] beat=3981 end_frame=0 end_all_frame=0
+[TB][OK] beat=3982 ch=0 got=0
+[TB][OK] beat=3982 end_frame=0 end_all_frame=0
+[TB][OK] beat=3983 ch=0 got=46
+[TB][OK] beat=3983 end_frame=0 end_all_frame=0
+[TB][OK] beat=3984 ch=0 got=0
+[TB][OK] beat=3984 end_frame=0 end_all_frame=0
+[TB][OK] beat=3985 ch=0 got=127
+[TB][OK] beat=3985 end_frame=0 end_all_frame=0
+[TB][OK] beat=3986 ch=0 got=127
+[TB][OK] beat=3986 end_frame=0 end_all_frame=0
+[TB][OK] beat=3987 ch=0 got=127
+[TB][OK] beat=3987 end_frame=0 end_all_frame=0
+[TB][OK] beat=3988 ch=0 got=97
+[TB][OK] beat=3988 end_frame=0 end_all_frame=0
+[TB][OK] beat=3989 ch=0 got=0
+[TB][OK] beat=3989 end_frame=0 end_all_frame=0
+[TB][OK] beat=3990 ch=0 got=127
+[TB][OK] beat=3990 end_frame=0 end_all_frame=0
+[TB][OK] beat=3991 ch=0 got=127
+[TB][OK] beat=3991 end_frame=0 end_all_frame=0
+[TB][OK] beat=3992 ch=0 got=127
+[TB][OK] beat=3992 end_frame=0 end_all_frame=0
+[TB][OK] beat=3993 ch=0 got=127
+[TB][OK] beat=3993 end_frame=0 end_all_frame=0
+[TB][OK] beat=3994 ch=0 got=0
+[TB][OK] beat=3994 end_frame=0 end_all_frame=0
+[TB][OK] beat=3995 ch=0 got=127
+[TB][OK] beat=3995 end_frame=0 end_all_frame=0
+[TB][OK] beat=3996 ch=0 got=127
+[TB][OK] beat=3996 end_frame=0 end_all_frame=0
+[TB][OK] beat=3997 ch=0 got=127
+[TB][OK] beat=3997 end_frame=0 end_all_frame=0
+[TB][OK] beat=3998 ch=0 got=127
+[TB][OK] beat=3998 end_frame=0 end_all_frame=0
+[TB][OK] beat=3999 ch=0 got=0
+[TB][OK] beat=3999 end_frame=1 end_all_frame=0
+[TB][PASS] round=32 all matched
+
+[TB][ROUND] ===== round=33/64 =====
+[TB][PASS] round=33 all matched
+
+[TB][ROUND] ===== round=34/64 =====
+[TB][PASS] round=34 all matched
+
+[TB][ROUND] ===== round=35/64 =====
+[TB][PASS] round=35 all matched
+
+[TB][ROUND] ===== round=36/64 =====
+[TB][PASS] round=36 all matched
+
+[TB][ROUND] ===== round=37/64 =====
+[TB][PASS] round=37 all matched
+
+[TB][ROUND] ===== round=38/64 =====
+[TB][PASS] round=38 all matched
+
+[TB][ROUND] ===== round=39/64 =====
+[TB][PASS] round=39 all matched
+
+[TB][ROUND] ===== round=40/64 =====
+[TB][PASS] round=40 all matched
+
+[TB][ROUND] ===== round=41/64 =====
+[TB][PASS] round=41 all matched
+
+[TB][ROUND] ===== round=42/64 =====
+[TB][PASS] round=42 all matched
+
+[TB][ROUND] ===== round=43/64 =====
+[TB][PASS] round=43 all matched
+
+[TB][ROUND] ===== round=44/64 =====
+[TB][PASS] round=44 all matched
+
+[TB][ROUND] ===== round=45/64 =====
+[TB][PASS] round=45 all matched
+
+[TB][ROUND] ===== round=46/64 =====
+[TB][PASS] round=46 all matched
+
+[TB][ROUND] ===== round=47/64 =====
+[TB][PASS] round=47 all matched
+
+[TB][ROUND] ===== round=48/64 =====
+[TB][PASS] round=48 all matched
+
+[TB][ROUND] ===== round=49/64 =====
+[TB][PASS] round=49 all matched
+
+[TB][ROUND] ===== round=50/64 =====
+[TB][PASS] round=50 all matched
+
+[TB][ROUND] ===== round=51/64 =====
+[TB][PASS] round=51 all matched
+
+[TB][ROUND] ===== round=52/64 =====
+[TB][PASS] round=52 all matched
+
+[TB][ROUND] ===== round=53/64 =====
+[TB][PASS] round=53 all matched
+
+[TB][ROUND] ===== round=54/64 =====
+[TB][PASS] round=54 all matched
+
+[TB][ROUND] ===== round=55/64 =====
+[TB][PASS] round=55 all matched
+
+[TB][ROUND] ===== round=56/64 =====
+[TB][PASS] round=56 all matched
+
+[TB][ROUND] ===== round=57/64 =====
+[TB][PASS] round=57 all matched
+
+[TB][ROUND] ===== round=58/64 =====
+[TB][PASS] round=58 all matched
+
+[TB][ROUND] ===== round=59/64 =====
+[TB][PASS] round=59 all matched
+
+[TB][ROUND] ===== round=60/64 =====
+[TB][PASS] round=60 all matched
+
+[TB][ROUND] ===== round=61/64 =====
+[TB][PASS] round=61 all matched
+
+[TB][ROUND] ===== round=62/64 =====
+[TB][PASS] round=62 all matched
+
+[TB][ROUND] ===== round=63/64 =====
+[TB][PASS] round=63 all matched
+
+[TB][ROUND] ===== round=64/64 =====
+[TB][PASS] round=64 all matched
+[TB][PASS] parallel module test PASSED
+
+========================================
+[TB][RANDOM] Test Statistics
+========================================
+[TB][RANDOM] in_valid=1 cycles: 36278
+[TB][RANDOM] in_valid=0 cycles: 16030
+[TB][RANDOM] out_ready=1 cycles: 39944
+[TB][RANDOM] out_ready=0 cycles: 17146
+========================================
+
+$stop called at time : 584435 ns : File "D:/vivado/exp/DSCNN/sim/tb_depthwiseConv2D.v" Line 279

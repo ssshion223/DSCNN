@@ -1,0 +1,16 @@
+0.6
+2019.1
+May 24 2019
+15:06:07
+D:/vivado/exp/DSCNN/DSCNN/DSCNN.sim/sim_1/behav/xsim/glbl.v,1558713910,verilog,,,,glbl,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_memory.v,1776075824,verilog,,D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_process_wrapper.v,,bias_memory,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_process_wrapper.v,1776070024,verilog,,D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_quant_relu.v,,bias_process_wrapper,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/bias_quant_relu/bias_quant_relu.v,1776070429,verilog,,D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_coeff_store.v,,bias_quant_relu,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/fifo_reg/fwft_fifo_reg.v,1775457881,verilog,,D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/linebuf_bank_ram.v,,fwft_fifo_reg,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/main/depthwiseConv2D.v,1776072632,verilog,,D:/vivado/exp/DSCNN/rtl/fifo_reg/fwft_fifo_reg.v,,depthwiseConv2D,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_coeff_store.v,1775990394,verilog,,D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_mac_tree.v,,conv_coeff_store,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_mac_tree.v,1776069088,verilog,,D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_sliding_padding.v,,adder_comb;adder_pipe;conv_adder_tree;conv_adder_tree_comb;conv_adder_tree_pipe;conv_mac_tree;conv_mult_products,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/conv_sliding_padding.v,1775992171,verilog,,D:/vivado/exp/DSCNN/rtl/main/depthwiseConv2D.v,,conv_sliding_padding,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/linebuf_bank_ram.v,1775974205,verilog,,D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/matrix_conv2d_stream_parallel.v,,linebuf_bank_ram,,,,,,,,
+D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/matrix_conv2d_stream_parallel.v,1776068767,verilog,,D:/vivado/exp/DSCNN/sim/tb_depthwiseConv2D.v,,matrix_conv2d_stream_parallel,,,,,,,,
+D:/vivado/exp/DSCNN/sim/tb_depthwiseConv2D.v,1776073781,verilog,,,,tb_depthwiseConv2D,,,,,,,,

@@ -1,0 +1,19 @@
+# compile verilog/system verilog design source files
+verilog xil_defaultlib  \
+"../../../../../rtl/bias_quant_relu/bias_memory.v" \
+"../../../../../rtl/bias_quant_relu/bias_process_wrapper.v" \
+"../../../../../rtl/bias_quant_relu/bias_quant_relu.v" \
+"../../../../../rtl/matrix_conv2d_stream/conv_coeff_store.v" \
+"../../../../../rtl/matrix_conv2d_stream/conv_mac_tree.v" \
+"../../../../../rtl/matrix_conv2d_stream/conv_sliding_padding.v" \
+"../../../../../rtl/main/depthwiseConv2D.v" \
+"../../../../../rtl/fifo_reg/fwft_fifo_reg.v" \
+"../../../../../rtl/matrix_conv2d_stream/linebuf_bank_ram.v" \
+"../../../../../rtl/matrix_conv2d_stream/matrix_conv2d_stream_parallel.v" \
+"../../../../../sim/tb_depthwiseConv2D.v" \
+
+# compile glbl module
+verilog xil_defaultlib "glbl.v"
+
+# Do not sort compile order
+nosort
