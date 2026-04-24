@@ -267,44 +267,24 @@ module matrix_conv2d_stream_parallel #(
     assign out_end_frame  = out_user[0];
 
     //test
-	reg[SUM_W-1:0] test_sum[0:OUT_CH-1];
-    reg[DATA_W-1:0]test_input;
-    reg[COEFF_W*K_H*K_W-1:0] test_coeff[0:OUT_CH-1];
-    reg [31:0] out_cnt,in_pixel_cnt;
-    always @(posedge clk or negedge rst_n) begin
-        if(!rst_n) begin
-            out_cnt <= 0;
-            in_pixel_cnt <= 0;
-        end else  begin
-            // if(out_valid && out_ready) begin
-            //     $display("beat %d: matrix_out_pixel: %d", out_cnt, $signed(out_pixel_data_bus));
-            //     out_cnt <= out_cnt + 1;
-            // end
-            // if(in_valid && in_ready) begin
-            //     $display("beat %d: in_pixel: %d", in_pixel_cnt, $signed(in_pixel));
-            //     in_pixel_cnt <= in_pixel_cnt + 1;
-            // end
-        end
-    end
-	// integer i;
-	// always @(*) begin
-	// 	for(i=0; i<OUT_CH; i=i+1) begin
-    //         if(out_valid&&out_ready)
-	// 		    test_sum[i] = out_pixel_data_bus[i*SUM_W +: SUM_W];
-    //         else 
-    //             test_sum[i] = 0;
-	// 	end
-	// end
-    // always @(*) begin
-    //     for(i=0; i<OUT_CH; i=i+1) begin
-    //         test_coeff[i] = coeff_bus_grp[i*CH_COEFF_BUS_W +: CH_COEFF_BUS_W];
-    //     end 
-    // end
-    // always @(*) begin
-    //     if(in_valid&&in_ready)
-    //         test_input = in_pixel;
-    //     else 
-    //         test_input = 0;
+	// reg[SUM_W-1:0] test_sum[0:OUT_CH-1];
+    // reg[DATA_W-1:0]test_input;
+    // reg[COEFF_W*K_H*K_W-1:0] test_coeff[0:OUT_CH-1];
+    // reg [31:0] out_cnt,in_pixel_cnt;
+    // always @(posedge clk or negedge rst_n) begin
+    //     if(!rst_n) begin
+    //         out_cnt <= 0;
+    //         in_pixel_cnt <= 0;
+    //     end else  begin
+    //         if(out_valid && out_ready) begin
+    //             $display("beat %d: matrix_out_pixel: %d", out_cnt, $signed(out_pixel_data_bus));
+    //             out_cnt <= out_cnt + 1;
+    //         end
+    //         if(in_valid && in_ready) begin
+    //             $display("beat %d: in_pixel: %d", in_pixel_cnt, $signed(in_pixel));
+    //             in_pixel_cnt <= in_pixel_cnt + 1;
+    //         end
+    //     end
     // end
 
 

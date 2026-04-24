@@ -93,16 +93,20 @@ module conv_mult_products #(
 );
     localparam integer WIN_SIZE = K_H * K_W;
 
-    wire signed [DATA_W-1:0]  win_vec   [0:WIN_SIZE-1];
-    wire signed [COEFF_W-1:0] coeff_vec [0:WIN_SIZE-1];
-
-    genvar gi;
+    wire signed [DATA_W-1:0]  win_vec   [0:((WIN_SIZE>0)?WIN_SIZE-1:0)];
+    wire signed [COEFF_W-1:0] coeff_vec [0:((WIN_SIZE>0)?WIN_SIZE-1:0)];
 
     generate
-        for (gi = 0; gi < WIN_SIZE; gi = gi + 1) begin : gen_unpack_and_mul
-            assign win_vec[gi]   = window_bus[gi*DATA_W +: DATA_W];
-            assign coeff_vec[gi] = coeff_bus[gi*COEFF_W +: COEFF_W];
-            assign product_bus[gi*OUT_W +: OUT_W] = $signed(win_vec[gi]) * $signed(coeff_vec[gi]);
+        if (WIN_SIZE > 0) begin : gen_has_elems
+            genvar gi;
+            for (gi = 0; gi < WIN_SIZE; gi = gi + 1) begin : gen_unpack_and_mul
+                assign win_vec[gi]   = window_bus[gi*DATA_W +: DATA_W];
+                assign coeff_vec[gi] = coeff_bus[gi*COEFF_W +: COEFF_W];
+                assign product_bus[gi*OUT_W +: OUT_W] = $signed(win_vec[gi]) * $signed(coeff_vec[gi]);
+            end
+        end else begin : gen_no_elems
+            // No elements: tie-offs to avoid zero-replication warnings
+            // product_bus remains unassigned in this degenerate case
         end
     endgenerate
 endmodule
@@ -139,7 +143,7 @@ module conv_adder_tree #(
     output reg [USER_W-1:0]             out_user    // 输出侧带
 );
     localparam integer WIN_SIZE = K_H * K_W;
-    localparam integer LEVEL = $clog2(WIN_SIZE);
+    localparam integer LEVEL = (WIN_SIZE <= 1) ? 0 : $clog2(WIN_SIZE);
     localparam integer TREE_OUT_W = IN_W + LEVEL;
 
     wire signed [TREE_OUT_W-1:0] comb_sum_out;
@@ -260,12 +264,12 @@ endmodule
 module conv_adder_tree_comb #(
     parameter integer IN_W = 16,            // 输入元素位宽
     parameter integer N     = 9,            // 输入元素总数
-    parameter integer OUT_W = IN_W + $clog2(N) // 输出位宽
+    parameter integer OUT_W = IN_W + ((N<=1)?0:$clog2(N)) // 输出位宽
 )(
     input  wire signed [N*IN_W-1:0] product_bus, // 输入向量
     output wire signed [OUT_W-1:0]  sum_out      // 组合树求和结果
 );
-    localparam integer LEVEL = $clog2(N);
+    localparam integer LEVEL = (N <= 1) ? 0 : $clog2(N);
     generate
         if (LEVEL == 0) begin : gen_single
             if (OUT_W >= IN_W) begin : gen_single_ext
@@ -387,9 +391,9 @@ endmodule
 module conv_adder_tree_pipe #(
     parameter integer IN_W = 16,              // 输入元素位宽
     parameter integer N     = 9,              // 输入元素总数
-    parameter integer OUT_W = IN_W + $clog2(N), // 输出位宽
+    parameter integer OUT_W = IN_W + ((N<=1)?0:$clog2(N)), // 输出位宽
     parameter integer USER_W = 1              // 用户侧带位宽
-)(
+) (
     input  wire                        clk,       // 时钟信号
     input  wire                        rst_n,     // 低有效复位
     input  wire                        in_valid,  // 输入有效
@@ -399,7 +403,10 @@ module conv_adder_tree_pipe #(
     output wire                       out_valid,   // 输出有效
     output wire [USER_W-1:0]          out_user     // 输出侧带
 );
-    localparam integer LEVEL = $clog2(N);
+    localparam integer LEVEL = (N <= 1) ? 0 : $clog2(N);
+    // prevent unconnected port warnings when LEVEL==0 by referencing clk/rst_n
+    wire _unused_clk = clk;
+    wire _unused_rst_n = rst_n;
     generate
         if (LEVEL == 0) begin : gen_single
             if (OUT_W >= IN_W) begin : gen_single_ext

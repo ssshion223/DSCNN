@@ -13,23 +13,23 @@ module network_top #(
     // 阶段 1：降采样层 (Downsample Layer - DS) 
     // 默认配置为 10x4 卷积核，步长 2
     // ==========================================
-    parameter integer DS_DATA_W        = 8,
-    parameter integer DS_COEFF_W       = 8,
-    parameter integer DS_K_H           = 10,
-    parameter integer DS_K_W           = 4,
+    parameter integer DS_DATA_W        = 8,   // 输入像素位宽 
+    parameter integer DS_COEFF_W       = 8,   // 卷积系数位宽
+    parameter integer DS_K_H           = 10,  // 卷积核高度
+    parameter integer DS_K_W           = 4,   // 卷积核宽度
     parameter integer DS_COL           = 10,  // 原始输入宽
     parameter integer DS_ROW           = 49,  // 原始输入高
     parameter integer DS_STRIDE        = 2,   // 核心降采样步长
-    parameter integer DS_PAD_TOP       = 4,
-    parameter integer DS_PAD_BOTTOM    = 5,
-    parameter integer DS_PAD_LEFT      = 1,
-    parameter integer DS_PAD_RIGHT     = 2,
+    parameter integer DS_PAD_TOP       = 4,   // 上边界补零 
+    parameter integer DS_PAD_BOTTOM    = 5,   // 下边界补零  
+    parameter integer DS_PAD_LEFT      = 1,   // 左边界补零 
+    parameter integer DS_PAD_RIGHT     = 2,   // 右边界补零
     parameter integer DS_COEFF_GRP_NUM = 64,  // 输出 64 个通道(理论可以并行,但是总线压力大且数据流不一致,故单通道输出)
     parameter integer DS_OUT_WIDTH     = 8,   // 降采样量化后的输出位宽
     parameter         DS_COEFF_FILE    = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_dw0.memh",
     parameter         DS_BIAS_FILE     = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw0_Fold_bias.hex",
-    parameter         DS_MULT_CNT      = 1,
-    parameter         DS_MULT_FACTOR0  = 12'sd915,
+    parameter         DS_MULT_CNT      = 1,   // 乘数个数
+    parameter         DS_MULT_FACTOR0  = 12'sd915, // 乘数0
 
     // ==========================================
     // 阶段 2：乒乓流水线 (Ping-Pong Module - PP)
@@ -38,8 +38,8 @@ module network_top #(
     parameter integer PP_ROUNDS        = 3,   // 乒乓轮数(不包括第一层)
     parameter integer PP_PIXEL_DEPTH   = 125, // 25 x 5 降采样后的面积
     parameter integer PP_IN_FRAME_SIZE = 64,  // 承接前级的 64 个通道
-    parameter integer PP_DW_K_H        = 3,
-    parameter integer PP_DW_K_W        = 3,
+    parameter integer PP_DW_K_H        = 3,   // DW 卷积核高度
+    parameter integer PP_DW_K_W        = 3,   // DW 卷积核宽度
     parameter integer PP_OUT_PIXEL_W   = 8,   // 最终网络输出位宽
     parameter         PP_DW_COEFF_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh",
     parameter         PP_PW_COEFF_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_pw.memh",
@@ -52,24 +52,24 @@ module network_top #(
     // ==========================================
     // 顶层网络控制与状态
     // ==========================================
-    input  wire                               start,   // 脉冲启动信号，唤醒后端乒乓状态机
-    output wire                               busy,    // 网络忙碌状态
+    input  wire                               start,   // 脉冲启动信号，唤醒模块
+    output wire                               busy,    // 忙碌状态
 
     // ==========================================
     // 外部原始输入流
     // ==========================================
-    input  wire                               in_valid,
-    output wire                               in_ready,
-    input  wire signed [DS_DATA_W-1:0]        in_pixel,
+    input  wire                               in_valid, 
+    output wire                               in_ready, 
+    input  wire  [DS_DATA_W-1:0]              in_pixel, // 输入像素数据（49x10x64）
 
     // ==========================================
     // 最终网络输出流
     // ==========================================
     output wire                               out_valid,
     input  wire                               out_ready,
-    output wire        [PP_OUT_PIXEL_W-1:0]   out_data,
-    output wire                               out_end_frame,
-    output wire                               out_end_all_frame
+    output wire  [PP_OUT_PIXEL_W-1:0]         out_data,
+    output wire                               out_end_frame,// 当前通道帧结束标志
+    output wire                               out_end_all_frame // 全部通道结束标志(跟随最后一数据输出，注意必须out_valid为1时才有效)
 );
 
     // ==========================================
@@ -123,7 +123,7 @@ module network_top #(
 
     assign in_ready = input_processing ? ds_in_ready : 1'b0; // 处理状态时准备接受输入
     assign ds_in_valid = input_processing ? in_valid : 1'b0; // 处理状态时传递输入有效信号
-    assign ds_in_pixel = in_pixel; // 输入像素直接传递给降采样层
+    assign ds_in_pixel = $signed(in_pixel); // 输入像素直接传递给降采样层
     assign ds_in_end_all_frame = in_pixel_cnt_wrap;
     // ==========================================
     // 第一级：降采样 Depthwise 卷积引擎
@@ -187,7 +187,7 @@ module network_top #(
         .rst_n               (rst_n),
 
         // 顶层状态机控制
-        .start               (start),
+        .start               (start_flag),
         .busy                (busy),
 
         // 接收前级的中间流
@@ -205,23 +205,23 @@ module network_top #(
     );
 
     //test
-    reg[31:0] dowmsample_out_count;
-    reg[31:0] in_pixel_cnt_test;
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            dowmsample_out_count <= 0;
-            in_pixel_cnt_test <= 0;
-        end else begin
-            // if(ds_out_valid&&ds_out_ready) begin
-            //     $display("beat %d: DownPixel=%h, EndFrame=%b, EndAllFrame=%b", dowmsample_out_count, ds_out_pixel, ds_out_end_frame, ds_out_end_all_frame);
-            //     dowmsample_out_count <= dowmsample_out_count + 1;
-            // end
-            // if(in_valid&&in_ready) begin
-            //     $display("beat %d: InPixel=%h, EndAllFrame=%b", in_pixel_cnt_test, in_pixel, in_end_all_frame);
-            //     in_pixel_cnt_test <= in_pixel_cnt_test + 1;
-            // end
-        end
-    end
+    // reg[31:0] dowmsample_out_count;
+    // reg[31:0] in_pixel_cnt_test;
+    // always @(posedge clk or negedge rst_n) begin
+    //     if (!rst_n) begin
+    //         dowmsample_out_count <= 0;
+    //         in_pixel_cnt_test <= 0;
+    //     end else begin
+    //         if(ds_out_valid&&ds_out_ready) begin
+    //             $display("beat %d: DownPixel=%h, EndFrame=%b, EndAllFrame=%b", dowmsample_out_count, ds_out_pixel, ds_out_end_frame, ds_out_end_all_frame);
+    //             dowmsample_out_count <= dowmsample_out_count + 1;
+    //         end
+    //         if(in_valid&&in_ready) begin
+    //             $display("beat %d: InPixel=%h", in_pixel_cnt_test, in_pixel);
+    //             in_pixel_cnt_test <= in_pixel_cnt_test + 1;
+    //         end
+    //     end
+    // end
 
 
 endmodule

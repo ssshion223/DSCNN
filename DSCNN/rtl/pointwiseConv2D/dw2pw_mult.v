@@ -188,35 +188,35 @@ module dw2pw_mult #(
 
 	// test===========================================
 
-	reg[PW_SUM_W-1:0] test_sum[0:PW_OUT_CH-1];
-	integer i;
-	always @(*) begin
-		for(i=0; i<PW_OUT_CH; i=i+1) begin
-			test_sum[i] = pw_out_bus_i[i*PW_SUM_W +: PW_SUM_W];
-		end
-	end
-	reg [31:0] in_pixel_cnt, dw_out_cnt, pw_out_cnt;
-	always @(posedge clk or negedge rst_n) begin
-		if(!rst_n) begin
-			in_pixel_cnt <= 0;
-			dw_out_cnt <= 0;
-			pw_out_cnt <= 0;
-		end else begin
-			// if(in_valid&&in_ready) begin
-			// 	$display("beat %d: DW_in_pixel: %d", in_pixel_cnt, $signed(in_pixel));
-			// 	in_pixel_cnt <= in_pixel_cnt + 1;
-			// end
-			// if(dw_out_valid&&dw_out_ready) begin
-			// 	$display("beat %d: DW_out_pixel: %d", dw_out_cnt, $signed(dw_out_pixel_s));
-			// 	dw_out_cnt <= dw_out_cnt + 1;	
-			// end
-			// if(pw_out_valid_i&&pw_out_ready_i) begin
-			// 	$display("beat %d: PW_out_sum[0]: %d , [1]: %d , [2]: %d , [3]: %d", pw_out_cnt, $signed(test_sum[0]), $signed(test_sum[1]), $signed(test_sum[2]), $signed(test_sum[3]));
-			// 	$display("beat %d: PW_out_sum[4]: %d , [5]: %d , [6]: %d , [7]: %d", pw_out_cnt, $signed(test_sum[4]), $signed(test_sum[5]), $signed(test_sum[6]), $signed(test_sum[7]));
-			// 	pw_out_cnt <= pw_out_cnt + 1;
-			// end
-		end
-	end
+	// reg[PW_SUM_W-1:0] test_sum[0:PW_OUT_CH-1];
+	// integer i;
+	// always @(*) begin
+	// 	for(i=0; i<PW_OUT_CH; i=i+1) begin
+	// 		test_sum[i] = pw_out_bus_i[i*PW_SUM_W +: PW_SUM_W];
+	// 	end
+	// end
+	// reg [31:0] in_pixel_cnt, dw_out_cnt, pw_out_cnt;
+	// always @(posedge clk or negedge rst_n) begin
+	// 	if(!rst_n) begin
+	// 		in_pixel_cnt <= 0;
+	// 		dw_out_cnt <= 0;
+	// 		pw_out_cnt <= 0;
+	// 	end else begin
+	// 		if(in_valid&&in_ready) begin
+	// 			$display("beat %d: DW_in_pixel: %d", in_pixel_cnt, $signed(in_pixel));
+	// 			in_pixel_cnt <= in_pixel_cnt + 1;
+	// 		end
+	// 		if(dw_out_valid&&dw_out_ready) begin
+	// 			$display("beat %d: DW_out_pixel: %d", dw_out_cnt, $signed(dw_out_pixel_s));
+	// 			dw_out_cnt <= dw_out_cnt + 1;	
+	// 		end
+	// 		if(pw_out_valid_i&&pw_out_ready_i) begin
+	// 			$display("beat %d: PW_out_sum[0]: %d , [1]: %d , [2]: %d , [3]: %d", pw_out_cnt, $signed(test_sum[0]), $signed(test_sum[1]), $signed(test_sum[2]), $signed(test_sum[3]));
+	// 			$display("beat %d: PW_out_sum[4]: %d , [5]: %d , [6]: %d , [7]: %d", pw_out_cnt, $signed(test_sum[4]), $signed(test_sum[5]), $signed(test_sum[6]), $signed(test_sum[7]));
+	// 			pw_out_cnt <= pw_out_cnt + 1;
+	// 		end
+	// 	end
+	// end
 
 	
 

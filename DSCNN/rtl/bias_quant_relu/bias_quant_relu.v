@@ -46,7 +46,8 @@ module bias_quant_relu #(
     // 最大正数值 (8位时为 8'h7F = 127)
     localparam MAX_VAL = {1'b0, {(OUT_WIDTH-1){1'b1}}};
     
-    localparam integer MULT_IDX_W = (MULT_CNT <= 1) ? 1 : $clog2(MULT_CNT);
+    localparam integer MULT_CNT_SAFE = (MULT_CNT == 0) ? 1 : MULT_CNT;
+    localparam integer MULT_IDX_W = (MULT_CNT_SAFE <= 1) ? 1 : $clog2(MULT_CNT_SAFE);
     reg [MULT_IDX_W-1:0] mult_idx;
     reg signed [MULT_WIDTH-1:0] mult_factor_sel;
 
@@ -87,7 +88,7 @@ module bias_quant_relu #(
 
             // 每次 end_all_frame 触发后切换到下一组乘数，循环使用
             if (end_all_frame) begin
-                if (mult_idx == MULT_CNT - 1) begin
+                if (mult_idx == MULT_CNT_SAFE - 1) begin
                     mult_idx <= {MULT_IDX_W{1'b0}};
                 end else begin
                     mult_idx <= mult_idx + 1'b1;

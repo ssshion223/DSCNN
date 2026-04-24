@@ -1,34 +1,34 @@
 module dw_pw_pingpong #(
     // ---------------- pingpong control ----------------
-    parameter integer PINGPONG_ROUNDS      = 3,
+    parameter integer PINGPONG_ROUNDS      = 3, // 乒乓轮数(不包括第一层 DW+PW )，即后续DW+PW的轮数 
 
     // ---------------- stream shape ----------------
-    parameter integer PIXEL_DEPTH          = 125,
+    parameter integer PIXEL_DEPTH          = 125, // 每帧像素数（空间维度展开后），如5x25=125
     parameter integer IN_FRAME_SIZE        = 64,//每轮输入帧数，等于输入通道数（depthwise输出的通道数）
 
     // ---------------- DW stage ----------------
-	parameter integer IN_DATA_W            = 8,
-	parameter integer DW_COEFF_W           = 8,
-	parameter integer DW_K_H               = 3,
-	parameter integer DW_K_W               = 3,
-	parameter integer DW_MUL_W             = IN_DATA_W + DW_COEFF_W,
-	parameter integer DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),
-	parameter integer DW_COL               = 5,
-	parameter integer DW_ROW               = 25,
-	parameter integer DW_STRIDE            = 1,
-	parameter integer DW_PAD_TOP           = (DW_K_H-1)/2,
-	parameter integer DW_PAD_BOTTOM        = (DW_K_H)/2,
-	parameter integer DW_PAD_LEFT          = (DW_K_W-1)/2,
-	parameter integer DW_PAD_RIGHT         = (DW_K_W)/2,
-	parameter integer DW_COEFF_GRP_NUM     = IN_FRAME_SIZE * (PINGPONG_ROUNDS + 1),//一层计算64通道，复用4层系数
-    parameter integer DW_FRAME_GRP_NUM     = IN_FRAME_SIZE,
-	parameter integer DW_MAC_PIPELINE      = 1,
-	parameter         DW_COEFF_INIT_FILE   = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh",
-	parameter         DW_BIAS_INIT_FILE    = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw_pingpong_bias.hex",
-    parameter integer DW_OUT_WIDTH         = 8,
-	parameter integer DW_SHIFT_VAL         = 16,
-    parameter integer DW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //4层系数
-    parameter integer DW_BIAS_GROUP_BITS   = $clog2(DW_BIAS_GROUP_SIZE),
+	parameter integer IN_DATA_W            = 8, // 输入像素位宽
+	parameter integer DW_COEFF_W           = 8, // DW卷积系数量化位宽
+	parameter integer DW_K_H               = 3, // DW卷积核高
+	parameter integer DW_K_W               = 3, // DW卷积核宽
+	parameter integer DW_MUL_W             = IN_DATA_W + DW_COEFF_W, // DW乘积位宽
+	parameter integer DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),// DW多通道累加位宽
+	parameter integer DW_COL               = 5,// DW输入特征图列数
+	parameter integer DW_ROW               = 25,// DW输入特征图行数
+	parameter integer DW_STRIDE            = 1, // DW卷积步长
+	parameter integer DW_PAD_TOP           = (DW_K_H-1)/2, // DW卷积上边界补零
+	parameter integer DW_PAD_BOTTOM        = (DW_K_H)/2, // DW卷积下边界补零
+	parameter integer DW_PAD_LEFT          = (DW_K_W-1)/2, // DW卷积左边界补零
+	parameter integer DW_PAD_RIGHT         = (DW_K_W)/2,// DW卷积右边界补零
+	parameter integer DW_COEFF_GRP_NUM     = IN_FRAME_SIZE * (PINGPONG_ROUNDS + 1),//一层计算64通道，共4层系数
+    parameter integer DW_FRAME_GRP_NUM     = IN_FRAME_SIZE,//每个输入帧对应一组系数
+	parameter integer DW_MAC_PIPELINE      = 1,// 开启流水线计算（建议使用）
+	parameter         DW_COEFF_INIT_FILE   = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh",// DW卷积系数初始化文件
+	parameter         DW_BIAS_INIT_FILE    = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw_pingpong_bias.hex",// DW卷积Bias初始化文件
+    parameter integer DW_OUT_WIDTH         = 8,// DW输出位宽
+	parameter integer DW_SHIFT_VAL         = 16, // DW量化低位截断
+    parameter integer DW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //4层偏移量
+    parameter integer DW_BIAS_GROUP_BITS   = $clog2(DW_BIAS_GROUP_SIZE),//偏移量组号位宽
     parameter integer DW_BIAS_CH_BITS      = $clog2(IN_FRAME_SIZE), //每个通道对应一个BIAS
     parameter         DW_MULT_CNT          = (PINGPONG_ROUNDS + 1),  // 量化乘数个数，每层一个乘数
     parameter signed [11:0] DW_MULT_FACTOR0 = 12'sd1246,  // layer1_dw
@@ -39,32 +39,32 @@ module dw_pw_pingpong #(
 	parameter integer DW_FIFO_AF_LEVEL     = 10,//注意该值不能太大，否则后端堵塞时容易丢失数据，参考值DW_FIFO_DEPTH- $clog2(DW_K_H*DW_K_W)- 2 
 
 	// ---------------- PW matrix stage ----------------
-	parameter integer PW_OUT_CH            = 64,
-	parameter integer PW_COEFF_W           = 8,
-	parameter integer PW_K_H               = 1,
-	parameter integer PW_K_W               = 1,
-	parameter integer PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W,
-	parameter integer PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),
-	parameter integer PW_COEFF_GRP_NUM     = PW_OUT_CH * (PINGPONG_ROUNDS + 1),//每个frame的64个通道对应一组系数
+	parameter integer PW_OUT_CH            = 64, // PW并行输出通道数
+	parameter integer PW_COEFF_W           = 8, // PW卷积系数量化位宽
+	parameter integer PW_K_H               = 1, // PW卷积核高
+	parameter integer PW_K_W               = 1, // PW卷积核宽
+	parameter integer PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W, // PW乘积位宽
+	parameter integer PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),// PW多通道累加位宽
+	parameter integer PW_COEFF_GRP_NUM     = PW_OUT_CH * (PINGPONG_ROUNDS + 1),//每
     parameter integer PW_FRAME_GRP_NUM     = PW_OUT_CH,
 	parameter integer PW_MAC_PIPELINE      = 1,
 	parameter         PW_COEFF_INIT_FILE   = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_pw.memh",
     parameter         PW_BIAS_INIT_FILE    = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_pw_pingpong_bias.hex",
-    parameter integer PW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //4层系数
-    parameter integer PW_BIAS_GROUP_BITS   = $clog2(PW_BIAS_GROUP_SIZE),
+    parameter integer PW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //一层计算64通道，共4层系数
+    parameter integer PW_BIAS_GROUP_BITS   = $clog2(PW_BIAS_GROUP_SIZE),//偏移量组号位宽
     parameter integer PW_BIAS_CH_BITS      = $clog2(PW_OUT_CH), //每个通道对应一个BIAS
     parameter integer PW_MULT_CNT          = (PINGPONG_ROUNDS + 1),  // 量化乘数个数，每层一个乘数
     localparam signed [11:0] PW_MULT_FACTOR0 = 12'sd406, // layer1_pw
     localparam signed [11:0] PW_MULT_FACTOR1 = 12'sd461,// layer2_pw
     localparam signed [11:0] PW_MULT_FACTOR2 = 12'sd442,// layer3_pw
     localparam signed [11:0] PW_MULT_FACTOR3 = 12'sd623,// layer4_pw
-    parameter integer PW_FIFO_DEPTH        = 4,
-    parameter integer PW_FIFO_AF_LEVEL     = 2,
+    parameter integer PW_FIFO_DEPTH        = 4,//输出数据缓存深度(不要过高)，2的幂次
+    parameter integer PW_FIFO_AF_LEVEL     = 2,//输出数据缓存将满阈值，用于反压
 
     // ---------------- accumulator / RAM ----------------  
-    parameter integer RAM_SEGMENTS          = 4,
-    parameter integer RAM_ONE_DATA_W        = PW_SUM_W + $clog2(PW_OUT_CH),
-    parameter integer OUT_PIXEL_WIDTH       = 8
+    parameter integer RAM_SEGMENTS          = 1,//RAM分段数目，时间换空间，1时全并行，要保证OUT_CH能被整除
+    parameter integer RAM_ONE_DATA_W        = PW_SUM_W + $clog2(PW_OUT_CH),//存储在RAM中单个有效数据位宽（不对应一次读写位宽）
+    parameter integer OUT_PIXEL_WIDTH       = 8//最终输出像素位宽
 )(
     input  wire                                clk,
     input  wire                                rst_n,
@@ -158,15 +158,28 @@ module dw_pw_pingpong #(
     reg [2:0] state, next_state;
     reg [PASS_TOTAL_W-1:0] pass_cnt; // 记录当前是第几轮pingpong
     wire start_fire = start && !busy; // 仅在非忙状态下响应 start 信号
-    wire pass_cnt_wrap = (pass_cnt == PASS_TOTAL-1);
     wire out_fire = out_valid && out_ready;
+    wire switch_next_state = state != next_state;
+    reg dw_pw_cac_done ; 
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            pass_cnt <= {PASS_TOTAL_W{1'b0}};
-        end else if (state==IDLE) begin
-            pass_cnt <= {PASS_TOTAL_W{1'b0}};
+            dw_pw_cac_done <= 1'b0;
         end else if (pw_conv_end_all_frame) begin
+            dw_pw_cac_done <= 1'b1;
+        end else if (switch_next_state) begin
+            dw_pw_cac_done <= 1'b0;
+        end
+    end
+
+    wire next_cac_start =  dw_pw_cac_done && !ram_reader_busy;
+    wire pass_cnt_wrap = (pass_cnt == PASS_TOTAL-1);
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            pass_cnt <= {PASS_TOTAL_W{1'b0}};
+        end else if (state == IDLE) begin
+            pass_cnt <= {PASS_TOTAL_W{1'b0}};
+        end else if (next_cac_start) begin
             pass_cnt <= (pass_cnt_wrap) ? {PASS_TOTAL_W{1'b0}} : pass_cnt + 1'b1;
         end
     end
@@ -179,6 +192,7 @@ module dw_pw_pingpong #(
         end
     end
 
+
     always @(*) begin
         case(state)
             IDLE: begin
@@ -188,13 +202,13 @@ module dw_pw_pingpong #(
                     next_state = IDLE;
             end
             EXTERNAL_INPUT: begin
-                if(pw_conv_end_all_frame && !ram_reader_busy)
+                if(next_cac_start)
                     next_state = RAM0_INPUT;
                 else
                     next_state = EXTERNAL_INPUT;
             end
             RAM0_INPUT: begin
-                if (pw_conv_end_all_frame && !ram_reader_busy) begin
+                if (next_cac_start) begin
                     if(pass_cnt_wrap)
                         next_state = OUT;
                     else
@@ -203,7 +217,7 @@ module dw_pw_pingpong #(
                     next_state = RAM0_INPUT;
             end
             RAM1_INPUT: begin
-                if (pw_conv_end_all_frame && !ram_reader_busy) begin
+                if (next_cac_start) begin
                     if(pass_cnt_wrap)
                         next_state = OUT;
                     else
@@ -217,6 +231,7 @@ module dw_pw_pingpong #(
                 else
                     next_state = OUT;
             end
+            default: next_state = IDLE;
         endcase
     end
 
@@ -406,7 +421,7 @@ module dw_pw_pingpong #(
                 ram_reader_out_ready = bias_process_in_ready; // 将RAM读取模块的输出准备好信号连接到bias处理模块的输入准备好信号
             end
             OUT: begin
-                if(PINGPONG_ROUNDS % 2 == 0) // 如果不需要pingpong，直接从RAM0输出
+                if(IS_EVEN_ROUND) // 如果不需要pingpong，直接从RAM0输出
                     ram_reader_ram_rdata = ram0_rdata;
                 else
                     ram_reader_ram_rdata = ram1_rdata;
@@ -422,12 +437,8 @@ module dw_pw_pingpong #(
     always @(posedge clk or negedge rst_n) begin
         if(!rst_n) begin
             ram_reader_start <= 1'b0;
-        end else if (state != next_state ) begin
-            if(state == EXTERNAL_INPUT || state == RAM0_INPUT || state == RAM1_INPUT) begin
-                ram_reader_start <= 1'b1; // 在RAM输入阶段转换时启动RAM读取模块
-            end else begin
-                ram_reader_start <= 1'b0;
-            end
+        end else if (next_cac_start ) begin
+            ram_reader_start <= 1'b1; // 在每轮计算完成且RAM读取模块不忙时启动RAM读取模块
         end else begin
             ram_reader_start <= 1'b0; // 其他时候保持不启动
         end
@@ -489,9 +500,9 @@ module dw_pw_pingpong #(
         .OUT_WIDTH(OUT_PIXEL_WIDTH),
         .SHIFT_VAL(DW_SHIFT_VAL),
         .BIAS_INIT_FILE(PW_BIAS_INIT_FILE),
-        .BIAS_GROUP_BITS(PW_BIAS_GROUP_BITS),
-        .BIAS_GROUP_SIZE(PW_BIAS_GROUP_SIZE),
-        .BIAS_CH_BITS(PW_BIAS_CH_BITS),
+        .GROUP_BITS(PW_BIAS_GROUP_BITS),
+        .GROUP_SIZE(PW_BIAS_GROUP_SIZE),
+        .CH_BITS(PW_BIAS_CH_BITS),
         .MULT_CNT(PW_MULT_CNT),
         .MULT_FACTOR0(PW_MULT_FACTOR0),
         .MULT_FACTOR1(PW_MULT_FACTOR1),
@@ -520,17 +531,17 @@ module dw_pw_pingpong #(
     assign busy = (state != IDLE);
 
     //test
-    reg [31:0] out_cnt ;
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            out_cnt <= 32'b0;
-        end else begin
-            // if(bias_process_out_valid && bias_process_out_ready) begin
-            //     $display("beat %d: PW_out_pixel(Hex): %h ,end_frame: %b,end_all_frame: %b", out_cnt, bias_process_out_data, bias_process_out_end_frame, bias_process_out_end_all_frame);
-            //     out_cnt <=(out_cnt == 125*64 -1) ? 0 : out_cnt + 1;
-            // end
-        end
-    end
+    // reg [31:0] out_cnt ;
+    // always @(posedge clk or negedge rst_n) begin
+    //     if (!rst_n) begin
+    //         out_cnt <= 32'b0;
+    //     end else begin
+    //         if(bias_process_out_valid && bias_process_out_ready) begin
+    //             $display("beat %d: PW_out_pixel(Hex): %h ,end_frame: %b,end_all_frame: %b", out_cnt, bias_process_out_data, bias_process_out_end_frame, bias_process_out_end_all_frame);
+    //             out_cnt <=(out_cnt == 125*64 -1) ? 0 : out_cnt + 1;
+    //         end
+    //     end
+    // end
 
 
 endmodule

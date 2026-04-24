@@ -172,22 +172,22 @@ module pw_sum #(
     //=========================================================
     // 6. 监视信号（仅用于仿真调试）
     //=========================================================
-    reg [31:0] ram_read_cnt, ram_write_cnt;
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            ram_read_cnt <= 0;
-            ram_write_cnt <= 0;
-        end else begin
-            // if (rd_ram_en) begin
-            //     $display("beat %d: RAM Read - Addr: %d, Data: %h",ram_read_cnt, ram_raddr_reg, ram_data);
-            //     ram_read_cnt <= ram_read_cnt + 1;
-            // end
-            // if (wr_ram_en) begin
-            //     $display("beat %d: RAM Write - Addr: %d, Data: %h",ram_write_cnt, ram_waddr_reg, add_result);
-            //     ram_write_cnt <= ram_write_cnt + 1;
-            // end
-        end
-    end
+    // reg [31:0] ram_read_cnt, ram_write_cnt;
+    // always @(posedge clk or negedge rst_n) begin
+    //     if (!rst_n) begin
+    //         ram_read_cnt <= 0;
+    //         ram_write_cnt <= 0;
+    //     end else begin
+    //         if (rd_ram_en) begin
+    //             $display("beat %d: RAM Read - Addr: %d, Data: %h",ram_read_cnt, ram_raddr_reg, ram_data);
+    //             ram_read_cnt <= ram_read_cnt + 1;
+    //         end
+    //         if (wr_ram_en) begin
+    //             $display("beat %d: RAM Write - Addr: %d, Data: %h",ram_write_cnt, ram_waddr_reg, add_result);
+    //             ram_write_cnt <= ram_write_cnt + 1;
+    //         end
+    //     end
+    // end
     //=========================================================
 
 endmodule

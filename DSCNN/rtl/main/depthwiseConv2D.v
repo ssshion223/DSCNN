@@ -48,7 +48,7 @@ module depthwiseConv2D #(
     parameter integer FIFO_DEPTH    = 16, // 输出缓冲 FIFO 深度
     parameter integer FIFO_AF_LEVEL = 10,  // FIFO 将满阈值
     parameter         BIAS_INIT_FILE= "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw0_Fold_bias.hex", // Bias 初始化文件
-    parameter         MULT_CNT      = 1,
+    parameter         MULT_CNT      = 4,
     parameter signed [11:0] MULT_FACTOR0  = 12'sd1246,
     parameter signed [11:0] MULT_FACTOR1  = 12'sd828,
     parameter signed [11:0] MULT_FACTOR2  = 12'sd652,
@@ -164,22 +164,22 @@ module depthwiseConv2D #(
     );
 
     // ==========================================
-    reg [31:0] dw_in_cnt,dw_out_cnt;
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            dw_in_cnt <= 32'b0;
-            dw_out_cnt <= 32'b0;
-        end else  begin
-            // if(in_valid&&in_ready) begin
-			// 	$display("beat %d: DW_in_pixel: %d", dw_in_cnt, $signed(in_pixel));
-			// 	dw_in_cnt <= dw_in_cnt + 1;
-			// end
-            // if (conv_out_valid && conv_out_ready) begin
-            //     $display("beat %d: DW_out_pixel: %d", dw_out_cnt, $signed(conv_out_pixel_data_bus));
-            // dw_out_cnt <= dw_out_cnt + 1;
-            // end
-        end
-    end
+    // reg [31:0] dw_in_cnt,dw_out_cnt;
+    // always @(posedge clk or negedge rst_n) begin
+    //     if (!rst_n) begin
+    //         dw_in_cnt <= 32'b0;
+    //         dw_out_cnt <= 32'b0;
+    //     end else  begin
+    //         if(in_valid&&in_ready) begin
+	// 			$display("beat %d: DW_in_pixel: %d", dw_in_cnt, $signed(in_pixel));
+	// 			dw_in_cnt <= dw_in_cnt + 1;
+	// 		end
+    //         if (conv_out_valid && conv_out_ready) begin
+    //             $display("beat %d: DW_out_pixel: %d", dw_out_cnt, $signed(conv_out_pixel_data_bus));
+    //         dw_out_cnt <= dw_out_cnt + 1;
+    //         end
+    //     end
+    // end
 
 
 endmodule

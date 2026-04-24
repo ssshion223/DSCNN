@@ -167,49 +167,49 @@ module dw_pw_cac #(
 	);
 
 	//test===========================================
-	reg[PW_SUM_W-1:0] test_sum[0:PW_OUT_CH-1];
-	reg[RAM_ONE_DATA_W-1:0] test_ram_wr_data[0:(PW_OUT_CH/SEGMENTS)-1];
-	reg[RAM_ONE_DATA_W-1:0] test_ram_rd_data[0:(PW_OUT_CH/SEGMENTS)-1];
-	integer i;
-	always @(*) begin
-		for(i=0; i < PW_OUT_CH; i=i+1) begin
-			test_sum[i] = pw_mult_data_bus[i*PW_SUM_W +: PW_SUM_W];
-		end
-		for(i=0; i < PW_OUT_CH/SEGMENTS; i=i+1) begin
-			test_ram_wr_data[i] = ram_wdata[i*RAM_ONE_DATA_W +: RAM_ONE_DATA_W];
-		end
-		for(i=0; i < PW_OUT_CH/SEGMENTS; i=i+1) begin
-			test_ram_rd_data[i] = ram_rdata[i*RAM_ONE_DATA_W +: RAM_ONE_DATA_W];
-		end
-	end
-	reg [31:0] in_pixel_cnt, ram_wr_cnt, ram_rd_cnt, pw_out_cnt;
-	reg test_ram_re_align;
-	always @(posedge clk or negedge rst_n) begin
-		if(!rst_n) begin
-			in_pixel_cnt <= 0;
-			ram_wr_cnt <= 0;
-			ram_rd_cnt <= 0;
-			pw_out_cnt <= 0;
-		end else begin
-			// if(in_valid&&in_ready) begin
-			// 	$display("beat %d: DW_in_pixel: %h", in_pixel_cnt, in_pixel);
-			// 	in_pixel_cnt <= in_pixel_cnt + 1;
-			// end
-			test_ram_re_align <= ram_re;
-			if(pw_mult_valid && pw_mult_ready) begin
-				// $display("beat %d: PW_out_sum[0]: %h,[1]: %h,[2]: %h,[3]: %h", pw_out_cnt, test_sum[0], test_sum[1], test_sum[2], test_sum[3]);
-				// pw_out_cnt <= pw_out_cnt + 1;
-			end
-			// if(test_ram_re_align) begin
-			//  $display("beat %d: RAM_Read_Addr: %d,   Data[0]: %d,[1]: %d,[2]: %d,[3]: %d", ram_rd_cnt, ram_raddr, $signed(test_ram_rd_data[0]), $signed(test_ram_rd_data[1]), $signed(test_ram_rd_data[2]), $signed(test_ram_rd_data[3]));
-			//  ram_rd_cnt <= ram_rd_cnt + 1;
-			// end
-			// if(ram_we) begin
-			//  $display("beat %d: RAM_Write_Addr: %d,   Data[0]: %d,[1]: %d,[2]: %d,[3]: %d", ram_wr_cnt, ram_waddr, $signed(test_ram_wr_data[0]), $signed(test_ram_wr_data[1]), $signed(test_ram_wr_data[2]), $signed(test_ram_wr_data[3]));
-			//  ram_wr_cnt <= ram_wr_cnt + 1;
-			// end
-		end
-	end
+	// reg[PW_SUM_W-1:0] test_sum[0:PW_OUT_CH-1];
+	// reg[RAM_ONE_DATA_W-1:0] test_ram_wr_data[0:(PW_OUT_CH/SEGMENTS)-1];
+	// reg[RAM_ONE_DATA_W-1:0] test_ram_rd_data[0:(PW_OUT_CH/SEGMENTS)-1];
+	// integer i;
+	// always @(*) begin
+	// 	for(i=0; i < PW_OUT_CH; i=i+1) begin
+	// 		test_sum[i] = pw_mult_data_bus[i*PW_SUM_W +: PW_SUM_W];
+	// 	end
+	// 	for(i=0; i < PW_OUT_CH/SEGMENTS; i=i+1) begin
+	// 		test_ram_wr_data[i] = ram_wdata[i*RAM_ONE_DATA_W +: RAM_ONE_DATA_W];
+	// 	end
+	// 	for(i=0; i < PW_OUT_CH/SEGMENTS; i=i+1) begin
+	// 		test_ram_rd_data[i] = ram_rdata[i*RAM_ONE_DATA_W +: RAM_ONE_DATA_W];
+	// 	end
+	// end
+	// reg [31:0] in_pixel_cnt, ram_wr_cnt, ram_rd_cnt, pw_out_cnt;
+	// reg test_ram_re_align;
+	// always @(posedge clk or negedge rst_n) begin
+	// 	if(!rst_n) begin
+	// 		in_pixel_cnt <= 0;
+	// 		ram_wr_cnt <= 0;
+	// 		ram_rd_cnt <= 0;
+	// 		pw_out_cnt <= 0;
+	// 	end else begin
+	// 		if(in_valid&&in_ready) begin
+	// 			$display("beat %d: DW_in_pixel: %h", in_pixel_cnt, in_pixel);
+	// 			in_pixel_cnt <= in_pixel_cnt + 1;
+	// 		end
+	// 		test_ram_re_align <= ram_re;
+	// 		if(pw_mult_valid && pw_mult_ready) begin
+	// 			$display("beat %d: PW_out_sum[0]: %h,[1]: %h,[2]: %h,[3]: %h", pw_out_cnt, test_sum[0], test_sum[1], test_sum[2], test_sum[3]);
+	// 			pw_out_cnt <= pw_out_cnt + 1;
+	// 		end
+	// 		if(test_ram_re_align) begin
+	// 		 $display("beat %d: RAM_Read_Addr: %d,   Data[0]: %d,[1]: %d,[2]: %d,[3]: %d", ram_rd_cnt, ram_raddr, $signed(test_ram_rd_data[0]), $signed(test_ram_rd_data[1]), $signed(test_ram_rd_data[2]), $signed(test_ram_rd_data[3]));
+	// 		 ram_rd_cnt <= ram_rd_cnt + 1;
+	// 		end
+	// 		if(ram_we) begin
+	// 		 $display("beat %d: RAM_Write_Addr: %d,   Data[0]: %d,[1]: %d,[2]: %d,[3]: %d", ram_wr_cnt, ram_waddr, $signed(test_ram_wr_data[0]), $signed(test_ram_wr_data[1]), $signed(test_ram_wr_data[2]), $signed(test_ram_wr_data[3]));
+	// 		 ram_wr_cnt <= ram_wr_cnt + 1;
+	// 		end
+	// 	end
+	// end
 
 
 endmodule

@@ -335,7 +335,8 @@ module conv_sliding_padding #(
         .almost_full(fifo_almost_full), // 不关心 almost_full，因为上游 always 块会自然停掉 valid
         .rd_en(out_ready && out_valid), // 仅在下游准备好且当前有效时确认读出
         .dout(out_window_bus),
-        .valid(out_valid) 
+        .valid(out_valid),
+        .empty() // 不关心空标志
     );
 
 endmodule

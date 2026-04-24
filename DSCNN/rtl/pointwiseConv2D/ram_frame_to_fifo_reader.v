@@ -29,11 +29,6 @@ module ram_frame_to_fifo_reader #(
     input  wire                         out_ready,
     output wire [OUT_W-1:0]             out_data,
 
-    // FIFO 状态
-    output wire                         fifo_full,
-    output wire                         fifo_almost_full,
-    output wire                         fifo_empty,
-
     output wire                         end_frame,
     output wire                         end_all_frame
 );
@@ -72,17 +67,6 @@ module ram_frame_to_fifo_reader #(
             start_flag <= 1'b0;
         end
     end
-
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            ram_data_valid_reg <= 1'b0;
-        end else if(start_flag) begin
-            ram_data_valid_reg <= 1'b0; // 启动时清除数据有效标志
-        end else begin
-            ram_data_valid_reg <= ram_re_reg; // 读请求发出后一个周期数据有效
-        end
-    end
-
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
@@ -134,6 +118,16 @@ module ram_frame_to_fifo_reader #(
             ram_re_reg <= 1'b0;
         end else begin
             ram_re_reg <= can_read;
+        end
+    end
+
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            ram_data_valid_reg <= 1'b0;
+        end else if(start_flag) begin
+            ram_data_valid_reg <= 1'b0; // 启动时清除数据有效标志
+        end else begin
+            ram_data_valid_reg <= ram_re_reg; // 读请求发出后一个周期数据有效
         end
     end
 
@@ -221,12 +215,12 @@ module ram_frame_to_fifo_reader #(
         .rst_n(rst_n),
         .din({end_all_frame_align, end_frame_align, fifo_din_reg}),
         .wr_en(fifo_wr_en_reg),
-        .full(fifo_full),
+        .full(),
         .almost_full(fifo_almost_full),
         .rd_en(out_ready),
         .dout(fifo_dout),
         .valid(fifo_valid),
-        .empty(fifo_empty)
+        .empty()
     );
     assign out_valid = fifo_valid;
     assign out_data = fifo_dout[OUT_W-1:0];
@@ -234,25 +228,25 @@ module ram_frame_to_fifo_reader #(
     assign end_all_frame = fifo_dout[OUT_W + 1];
 
     //test===========================================
-    reg [OUT_W-1:0] rd_data_reg_test[0:SEG_CHANS-1];
-    integer test_i;
-    always @(*) begin
-        for (test_i = 0; test_i < SEG_CHANS; test_i = test_i + 1) begin
-            rd_data_reg_test[test_i] = ram_rdata[test_i * OUT_W +: OUT_W];
-        end
-    end
-    reg [31:0] ram_read_cnt;
-    reg [OUT_W-1:0] ram_read_pixel_data_test;
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            ram_read_cnt <= 0;
-            ram_read_pixel_data_test <= {OUT_W{1'b0}};
-        end else begin
-            // if(out_ready && out_valid) begin
-            //     $display("beat %d: FIFO_Out_Data: %h, End_Frame: %b, End_All_Frame: %b", ram_read_cnt, out_data, fifo_dout[OUT_W], fifo_dout[OUT_W + 1]);
-            //     ram_read_cnt <= ram_read_cnt + 1;
-            // end
-        end
-    end
+    // reg [OUT_W-1:0] rd_data_reg_test[0:SEG_CHANS-1];
+    // integer test_i;
+    // always @(*) begin
+    //     for (test_i = 0; test_i < SEG_CHANS; test_i = test_i + 1) begin
+    //         rd_data_reg_test[test_i] = ram_rdata[test_i * OUT_W +: OUT_W];
+    //     end
+    // end
+    // reg [31:0] ram_read_cnt;
+    // reg [OUT_W-1:0] ram_read_pixel_data_test;
+    // always @(posedge clk or negedge rst_n) begin
+    //     if (!rst_n) begin
+    //         ram_read_cnt <= 0;
+    //         ram_read_pixel_data_test <= {OUT_W{1'b0}};
+    //     end else begin
+    //         if(out_ready && out_valid) begin
+    //             $display("beat %d: FIFO_Out_Data: %h, End_Frame: %b, End_All_Frame: %b", ram_read_cnt, out_data, fifo_dout[OUT_W], fifo_dout[OUT_W + 1]);
+    //             ram_read_cnt <= ram_read_cnt + 1;
+    //         end
+    //     end
+    // end
 
 endmodule
