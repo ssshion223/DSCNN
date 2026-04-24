@@ -32,8 +32,12 @@ module matrix_conv2d_stream_parallel #(
     parameter integer PAD_RIGHT  = K_W/2,                   // 右补零
     parameter integer OUT_CH   = 64,                        // 并行输出通道数
     parameter integer COEFF_GRP_NUM = 2,                    // 系数组总数
+    parameter integer FRAME_GRP_NUM = 1,                    // 输入帧组数
     parameter integer MAC_PIPELINE = 1,                     // MAC加法树流水模式
-    parameter         COEFF_INIT_FILE = "D:/vivado/exp/DSCNN/rtl/matrix_conv2d_stream/coeff_init.memh" // 系数初始化文件
+    parameter         COEFF_INIT_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh", // 系数初始化文件路径
+    // 输出侧 FIFO 可配置参数（fwft_fifo_reg）
+    parameter integer OUT_FIFO_DEPTH   = 16, // 默认 FIFO 深度
+    parameter integer OUT_FIFO_AF_LEVEL= 14  // 默认几乎满阈值
 )(
     input  wire                                 clk,         // 时钟信号
     input  wire                                 rst_n,       // 低有效复位
@@ -41,6 +45,7 @@ module matrix_conv2d_stream_parallel #(
     input  wire                                 in_valid,    // 输入有效
     output wire                                 in_ready,    // 输入就绪
     input  wire signed [DATA_W-1:0]             in_pixel,    // 输入像素数据
+    input  wire                                 in_end_all_frame, // 输入全部组帧结束标志
 
     output wire                                 out_valid,   // 输出有效
     input  wire                                 out_ready,   // 下游就绪
@@ -59,6 +64,7 @@ module matrix_conv2d_stream_parallel #(
     localparam integer OUT_ROW_W  = (OUT_ROW <= 1) ? 1 : $clog2(OUT_ROW);
     localparam integer ROM_OUT_CH = OUT_CH * COEFF_GRP_NUM;
     localparam integer GRP_W      = (COEFF_GRP_NUM <= 1) ? 1 : $clog2(COEFF_GRP_NUM);
+    localparam integer FRAME_GRP_W    = (FRAME_GRP_NUM <= 1) ? 1 : $clog2(FRAME_GRP_NUM);
     localparam integer CH_COEFF_BUS_W = K_H*K_W*COEFF_W;
     localparam integer GRP_COEFF_BUS_W = OUT_CH*CH_COEFF_BUS_W;
 
@@ -74,14 +80,15 @@ module matrix_conv2d_stream_parallel #(
     reg                          end_frame_hold;
     reg                          mac_start_d;
 
-    reg [OUT_COL_W-1:0] win_col_counter;
-    reg [OUT_ROW_W-1:0] win_row_counter;
+    reg [OUT_COL_W-1:0] out_win_col_cnt;
+    reg [OUT_ROW_W-1:0] in_win_col_cnt;
     wire end_frame,end_all_frame;
 
     wire win_col_wrap;
     wire win_row_wrap;
     wire coeff_grp_wrap;
     wire frame_end_fire;
+    wire frame_id_wrap;
 
     wire fifo_almost_full;
 
@@ -92,13 +99,15 @@ module matrix_conv2d_stream_parallel #(
     wire [1:0] out_user;
     wire out_fire;
     reg  [GRP_W-1:0] coeff_grp_idx;
+    reg  [FRAME_GRP_W-1:0] frame_idx;
     wire signed [GRP_COEFF_BUS_W-1:0] coeff_bus_grp;
 
-    assign win_col_wrap = (win_col_counter == OUT_COL - 1);
-    assign win_row_wrap = (win_row_counter == OUT_ROW - 1);
+    assign win_col_wrap = (out_win_col_cnt == OUT_COL - 1);
+    assign win_row_wrap = (in_win_col_cnt == OUT_ROW - 1);
     assign coeff_grp_wrap = (coeff_grp_idx == COEFF_GRP_NUM - 1);
+    assign frame_id_wrap = (frame_idx == FRAME_GRP_NUM - 1);
     assign end_frame = win_col_wrap && win_row_wrap;
-    assign end_all_frame = end_frame&& coeff_grp_wrap;
+    assign end_all_frame = end_frame && frame_id_wrap;
     assign frame_end_fire = window_out_fire && end_frame;
 
     // 只要后端 FIFO 不接近满，就继续接收窗口
@@ -123,21 +132,33 @@ module matrix_conv2d_stream_parallel #(
         end
     end
 
+    always @(posedge clk or negedge rst_n) begin
+        if (!rst_n) begin
+            frame_idx <= {FRAME_GRP_W{1'b0}};
+        end else if (frame_end_fire) begin
+            if (frame_id_wrap) begin
+                frame_idx <= {FRAME_GRP_W{1'b0}};
+            end else begin
+                frame_idx <= frame_idx + 1'b1;
+            end
+        end
+    end
+
     // 统计窗口输出坐标，用于生成当前窗口的 end_line / end_frame
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
-            win_col_counter <= {OUT_COL_W{1'b0}};
-            win_row_counter <= {OUT_ROW_W{1'b0}};
+            out_win_col_cnt <= {OUT_COL_W{1'b0}};
+            in_win_col_cnt <= {OUT_ROW_W{1'b0}};
         end else if (window_out_fire) begin
             if (win_col_wrap) begin
-                win_col_counter <= {OUT_COL_W{1'b0}};
+                out_win_col_cnt <= {OUT_COL_W{1'b0}};
                 if (win_row_wrap) begin
-                    win_row_counter <= {OUT_ROW_W{1'b0}};
+                    in_win_col_cnt <= {OUT_ROW_W{1'b0}};
                 end else begin
-                    win_row_counter <= win_row_counter + 1'b1;
+                    in_win_col_cnt <= in_win_col_cnt + 1'b1;
                 end
             end else begin
-                win_col_counter <= win_col_counter + 1'b1;
+                out_win_col_cnt <= out_win_col_cnt + 1'b1;
             end
         end
     end
@@ -175,10 +196,11 @@ module matrix_conv2d_stream_parallel #(
         .rst_n(rst_n),
         .in_valid(window_in_valid),
         .in_ready(window_in_ready),
+        .end_all_frame(in_end_all_frame && in_valid && in_ready), // 直接将上游的 end_all_frame 信号传递到滑窗模块，确保在正确的时钟周期被采样
         .in_pixel(in_pixel),
         .out_valid(window_out_valid),
         .out_ready(window_out_ready),
-        .window_bus(window_bus)
+        .out_window_bus(window_bus)
     );
 
     conv_coeff_store #(
@@ -226,8 +248,8 @@ module matrix_conv2d_stream_parallel #(
     // 并行通道 valid/user 理论上一致，取ch[0]
     fwft_fifo_reg #(
         .WIDTH(OUT_CH*SUM_W + 2),
-        .DEPTH(16),
-        .AF_LEVEL(10)
+        .DEPTH(OUT_FIFO_DEPTH),
+        .AF_LEVEL(OUT_FIFO_AF_LEVEL)
     ) u_fwft_fifo_reg (
         .clk(clk),
         .rst_n(rst_n),
@@ -243,5 +265,47 @@ module matrix_conv2d_stream_parallel #(
 
     assign out_end_all_frame = out_user[1];
     assign out_end_frame  = out_user[0];
+
+    //test
+	reg[SUM_W-1:0] test_sum[0:OUT_CH-1];
+    reg[DATA_W-1:0]test_input;
+    reg[COEFF_W*K_H*K_W-1:0] test_coeff[0:OUT_CH-1];
+    reg [31:0] out_cnt,in_pixel_cnt;
+    always @(posedge clk or negedge rst_n) begin
+        if(!rst_n) begin
+            out_cnt <= 0;
+            in_pixel_cnt <= 0;
+        end else  begin
+            // if(out_valid && out_ready) begin
+            //     $display("beat %d: matrix_out_pixel: %d", out_cnt, $signed(out_pixel_data_bus));
+            //     out_cnt <= out_cnt + 1;
+            // end
+            // if(in_valid && in_ready) begin
+            //     $display("beat %d: in_pixel: %d", in_pixel_cnt, $signed(in_pixel));
+            //     in_pixel_cnt <= in_pixel_cnt + 1;
+            // end
+        end
+    end
+	// integer i;
+	// always @(*) begin
+	// 	for(i=0; i<OUT_CH; i=i+1) begin
+    //         if(out_valid&&out_ready)
+	// 		    test_sum[i] = out_pixel_data_bus[i*SUM_W +: SUM_W];
+    //         else 
+    //             test_sum[i] = 0;
+	// 	end
+	// end
+    // always @(*) begin
+    //     for(i=0; i<OUT_CH; i=i+1) begin
+    //         test_coeff[i] = coeff_bus_grp[i*CH_COEFF_BUS_W +: CH_COEFF_BUS_W];
+    //     end 
+    // end
+    // always @(*) begin
+    //     if(in_valid&&in_ready)
+    //         test_input = in_pixel;
+    //     else 
+    //         test_input = 0;
+    // end
+
 
 endmodule

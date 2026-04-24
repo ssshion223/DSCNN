@@ -1,1 +1,21 @@
-build
+# --- Vivado 自动生成的垃圾文件 ---
+*.log
+*.jou
+*.pb
+*.str
+*.dir/
+
+# --- 缓存与仿真文件夹 ---
+DSCNN/DSCNN/DSCNN.cache/
+DSCNN/DSCNN/DSCNN.sim/
+DSCNN/DSCNN/DSCNN.hw/
+DSCNN/DSCNN/DSCNN.ip_user_files/
+DSCNN/DSCNN/DSCNN.runs/
+
+# --- 编译结果 ---
+*.bit
+*.bin
+
+# --- 操作系统文件 ---
+.DS_Store
+Thumbs.db

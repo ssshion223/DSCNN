@@ -34,9 +34,14 @@ module tb_depthwiseConv2D;
  
     localparam integer OUT_WIDTH     = 8;
     localparam integer SHIFT_VAL     = 16;
-    localparam integer GROUP_BITS    = 1;
+    localparam integer GROUP_BITS    = 0;
     localparam integer GROUP_SIZE    = 1;
     localparam integer CH_BITS       = 6;
+    localparam integer MULT_CNT      = 4;
+    localparam signed [11:0] MULT_FACTOR0  = 12'sd915;
+    localparam signed [11:0] MULT_FACTOR1  = 12'sd768;
+    localparam signed [11:0] MULT_FACTOR2  = 12'sd640;
+    localparam signed [11:0] MULT_FACTOR3  = 12'sd512;
     localparam integer FIFO_DEPTH    = 16;
     localparam integer FIFO_AF_LEVEL = 14;
 
@@ -48,9 +53,9 @@ module tb_depthwiseConv2D;
     localparam integer LOOP_ROUNDS      = 64;
     localparam integer WAIT_CYC_MAX     = 4000;
 
-    localparam COEFF_INIT_FILE = "D:/vivado/exp/DSCNN/rtl/dw/DS-CNN_dw0.memh";
-    localparam BIAS_INIT_FILE  = "D:/vivado/exp/DSCNN/rtl/dw/DS-CNN_dw0_Fold_bias.hex";
-    localparam INPUT_INIT_FILE = "D:/vivado/exp/DSCNN/rtl/pixel_input/input_pixels.memh";
+    localparam COEFF_INIT_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_dw0.memh";
+    localparam BIAS_INIT_FILE  = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw0_Fold_bias.hex";
+    localparam INPUT_INIT_FILE = "D:/vivado/exp/DSCNN/data/pixel_input/input_pixels.memh";
 
     localparam integer WIN_SIZE      = K_H * K_W;
     localparam integer P_COL         = COL + PAD_LEFT + PAD_RIGHT;
@@ -60,6 +65,7 @@ module tb_depthwiseConv2D;
     localparam integer OUT_SIZE      = OUT_W * OUT_H;
     localparam integer EXP_BEATS_PER_ROUND = FRAMES_PER_ROUND * OUT_SIZE;
     localparam integer TOTAL_FRAMES  = FRAMES_PER_ROUND * LOOP_ROUNDS;
+    localparam integer FRAME_GRP_NUM = TOTAL_FRAMES;
     localparam integer EXP_BEATS_TOTAL = TOTAL_FRAMES * OUT_SIZE;
     localparam integer BIAS_DEPTH    = (1 << (GROUP_BITS + CH_BITS));
     localparam integer CH_MASK       = (1 << CH_BITS) - 1;
@@ -69,6 +75,7 @@ module tb_depthwiseConv2D;
     reg in_valid;
     wire in_ready;
     reg signed [DATA_W-1:0] in_pixel;
+    reg in_end_all_frame;  // 全部组帧结束标志
 
     wire [OUT_WIDTH-1:0] out_pixel;
     wire out_valid;
@@ -145,30 +152,35 @@ module tb_depthwiseConv2D;
         .PAD_LEFT(PAD_LEFT),
         .PAD_RIGHT(PAD_RIGHT),
         .COEFF_GRP_NUM(COEFF_GRP_NUM),
+        .FRAME_GRP_NUM(FRAME_GRP_NUM),
         .MAC_PIPELINE(MAC_PIPELINE),
         .COEFF_INIT_FILE(COEFF_INIT_FILE),
         .OUT_WIDTH(OUT_WIDTH),
         .SHIFT_VAL(SHIFT_VAL),
-        .GROUP_BITS(GROUP_BITS),
-        .GROUP_SIZE(GROUP_SIZE),
-        .CH_BITS(CH_BITS),
+        .BIAS_GROUP_BITS(GROUP_BITS),
+        .BIAS_GROUP_SIZE(GROUP_SIZE),
+        .BIAS_CH_BITS(CH_BITS),
+        .MULT_CNT(MULT_CNT),
+        .MULT_FACTOR0(MULT_FACTOR0),
+        .MULT_FACTOR1(MULT_FACTOR1),
+        .MULT_FACTOR2(MULT_FACTOR2),
+        .MULT_FACTOR3(MULT_FACTOR3),
         .FIFO_DEPTH(FIFO_DEPTH),
-        .FIFO_AF_LEVEL(FIFO_AF_LEVEL)
+        .FIFO_AF_LEVEL(FIFO_AF_LEVEL),
+        .BIAS_INIT_FILE(BIAS_INIT_FILE)
     ) dut (
         .clk(clk),
         .rst_n(rst_n),
         .in_valid(in_valid),
         .in_ready(in_ready),
         .in_pixel(in_pixel),
+        .in_end_all_frame(in_end_all_frame),
         .out_pixel(out_pixel),
         .out_valid(out_valid),
         .out_ready(out_ready),
         .out_end_frame(out_end_frame),
         .out_end_all_frame(out_end_all_frame)
     );
-
-    // Override internal bias file for deterministic verification.
-    defparam dut.u_bias_quant_relu.BIAS_INIT_FILE = BIAS_INIT_FILE;
 
     always #5 clk = ~clk;
 
@@ -177,6 +189,7 @@ module tb_depthwiseConv2D;
         rst_n = 1'b0;
         in_valid = 1'b0;
         in_pixel = {DATA_W{1'b0}};
+        in_end_all_frame = 1'b0;
         out_ready = 1'b1;
         out_idx = 0;
         err_cnt = 0;
@@ -297,7 +310,7 @@ module tb_depthwiseConv2D;
                 sample_idx = out_idx % OUT_SIZE;
                 frame_idx = out_idx / OUT_SIZE;
                 exp_end_frame = (sample_idx == OUT_SIZE - 1);
-                exp_end_all = exp_end_frame && ((frame_idx % COEFF_GRP_NUM) == (COEFF_GRP_NUM - 1));
+                exp_end_all = exp_end_frame && ((frame_idx % FRAME_GRP_NUM) == (FRAME_GRP_NUM - 1));
 
                 if (out_end_frame !== exp_end_frame[0]) begin
                     $display("[TB][FAIL] beat=%0d end_frame got=%0d exp=%0d", out_idx, out_end_frame, exp_end_frame);
@@ -481,7 +494,7 @@ module tb_depthwiseConv2D;
         for (idx = 0; idx < EXP_BEATS_TOTAL; idx = idx + 1) begin
             if (idx >= PRINT_BEAT_START && idx <= PRINT_BEAT_END) begin
                 preview_end_frame = ((idx % OUT_SIZE) == (OUT_SIZE - 1));
-                preview_end_all = preview_end_frame && (((idx / OUT_SIZE) % COEFF_GRP_NUM) == (COEFF_GRP_NUM - 1));
+                preview_end_all = preview_end_frame && (((idx / OUT_SIZE) % FRAME_GRP_NUM) == (FRAME_GRP_NUM - 1));
                 $display("[TB]   exp beat=%0d pixel=%0d end_frame=%0b end_all_frame=%0b",
                          idx, exp_pix_mem[idx], preview_end_frame[0], preview_end_all[0]);
             end else if (idx == PRINT_BEAT_START) begin
@@ -525,17 +538,24 @@ module tb_depthwiseConv2D;
                 in_valid_count = in_valid_count + 1;
             end
 
-            if (in_ready) begin
-                if (in_valid) begin
-                    in_pixel = img_mem[in_idx];
-                    in_idx = in_idx + 1;
+            // 设置end_all_frame：在最后一个像素处拉高
+            if (in_ready && in_valid) begin
+                if (in_idx == ROW*COL - 1) begin
+                    in_end_all_frame = 1'b1;
+                end else begin
+                    in_end_all_frame = 1'b0;
                 end
+                in_pixel = img_mem[in_idx];
+                in_idx = in_idx + 1;
+            end else begin
+                in_end_all_frame = 1'b0;
             end
         end
 
         @(negedge clk);
         in_valid = 1'b0;
         in_pixel = {DATA_W{1'b0}};
+        in_end_all_frame = 1'b0;
     end
     endtask
 

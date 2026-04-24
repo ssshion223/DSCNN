@@ -9,20 +9,28 @@
 //   rst_n：低有效异步复位
 // 输入接口：
 //   wr_valid/data_in/bias：输入样本与对应 Bias
+//   end_all_frame：帧结束脉冲，用于循环切换量化乘数
 // 输出接口：
 //   data_out/out_valid：量化激活结果与有效标志
 // 时序特性：
 //   乘法为 1 级流水，out_valid 与寄存级对齐。
+// 915,1246,406,828,461,652,442,412,623
 //==============================================================================
 module bias_quant_relu #(
     parameter IN_WIDTH  = 32,  // 输入数据位宽
     parameter BIAS_WIDTH = 32, // Bias 数据位宽
     parameter OUT_WIDTH = 8,   // 输出量化位宽
-    parameter SHIFT_VAL = 16   // 定点右移位数
+    parameter SHIFT_VAL = 16,  // 定点右移位数
+    parameter MULT_CNT  = 4,   // 量化乘数个数
+    parameter signed [11:0] MULT_FACTOR0 = 12'sd915,   // 乘数0
+    parameter signed [11:0] MULT_FACTOR1 = 12'sd768,   // 乘数1
+    parameter signed [11:0] MULT_FACTOR2 = 12'sd640,   // 乘数2
+    parameter signed [11:0] MULT_FACTOR3 = 12'sd512    // 乘数3
 )(
     input  wire                        clk,       // 时钟信号
     input  wire                        rst_n,     // 低有效复位
     input  wire                        wr_valid,    // 输入数据有效信号
+    input  wire                        end_all_frame, // 全部组帧结束（用于切换乘数索引）
     input  wire signed [IN_WIDTH-1:0]  data_in,   // 待处理输入数据
     input  wire signed [BIAS_WIDTH-1:0]  bias,     // 对应 Bias
     output reg         [OUT_WIDTH-1:0] data_out,      // 量化激活后的输出数据
@@ -31,16 +39,27 @@ module bias_quant_relu #(
 
     localparam integer ALIGN_WIDTH  = (IN_WIDTH > BIAS_WIDTH) ? IN_WIDTH : BIAS_WIDTH;
     localparam integer SUM_WIDTH    = ALIGN_WIDTH + 1;
-    localparam integer MULT_WIDTH   = 11;
+    localparam integer MULT_WIDTH   = 12;
     localparam integer REG_WIDTH    = SUM_WIDTH + MULT_WIDTH;
     localparam integer VALID_WIDTH  = (REG_WIDTH > SHIFT_VAL) ? (REG_WIDTH - SHIFT_VAL) : 1;
     
     // 最大正数值 (8位时为 8'h7F = 127)
     localparam MAX_VAL = {1'b0, {(OUT_WIDTH-1){1'b1}}};
     
-    // 量化乘数 (硬编码为提供的 915)
-    // 915 需要 10 位 (2^9 = 512, 2^10 = 1024)。加上符号位需要 11 位。
-    wire signed [10:0] MULT_FACTOR = 11'sd915; 
+    localparam integer MULT_IDX_W = (MULT_CNT <= 1) ? 1 : $clog2(MULT_CNT);
+    reg [MULT_IDX_W-1:0] mult_idx;
+    reg signed [MULT_WIDTH-1:0] mult_factor_sel;
+
+    // 根据索引选择当前量化乘数
+    always @(*) begin
+        case (mult_idx)
+            0: mult_factor_sel = MULT_FACTOR0;
+            1: mult_factor_sel = MULT_FACTOR1;
+            2: mult_factor_sel = MULT_FACTOR2;
+            3: mult_factor_sel = MULT_FACTOR3;
+            default: mult_factor_sel = MULT_FACTOR0;
+        endcase
+    end
 
     wire signed [ALIGN_WIDTH-1:0] data_in_aligned = {{(ALIGN_WIDTH-IN_WIDTH){data_in[IN_WIDTH-1]}}, data_in};
     wire signed [ALIGN_WIDTH-1:0] bias_aligned    = {{(ALIGN_WIDTH-BIAS_WIDTH){bias[BIAS_WIDTH-1]}}, bias};
@@ -61,9 +80,19 @@ module bias_quant_relu #(
         if (!rst_n) begin
             data_reg  <= {REG_WIDTH{1'b0}};
             valid_reg <= 1'b0;
+            mult_idx  <= {MULT_IDX_W{1'b0}};
         end else if (wr_valid) begin
-            data_reg  <= sum * MULT_FACTOR; // 安全的有符号乘法
+            data_reg  <= sum * mult_factor_sel; // 使用当前索引对应乘数
             valid_reg <= 1'b1;
+
+            // 每次 end_all_frame 触发后切换到下一组乘数，循环使用
+            if (end_all_frame) begin
+                if (mult_idx == MULT_CNT - 1) begin
+                    mult_idx <= {MULT_IDX_W{1'b0}};
+                end else begin
+                    mult_idx <= mult_idx + 1'b1;
+                end
+            end
         end else begin
             valid_reg <= 1'b0;
         end

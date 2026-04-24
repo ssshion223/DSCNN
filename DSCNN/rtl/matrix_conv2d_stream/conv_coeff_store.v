@@ -18,7 +18,7 @@ module conv_coeff_store #(
     parameter integer K_W           = 3,   // 卷积核宽度
     parameter integer OUT_CH        = 1,   // 输出通道数
     parameter integer COEFF_GRP_NUM = 1,   // 系数组数量
-    parameter         INIT_FILE     = "", // 系数文件路径
+    parameter         INIT_FILE     = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh", // 系数文件路径
     parameter integer COEFF_GRP_W   = ((COEFF_GRP_NUM <= 1) ? 1 : $clog2(COEFF_GRP_NUM)) // 组索引位宽
 )(
     input  wire                                  clk,          // 时钟信号
