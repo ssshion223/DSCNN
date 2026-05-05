@@ -22,17 +22,17 @@ module bias_quant_relu #(
     parameter OUT_WIDTH = 8,   // 输出量化位宽
     parameter SHIFT_VAL = 16,  // 定点右移位数
     parameter MULT_CNT  = 4,   // 量化乘数个数
-    parameter signed [11:0] MULT_FACTOR0 = 12'sd915,   // 乘数0
-    parameter signed [11:0] MULT_FACTOR1 = 12'sd768,   // 乘数1
-    parameter signed [11:0] MULT_FACTOR2 = 12'sd640,   // 乘数2
-    parameter signed [11:0] MULT_FACTOR3 = 12'sd512    // 乘数3
+    parameter [11:0] MULT_FACTOR0 = 12'sd915,   // 乘数0
+    parameter [11:0] MULT_FACTOR1 = 12'sd768,   // 乘数1
+    parameter [11:0] MULT_FACTOR2 = 12'sd640,   // 乘数2
+    parameter [11:0] MULT_FACTOR3 = 12'sd512    // 乘数3
 )(
     input  wire                        clk,       // 时钟信号
     input  wire                        rst_n,     // 低有效复位
     input  wire                        wr_valid,    // 输入数据有效信号
     input  wire                        end_all_frame, // 全部组帧结束（用于切换乘数索引）
-    input  wire signed [IN_WIDTH-1:0]  data_in,   // 待处理输入数据
-    input  wire signed [BIAS_WIDTH-1:0]  bias,     // 对应 Bias
+    input  wire [IN_WIDTH-1:0]  data_in,   // 待处理输入数据 (外部保持无符号声明)
+    input  wire [BIAS_WIDTH-1:0]  bias,     // 对应 Bias (外部保持无符号声明)
     output reg         [OUT_WIDTH-1:0] data_out,      // 量化激活后的输出数据
     output wire                        out_valid    // 输出有效标志
 );
@@ -51,19 +51,23 @@ module bias_quant_relu #(
     reg [MULT_IDX_W-1:0] mult_idx;
     reg signed [MULT_WIDTH-1:0] mult_factor_sel;
 
-    // 根据索引选择当前量化乘数
+    // 在模块内部进行有符号解释与选择
+    wire signed [IN_WIDTH-1:0] data_in_s = $signed(data_in);
+    wire signed [BIAS_WIDTH-1:0] bias_s    = $signed(bias);
+
+    // 根据索引选择当前量化乘数（将参数值显式转换为有符号）
     always @(*) begin
         case (mult_idx)
-            0: mult_factor_sel = MULT_FACTOR0;
-            1: mult_factor_sel = MULT_FACTOR1;
-            2: mult_factor_sel = MULT_FACTOR2;
-            3: mult_factor_sel = MULT_FACTOR3;
-            default: mult_factor_sel = MULT_FACTOR0;
+            0: mult_factor_sel = $signed(MULT_FACTOR0);
+            1: mult_factor_sel = $signed(MULT_FACTOR1);
+            2: mult_factor_sel = $signed(MULT_FACTOR2);
+            3: mult_factor_sel = $signed(MULT_FACTOR3);
+            default: mult_factor_sel = $signed(MULT_FACTOR0);
         endcase
     end
 
-    wire signed [ALIGN_WIDTH-1:0] data_in_aligned = {{(ALIGN_WIDTH-IN_WIDTH){data_in[IN_WIDTH-1]}}, data_in};
-    wire signed [ALIGN_WIDTH-1:0] bias_aligned    = {{(ALIGN_WIDTH-BIAS_WIDTH){bias[BIAS_WIDTH-1]}}, bias};
+    wire signed [ALIGN_WIDTH-1:0] data_in_aligned = {{(ALIGN_WIDTH-IN_WIDTH){data_in_s[IN_WIDTH-1]}}, data_in_s};
+    wire signed [ALIGN_WIDTH-1:0] bias_aligned    = {{(ALIGN_WIDTH-BIAS_WIDTH){bias_s[BIAS_WIDTH-1]}}, bias_s};
 
     // ==========================================
     // 1. 加法器 (先对齐位宽，再扩展 1 位防止溢出)

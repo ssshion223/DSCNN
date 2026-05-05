@@ -28,10 +28,10 @@ module bias_process_wrapper #(
     parameter FIFO_AF_LEVEL = 14, // FIFO 将满阈值
     parameter BIAS_INIT_FILE= "",  // Bias 初始化文件
     parameter MULT_CNT      = 4,    // 量化乘数个数
-    parameter signed [11:0] MULT_FACTOR0 = 12'sd915,   // 乘数0
-    parameter signed [11:0] MULT_FACTOR1 = 12'sd768,   // 乘数1
-    parameter signed [11:0] MULT_FACTOR2 = 12'sd640,   // 乘数2
-    parameter signed [11:0] MULT_FACTOR3 = 12'sd512    // 乘数3
+    parameter [11:0] MULT_FACTOR0 = 12'sd915,   // 乘数0
+    parameter [11:0] MULT_FACTOR1 = 12'sd768,   // 乘数1
+    parameter [11:0] MULT_FACTOR2 = 12'sd640,   // 乘数2
+    parameter [11:0] MULT_FACTOR3 = 12'sd512    // 乘数3
 )(
     input  wire        clk,   // 时钟信号
     input  wire        rst_n, // 低有效复位
@@ -39,7 +39,7 @@ module bias_process_wrapper #(
     // ==========================================
     // 上游输入接口 (自适应位宽)
     // ==========================================
-    input  wire signed [IN_WIDTH-1:0] in_pixel_data_bus, // 上游输入数据
+    input  wire [IN_WIDTH-1:0] in_pixel_data_bus, // 上游输入数据 (外部保持无符号声明)
     input  wire                       in_valid,         // 上游输入有效
     input  wire                       in_end_frame,     // 当前帧结束标志
     input  wire                       in_end_all_frame, // 全部组帧结束标志
@@ -83,7 +83,7 @@ module bias_process_wrapper #(
     end
 
     // 2. 例化参数化的 Bias Memory
-    wire signed [BIAS_WIDTH-1:0] current_bias;
+    wire [BIAS_WIDTH-1:0] current_bias;
     bias_memory #(
         .DATA_WIDTH (BIAS_WIDTH),  // 与 Bias 数据位宽对齐
         .GROUP_BITS (GROUP_BITS),
@@ -112,7 +112,7 @@ module bias_process_wrapper #(
         end else begin
             pipe_valid <= handshake; 
             if (handshake) begin
-                pipe_data          <= in_pixel_data_bus;
+                pipe_data          <= $signed(in_pixel_data_bus);
                 pipe_end_frame     <= in_end_frame;
                 pipe_end_all_frame <= in_end_all_frame;
             end

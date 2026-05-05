@@ -17,34 +17,34 @@
 //==============================================================================
 
 module matrix_conv2d_stream_parallel #(
-    parameter integer DATA_W   = 8,                         // 输入像素位宽
-    parameter integer COEFF_W  = 8,                         // 系数位宽
-    parameter integer K_H      = 1,                         // 卷积核高度
-    parameter integer K_W      = 1,                         // 卷积核宽度
-    parameter integer MUL_W    = DATA_W + COEFF_W, // 乘积位宽等于数据位宽加权重位宽以防止溢出
-    parameter integer SUM_W    = MUL_W + $clog2(K_H*K_W),  // 累加输出位宽
-    parameter integer COL      = 20,                        // 输入列数
-    parameter integer ROW      = 20,                        // 输入行数
-    parameter integer STRIDE   = 1,                         // 步长
-    parameter integer PAD_TOP    = K_H/2,                   // 上补零
-    parameter integer PAD_BOTTOM = K_H/2,                   // 下补零
-    parameter integer PAD_LEFT   = K_W/2,                   // 左补零
-    parameter integer PAD_RIGHT  = K_W/2,                   // 右补零
-    parameter integer OUT_CH   = 64,                        // 并行输出通道数
-    parameter integer COEFF_GRP_NUM = 2,                    // 系数组总数
-    parameter integer FRAME_GRP_NUM = 1,                    // 输入帧组数
-    parameter integer MAC_PIPELINE = 1,                     // MAC加法树流水模式
+    parameter DATA_W   = 8,                         // 输入像素位宽
+    parameter COEFF_W  = 8,                         // 系数位宽
+    parameter K_H      = 1,                         // 卷积核高度
+    parameter K_W      = 1,                         // 卷积核宽度
+    parameter MUL_W    = DATA_W + COEFF_W, // 乘积位宽等于数据位宽加权重位宽以防止溢出
+    parameter SUM_W    = MUL_W + $clog2(K_H*K_W),  // 累加输出位宽
+    parameter COL      = 20,                        // 输入列数
+    parameter ROW      = 20,                        // 输入行数
+    parameter STRIDE   = 1,                         // 步长
+    parameter PAD_TOP    = K_H/2,                   // 上补零
+    parameter PAD_BOTTOM = K_H/2,                   // 下补零
+    parameter PAD_LEFT   = K_W/2,                   // 左补零
+    parameter PAD_RIGHT  = K_W/2,                   // 右补零
+    parameter OUT_CH   = 64,                        // 并行输出通道数
+    parameter COEFF_GRP_NUM = 2,                    // 系数组总数
+    parameter FRAME_GRP_NUM = 1,                    // 输入帧组数
+    parameter MAC_PIPELINE = 1,                     // MAC加法树流水模式
     parameter         COEFF_INIT_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh", // 系数初始化文件路径
     // 输出侧 FIFO 可配置参数（fwft_fifo_reg）
-    parameter integer OUT_FIFO_DEPTH   = 16, // 默认 FIFO 深度
-    parameter integer OUT_FIFO_AF_LEVEL= 14  // 默认几乎满阈值
+    parameter OUT_FIFO_DEPTH   = 16, // 默认 FIFO 深度
+    parameter OUT_FIFO_AF_LEVEL= 14  // 默认几乎满阈值
 )(
     input  wire                                 clk,         // 时钟信号
     input  wire                                 rst_n,       // 低有效复位
 
     input  wire                                 in_valid,    // 输入有效
     output wire                                 in_ready,    // 输入就绪
-    input  wire signed [DATA_W-1:0]             in_pixel,    // 输入像素数据
+    input  wire [DATA_W-1:0]                    in_pixel,    // 输入像素数据
     input  wire                                 in_end_all_frame, // 输入全部组帧结束标志
 
     output wire                                 out_valid,   // 输出有效
@@ -72,6 +72,7 @@ module matrix_conv2d_stream_parallel #(
     wire window_in_ready;
     wire window_out_valid;
     wire window_out_ready;
+    wire signed [DATA_W-1:0] in_pixel_s = $signed(in_pixel);
     wire signed [K_H*K_W*DATA_W-1:0] window_bus;
     wire window_out_fire;
 
@@ -197,7 +198,7 @@ module matrix_conv2d_stream_parallel #(
         .in_valid(window_in_valid),
         .in_ready(window_in_ready),
         .end_all_frame(in_end_all_frame && in_valid && in_ready), // 直接将上游的 end_all_frame 信号传递到滑窗模块，确保在正确的时钟周期被采样
-        .in_pixel(in_pixel),
+        .in_pixel(in_pixel_s),
         .out_valid(window_out_valid),
         .out_ready(window_out_ready),
         .out_window_bus(window_bus)

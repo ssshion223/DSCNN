@@ -7,18 +7,18 @@
 //   3. 极简 Padding MUX 架构，0 减法器，0 加法器，将逻辑复杂度降至最低。
 //==============================================================================
 module conv_sliding_padding #(
-    parameter integer DATA_W     = 8,       // 输入像素位宽
-    parameter integer COL        = 64,      // 输入原始图像列数
-    parameter integer ROW        = 64,      // 输入原始图像行数
-    parameter integer K_H        = 3,       // 卷积核高度
-    parameter integer K_W        = 3,       // 卷积核宽度
-    parameter integer STRIDE     = 1,       // 窗口步长 (目前 X/Y 步长保持一致，可按需拆分)
+    parameter DATA_W     = 8,       // 输入像素位宽
+    parameter COL        = 64,      // 输入原始图像列数
+    parameter ROW        = 64,      // 输入原始图像行数
+    parameter K_H        = 3,       // 卷积核高度
+    parameter K_W        = 3,       // 卷积核宽度
+    parameter STRIDE     = 1,       // 窗口步长 (目前 X/Y 步长保持一致，可按需拆分)
     
     // 默认提供 SAME Padding 计算，支持外部传参覆盖
-    parameter integer PAD_TOP    = (K_H - 1) / 2,
-    parameter integer PAD_BOTTOM = K_H / 2,
-    parameter integer PAD_LEFT   = (K_W - 1) / 2,
-    parameter integer PAD_RIGHT  = K_W / 2
+    parameter PAD_TOP    = (K_H - 1) / 2,
+    parameter PAD_BOTTOM = K_H / 2,
+    parameter PAD_LEFT   = (K_W - 1) / 2,
+    parameter PAD_RIGHT  = K_W / 2
 )(
     input  wire                         clk,
     input  wire                         rst_n,
@@ -26,7 +26,7 @@ module conv_sliding_padding #(
     // --- 握手与输入接口 ---
     input  wire                         in_valid,
     output wire                         in_ready,
-    input  wire signed [DATA_W-1:0]     in_pixel,
+    input  wire [DATA_W-1:0]            in_pixel,
     input  wire                         end_all_frame, // 触发排空流水线尾部数据
     
     // --- 握手与输出接口 ---
@@ -60,6 +60,7 @@ module conv_sliding_padding #(
     localparam integer DELAY_CYCLES  = (FULL_PAD_RIGHT) + (FULL_PAD_BOTTOM) * COL + 1 ;
 
     // 二维展开的窗口寄存器阵列 (展开为一维方便循环)
+    wire signed [DATA_W-1:0] in_pixel_s = $signed(in_pixel);
     reg signed [DATA_W-1:0] window [0:WIN_SIZE-1];
     wire signed [K_H*K_W*DATA_W-1:0] window_bus;
     reg signed [K_H*K_W*DATA_W-1:0] window_bus_reg;
@@ -80,7 +81,7 @@ module conv_sliding_padding #(
     // 对上游 ready：下游就绪，且没在进行排空操作
     assign in_ready = pipe_ready && !is_flushing;
     // 写入流水线的数据（Flush 注入零气泡）
-    wire signed [DATA_W-1:0] pipe_din = (is_flushing) ? {DATA_W{1'b0}} : in_pixel;
+    wire signed [DATA_W-1:0] pipe_din = (is_flushing) ? {DATA_W{1'b0}} : in_pixel_s;
     generate
         if (DELAY_CYCLES > 1) begin : gen_valid_tracker
             // 精确追踪有效数据的物理位置

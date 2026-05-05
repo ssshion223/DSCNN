@@ -9,54 +9,54 @@
 //==============================================================================
 module dw_pw_cac #(
 	// ---------------- dw2pw_mult parameters ----------------
-	parameter integer IN_DATA_W            = 8,
-	parameter integer DW_COEFF_W           = 8,
-	parameter integer DW_K_H               = 3,
-	parameter integer DW_K_W               = 3,
-	parameter integer DW_MUL_W             = IN_DATA_W + DW_COEFF_W,
-	parameter integer DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),
-	parameter integer DW_COL               = 5,
-	parameter integer DW_ROW               = 25,
-	parameter integer DW_STRIDE            = 1,
-	parameter integer DW_PAD_TOP           = (DW_K_H-1)/2,
-	parameter integer DW_PAD_BOTTOM        = (DW_K_H)/2,
-	parameter integer DW_PAD_LEFT          = (DW_K_W-1)/2,
-	parameter integer DW_PAD_RIGHT         = (DW_K_W)/2,
-	parameter integer DW_COEFF_GRP_NUM     = 64 * 4,
-	parameter integer DW_FRAME_GRP_NUM     = 64,
-	parameter integer DW_MAC_PIPELINE      = 1,
+	parameter IN_DATA_W            = 8,
+	parameter DW_COEFF_W           = 8,
+	parameter DW_K_H               = 3,
+	parameter DW_K_W               = 3,
+	parameter DW_MUL_W             = IN_DATA_W + DW_COEFF_W,
+	parameter DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),
+	parameter DW_COL               = 5,
+	parameter DW_ROW               = 25,
+	parameter DW_STRIDE            = 1,
+	parameter DW_PAD_TOP           = (DW_K_H-1)/2,
+	parameter DW_PAD_BOTTOM        = (DW_K_H)/2,
+	parameter DW_PAD_LEFT          = (DW_K_W-1)/2,
+	parameter DW_PAD_RIGHT         = (DW_K_W)/2,
+	parameter DW_COEFF_GRP_NUM     = 64 * 4,
+	parameter DW_FRAME_GRP_NUM     = 64,
+	parameter DW_MAC_PIPELINE      = 1,
 	parameter         DW_COEFF_INIT_FILE   = "D:/vivado/exp/DSCNN/rtl/weights/DS-CNN_pingpong_dw.memh",
 	parameter         DW_BIAS_INIT_FILE    = "D:/vivado/exp/DSCNN/rtl/bias/DS-CNN_dw_pingpong_bias.hex",
-	parameter integer DW_OUT_WIDTH         = 8,
-	parameter integer DW_SHIFT_VAL         = 16,
- 	parameter integer DW_BIAS_GROUP_BITS   = 2,
- 	parameter integer DW_BIAS_GROUP_SIZE   = 1*4,
- 	parameter integer DW_BIAS_CH_BITS      = 6,
+    parameter DW_OUT_WIDTH         = 8,
+    parameter DW_SHIFT_VAL         = 16,
+ 	parameter DW_BIAS_GROUP_BITS   = 2,
+ 	parameter DW_BIAS_GROUP_SIZE   = 1*4,
+ 	parameter DW_BIAS_CH_BITS      = 6,
 	parameter         DW_MULT_CNT     = 4,  // 量化乘数个数
-	parameter signed [11:0] DW_MULT_FACTOR0 = 12'sd1246,  // layer1
-	parameter signed [11:0] DW_MULT_FACTOR1 = 12'sd828,  // layer2
-	parameter signed [11:0] DW_MULT_FACTOR2 = 12'sd412,  // layer3
-	parameter signed [11:0] DW_MULT_FACTOR3 = 12'sd512,  // layer4
-	parameter integer DW_FIFO_DEPTH        = 16,
-	parameter integer DW_FIFO_AF_LEVEL     = 10,
-	parameter integer PW_OUT_CH            = 64,
-	parameter integer PW_COEFF_W           = 8,
-	parameter integer PW_K_H               = 1,
-	parameter integer PW_K_W               = 1,
-	parameter integer PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W,
-	parameter integer PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),
-	parameter integer PW_COEFF_GRP_NUM     = 64,
-	parameter integer PW_FRAME_GRP_NUM     = 64,
-	parameter integer PW_MAC_PIPELINE      = 1,
+	parameter [11:0] DW_MULT_FACTOR0 = 12'sd1246,  // layer1
+	parameter [11:0] DW_MULT_FACTOR1 = 12'sd828,  // layer2
+	parameter [11:0] DW_MULT_FACTOR2 = 12'sd412,  // layer3
+	parameter [11:0] DW_MULT_FACTOR3 = 12'sd512,  // layer4
+	parameter DW_FIFO_DEPTH        = 16,
+	parameter DW_FIFO_AF_LEVEL     = 10,
+	parameter PW_OUT_CH            = 64,
+	parameter PW_COEFF_W           = 8,
+	parameter PW_K_H               = 1,
+	parameter PW_K_W               = 1,
+	parameter PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W,
+	parameter PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),
+	parameter PW_COEFF_GRP_NUM     = 64,
+	parameter PW_FRAME_GRP_NUM     = 64,
+	parameter PW_MAC_PIPELINE      = 1,
 	parameter         PW_COEFF_INIT_FILE   =  "D:/vivado/exp/DSCNN/rtl/weights/DS-CNN_pingpong_pw.memh",
-	parameter integer PW_FIFO_DEPTH        = 4,
-	parameter integer PW_FIFO_AF_LEVEL     = 2,
+	parameter PW_FIFO_DEPTH        = 4,
+	parameter PW_FIFO_AF_LEVEL     = 2,
 	// ---------------- pw_sum parameters ----------------
-	parameter integer RAM_ONE_DATA_W       = PW_SUM_W+$clog2(PW_OUT_CH),
-	parameter integer SEGMENTS             = 4,
-	parameter integer PIXEL_DEPTH          = ((DW_COL + DW_PAD_LEFT + DW_PAD_RIGHT - DW_K_W) / DW_STRIDE + 1) * ((DW_ROW + DW_PAD_TOP + DW_PAD_BOTTOM - DW_K_H) / DW_STRIDE + 1),
-	parameter integer RAM_ADDR_W       = $clog2(PIXEL_DEPTH * SEGMENTS),
-	parameter integer IN_FRAME_SIZE        = 64
+	parameter RAM_ONE_DATA_W       = PW_SUM_W+$clog2(PW_OUT_CH),
+	parameter SEGMENTS             = 4,
+	parameter PIXEL_DEPTH          = ((DW_COL + DW_PAD_LEFT + DW_PAD_RIGHT - DW_K_W) / DW_STRIDE + 1) * ((DW_ROW + DW_PAD_TOP + DW_PAD_BOTTOM - DW_K_H) / DW_STRIDE + 1),
+	parameter RAM_ADDR_W       = $clog2(PIXEL_DEPTH * SEGMENTS),
+	parameter IN_FRAME_SIZE        = 64
 )(
 	input  wire                                         clk,
 	input  wire                                         rst_n,
@@ -64,7 +64,7 @@ module dw_pw_cac #(
 	// 上层输入：对接 dw2pw_mult
 	input  wire                                         in_valid,
 	output wire                                         in_ready,
-	input  wire signed [IN_DATA_W-1:0]                  in_pixel,
+	input  wire [IN_DATA_W-1:0]                        in_pixel,
 	input  wire                                         in_end_all_frame,
 
 	// 上层输出：对接 pw_sum
@@ -84,6 +84,7 @@ module dw_pw_cac #(
 	wire                                 pw_mult_ready;
 	wire                                 pw_mult_end_frame;
 	wire                                 pw_mult_end_all_frame;
+	wire signed [IN_DATA_W-1:0]          in_pixel_s = $signed(in_pixel);
 	wire signed [PW_OUT_CH*PW_SUM_W-1:0] pw_mult_data_bus;
 
 	dw2pw_mult #(
@@ -109,6 +110,7 @@ module dw_pw_cac #(
 		.DW_BIAS_GROUP_BITS(DW_BIAS_GROUP_BITS),
 		.DW_BIAS_GROUP_SIZE(DW_BIAS_GROUP_SIZE),
 		.DW_BIAS_CH_BITS(DW_BIAS_CH_BITS),
+		.DW_BIAS_INIT_FILE(DW_BIAS_INIT_FILE),
 		.DW_MULT_CNT(DW_MULT_CNT),
 		.DW_MULT_FACTOR0(DW_MULT_FACTOR0),
 		.DW_MULT_FACTOR1(DW_MULT_FACTOR1),
@@ -133,7 +135,7 @@ module dw_pw_cac #(
 		.rst_n(rst_n),
 		.in_valid(in_valid),
 		.in_ready(in_ready),
-		.in_pixel(in_pixel),
+		.in_pixel(in_pixel_s),
 		.in_end_all_frame(in_end_all_frame),
 		.pw_mult_valid(pw_mult_valid),
 		.pw_mult_ready(pw_mult_ready),

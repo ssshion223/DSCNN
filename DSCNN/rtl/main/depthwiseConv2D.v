@@ -19,40 +19,40 @@ module depthwiseConv2D #(
     // ==========================================
     // 卷积核心参数（MAC 与感受野）
     // ==========================================
-    parameter integer DATA_W        = 8,                      // 输入像素位宽
-    parameter integer COEFF_W       = 8,                      // 卷积系数位宽
-    parameter integer K_H           = 3,                      // 卷积核高度
-    parameter integer K_W           = 3,                      // 卷积核宽度
-    parameter integer MUL_W         = DATA_W + COEFF_W,       // 乘法结果位宽
-    parameter integer SUM_W         = MUL_W + $clog2(K_H*K_W), // K_H*K_W=1*1时的累加位宽
-    parameter integer COL           = 49,                     // 输入特征图列数
-    parameter integer ROW           = 10,                     // 输入特征图行数
-    parameter integer STRIDE        = 2,                      // 卷积步长
-    parameter integer PAD_TOP       = (K_H-1)/2,                  // 上边界补零
-    parameter integer PAD_BOTTOM    = K_H/2,                  // 下边界补零
-    parameter integer PAD_LEFT      = (K_W-1)/2,                  // 左边界补零
-    parameter integer PAD_RIGHT     = K_W/2,                  // 右边界补零
-    parameter integer COEFF_GRP_NUM = 64,                      // 系数组数量
-    parameter integer FRAME_GRP_NUM = 64,                      // 输入帧组数量
-    parameter integer MAC_PIPELINE  = 1,                      // MAC树流水级模式
+    parameter DATA_W        = 8,                      // 输入像素位宽
+    parameter COEFF_W       = 8,                      // 卷积系数位宽
+    parameter K_H           = 3,                      // 卷积核高度
+    parameter K_W           = 3,                      // 卷积核宽度
+    parameter MUL_W         = DATA_W + COEFF_W,       // 乘法结果位宽
+    parameter SUM_W         = MUL_W + $clog2(K_H*K_W), // K_H*K_W=1*1时的累加位宽
+    parameter COL           = 49,                     // 输入特征图列数
+    parameter ROW           = 10,                     // 输入特征图行数
+    parameter STRIDE        = 2,                      // 卷积步长
+    parameter PAD_TOP       = (K_H-1)/2,                  // 上边界补零
+    parameter PAD_BOTTOM    = K_H/2,                  // 下边界补零
+    parameter PAD_LEFT      = (K_W-1)/2,                  // 左边界补零
+    parameter PAD_RIGHT     = K_W/2,                  // 右边界补零
+    parameter COEFF_GRP_NUM = 64,                      // 系数组数量
+    parameter FRAME_GRP_NUM = 64,                      // 输入帧组数量
+    parameter MAC_PIPELINE  = 1,                      // MAC树流水级模式
     parameter         COEFF_INIT_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_dw0_Fold_bias.hex", // 系数初始化文件
     
     // ==========================================
     // 后处理参数（Bias、量化、激活、缓冲）
     // ==========================================
-    parameter integer OUT_WIDTH     = 8,  // 最终输出量化位宽
-    parameter integer SHIFT_VAL     = 16, // 量化右移位数
-    parameter integer BIAS_GROUP_SIZE    = 1, // Bias组大小
-    parameter integer BIAS_GROUP_BITS    = $clog2(BIAS_GROUP_SIZE),  // Bias组号位宽
-    parameter integer BIAS_CH_BITS       = 6,  // Bias通道号位宽
-    parameter integer FIFO_DEPTH    = 16, // 输出缓冲 FIFO 深度
-    parameter integer FIFO_AF_LEVEL = 10,  // FIFO 将满阈值
+    parameter OUT_WIDTH     = 8,  // 最终输出量化位宽
+    parameter SHIFT_VAL     = 16, // 量化右移位数
+    parameter BIAS_GROUP_SIZE    = 1, // Bias组大小
+    parameter BIAS_GROUP_BITS    = $clog2(BIAS_GROUP_SIZE),  // Bias组号位宽
+    parameter BIAS_CH_BITS       = 6,  // Bias通道号位宽
+    parameter FIFO_DEPTH    = 16, // 输出缓冲 FIFO 深度
+    parameter FIFO_AF_LEVEL = 10,  // FIFO 将满阈值
     parameter         BIAS_INIT_FILE= "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw0_Fold_bias.hex", // Bias 初始化文件
     parameter         MULT_CNT      = 4,
-    parameter signed [11:0] MULT_FACTOR0  = 12'sd1246,
-    parameter signed [11:0] MULT_FACTOR1  = 12'sd828,
-    parameter signed [11:0] MULT_FACTOR2  = 12'sd652,
-    parameter signed [11:0] MULT_FACTOR3  = 12'sd412
+    parameter [11:0] MULT_FACTOR0  = 12'sd1246,
+    parameter [11:0] MULT_FACTOR1  = 12'sd828,
+    parameter [11:0] MULT_FACTOR2  = 12'sd652,
+    parameter [11:0] MULT_FACTOR3  = 12'sd412
 )(
     input  wire                               clk,             // 时钟信号
     input  wire                               rst_n,           // 低有效复位
@@ -62,7 +62,7 @@ module depthwiseConv2D #(
     // ==========================================
     input  wire                               in_valid,        // 输入数据有效
     output wire                               in_ready,        // 输入就绪反馈
-    input  wire signed [DATA_W-1:0]           in_pixel,        // 输入像素数据
+    input  wire [DATA_W-1:0]                  in_pixel,        // 输入像素数据
     input  wire                               in_end_all_frame,// 全部组帧结束标志（上游）
 
     // ==========================================
@@ -84,6 +84,7 @@ module depthwiseConv2D #(
     wire                               conv_out_ready;
     wire                               conv_out_end_all_frame;
     wire                               conv_out_end_frame;
+    wire signed [DATA_W-1:0]           in_pixel_s = $signed(in_pixel);
     wire signed [SUM_W-1:0]            conv_out_pixel_data_bus;
 
     // ==========================================
@@ -115,7 +116,7 @@ module depthwiseConv2D #(
         
         .in_valid            (in_valid),
         .in_ready            (in_ready),
-        .in_pixel            (in_pixel),
+        .in_pixel            (in_pixel_s),
         .in_end_all_frame    (in_end_all_frame),
         
         // 接入内部中间连线

@@ -18,7 +18,7 @@ module bias_memory #(
     parameter GROUP_BITS = 4,       // 组号的位宽 
     parameter CH_BITS    = 6,        // 通道号的位宽
     parameter BIAS_INIT_FILE = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw_pingpong_bias.hex", // Bias 初始化文件路径
-    localparam integer GROUP_BITS_INT = (GROUP_BITS < 1) ? 1 : GROUP_BITS
+    parameter GROUP_BITS_INT = (GROUP_BITS < 1) ? 1 : GROUP_BITS
 )(
     input  wire                              clk,         // 时钟信号
     input  wire                              read_en,    // 读使能

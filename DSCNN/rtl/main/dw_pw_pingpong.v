@@ -1,70 +1,70 @@
 module dw_pw_pingpong #(
     // ---------------- pingpong control ----------------
-    parameter integer PINGPONG_ROUNDS      = 3, // 乒乓轮数(不包括第一层 DW+PW )，即后续DW+PW的轮数 
+    parameter PINGPONG_ROUNDS      = 3, // 乒乓轮数(不包括第一层 DW+PW )，即后续DW+PW的轮数 
 
     // ---------------- stream shape ----------------
-    parameter integer PIXEL_DEPTH          = 125, // 每帧像素数（空间维度展开后），如5x25=125
-    parameter integer IN_FRAME_SIZE        = 64,//每轮输入帧数，等于输入通道数（depthwise输出的通道数）
+    parameter PIXEL_DEPTH          = 125, // 每帧像素数（空间维度展开后），如5x25=125
+    parameter IN_FRAME_SIZE        = 64,//每轮输入帧数，等于输入通道数（depthwise输出的通道数）
 
     // ---------------- DW stage ----------------
-	parameter integer IN_DATA_W            = 8, // 输入像素位宽
-	parameter integer DW_COEFF_W           = 8, // DW卷积系数量化位宽
-	parameter integer DW_K_H               = 3, // DW卷积核高
-	parameter integer DW_K_W               = 3, // DW卷积核宽
-	parameter integer DW_MUL_W             = IN_DATA_W + DW_COEFF_W, // DW乘积位宽
-	parameter integer DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),// DW多通道累加位宽
-	parameter integer DW_COL               = 5,// DW输入特征图列数
-	parameter integer DW_ROW               = 25,// DW输入特征图行数
-	parameter integer DW_STRIDE            = 1, // DW卷积步长
-	parameter integer DW_PAD_TOP           = (DW_K_H-1)/2, // DW卷积上边界补零
-	parameter integer DW_PAD_BOTTOM        = (DW_K_H)/2, // DW卷积下边界补零
-	parameter integer DW_PAD_LEFT          = (DW_K_W-1)/2, // DW卷积左边界补零
-	parameter integer DW_PAD_RIGHT         = (DW_K_W)/2,// DW卷积右边界补零
-	parameter integer DW_COEFF_GRP_NUM     = IN_FRAME_SIZE * (PINGPONG_ROUNDS + 1),//一层计算64通道，共4层系数
-    parameter integer DW_FRAME_GRP_NUM     = IN_FRAME_SIZE,//每个输入帧对应一组系数
-	parameter integer DW_MAC_PIPELINE      = 1,// 开启流水线计算（建议使用）
+    parameter IN_DATA_W            = 8, // 输入像素位宽
+    parameter DW_COEFF_W           = 8, // DW卷积系数量化位宽
+    parameter DW_K_H               = 3, // DW卷积核高
+    parameter DW_K_W               = 3, // DW卷积核宽
+    parameter DW_MUL_W             = IN_DATA_W + DW_COEFF_W, // DW乘积位宽
+    parameter DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),// DW多通道累加位宽
+    parameter DW_COL               = 5,// DW输入特征图列数
+    parameter DW_ROW               = 25,// DW输入特征图行数
+    parameter DW_STRIDE            = 1, // DW卷积步长
+    parameter DW_PAD_TOP           = (DW_K_H-1)/2, // DW卷积上边界补零
+    parameter DW_PAD_BOTTOM        = (DW_K_H)/2, // DW卷积下边界补零
+    parameter DW_PAD_LEFT          = (DW_K_W-1)/2, // DW卷积左边界补零
+    parameter DW_PAD_RIGHT         = (DW_K_W)/2,// DW卷积右边界补零
+    parameter DW_COEFF_GRP_NUM     = IN_FRAME_SIZE * (PINGPONG_ROUNDS + 1),//一层计算64通道，共4层系数
+    parameter DW_FRAME_GRP_NUM     = IN_FRAME_SIZE,//每个输入帧对应一组系数
+    parameter DW_MAC_PIPELINE      = 1,// 开启流水线计算（建议使用）
 	parameter         DW_COEFF_INIT_FILE   = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh",// DW卷积系数初始化文件
 	parameter         DW_BIAS_INIT_FILE    = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw_pingpong_bias.hex",// DW卷积Bias初始化文件
-    parameter integer DW_OUT_WIDTH         = 8,// DW输出位宽
-	parameter integer DW_SHIFT_VAL         = 16, // DW量化低位截断
-    parameter integer DW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //4层偏移量
-    parameter integer DW_BIAS_GROUP_BITS   = $clog2(DW_BIAS_GROUP_SIZE),//偏移量组号位宽
-    parameter integer DW_BIAS_CH_BITS      = $clog2(IN_FRAME_SIZE), //每个通道对应一个BIAS
+	parameter DW_OUT_WIDTH         = 8,// DW输出位宽
+	parameter DW_SHIFT_VAL         = 16, // DW量化低位截断
+    parameter DW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //4层偏移量
+    parameter DW_BIAS_GROUP_BITS   = $clog2(DW_BIAS_GROUP_SIZE),//偏移量组号位宽
+    parameter DW_BIAS_CH_BITS      = $clog2(IN_FRAME_SIZE), //每个通道对应一个BIAS
     parameter         DW_MULT_CNT          = (PINGPONG_ROUNDS + 1),  // 量化乘数个数，每层一个乘数
-    parameter signed [11:0] DW_MULT_FACTOR0 = 12'sd1246,  // layer1_dw
-    parameter signed [11:0] DW_MULT_FACTOR1 = 12'sd828,  // layer2_dw
-    parameter signed [11:0] DW_MULT_FACTOR2 = 12'sd652,  // layer3_dw
-    parameter signed [11:0] DW_MULT_FACTOR3 = 12'sd412,  // layer4_dw
-	parameter integer DW_FIFO_DEPTH        = 16,//输出数据缓存深度，2的幂次
-	parameter integer DW_FIFO_AF_LEVEL     = 10,//注意该值不能太大，否则后端堵塞时容易丢失数据，参考值DW_FIFO_DEPTH- $clog2(DW_K_H*DW_K_W)- 2 
+    parameter [11:0] DW_MULT_FACTOR0 = 12'sd1246,  // layer1_dw
+    parameter [11:0] DW_MULT_FACTOR1 = 12'sd828,  // layer2_dw
+    parameter [11:0] DW_MULT_FACTOR2 = 12'sd652,  // layer3_dw
+    parameter [11:0] DW_MULT_FACTOR3 = 12'sd412,  // layer4_dw
+    parameter DW_FIFO_DEPTH        = 16,//输出数据缓存深度，2的幂次
+    parameter DW_FIFO_AF_LEVEL     = 10,//注意该值不能太大，否则后端堵塞时容易丢失数据，参考值DW_FIFO_DEPTH- $clog2(DW_K_H*DW_K_W)- 2 
 
 	// ---------------- PW matrix stage ----------------
-	parameter integer PW_OUT_CH            = 64, // PW并行输出通道数
-	parameter integer PW_COEFF_W           = 8, // PW卷积系数量化位宽
-	parameter integer PW_K_H               = 1, // PW卷积核高
-	parameter integer PW_K_W               = 1, // PW卷积核宽
-	parameter integer PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W, // PW乘积位宽
-	parameter integer PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),// PW多通道累加位宽
-	parameter integer PW_COEFF_GRP_NUM     = PW_OUT_CH * (PINGPONG_ROUNDS + 1),//每
-    parameter integer PW_FRAME_GRP_NUM     = PW_OUT_CH,
-	parameter integer PW_MAC_PIPELINE      = 1,
+    parameter PW_OUT_CH            = 64, // PW并行输出通道数
+    parameter PW_COEFF_W           = 8, // PW卷积系数量化位宽
+    parameter PW_K_H               = 1, // PW卷积核高
+    parameter PW_K_W               = 1, // PW卷积核宽
+    parameter PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W, // PW乘积位宽
+    parameter PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),// PW多通道累加位宽
+    parameter PW_COEFF_GRP_NUM     = PW_OUT_CH * (PINGPONG_ROUNDS + 1),//每
+    parameter PW_FRAME_GRP_NUM     = PW_OUT_CH,
+    parameter PW_MAC_PIPELINE      = 1,
 	parameter         PW_COEFF_INIT_FILE   = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_pw.memh",
     parameter         PW_BIAS_INIT_FILE    = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_pw_pingpong_bias.hex",
-    parameter integer PW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //一层计算64通道，共4层系数
-    parameter integer PW_BIAS_GROUP_BITS   = $clog2(PW_BIAS_GROUP_SIZE),//偏移量组号位宽
-    parameter integer PW_BIAS_CH_BITS      = $clog2(PW_OUT_CH), //每个通道对应一个BIAS
-    parameter integer PW_MULT_CNT          = (PINGPONG_ROUNDS + 1),  // 量化乘数个数，每层一个乘数
-    localparam signed [11:0] PW_MULT_FACTOR0 = 12'sd406, // layer1_pw
-    localparam signed [11:0] PW_MULT_FACTOR1 = 12'sd461,// layer2_pw
-    localparam signed [11:0] PW_MULT_FACTOR2 = 12'sd442,// layer3_pw
-    localparam signed [11:0] PW_MULT_FACTOR3 = 12'sd623,// layer4_pw
-    parameter integer PW_FIFO_DEPTH        = 4,//输出数据缓存深度(不要过高)，2的幂次
-    parameter integer PW_FIFO_AF_LEVEL     = 2,//输出数据缓存将满阈值，用于反压
+    parameter PW_BIAS_GROUP_SIZE   = (PINGPONG_ROUNDS + 1), //一层计算64通道，共4层系数
+    parameter PW_BIAS_GROUP_BITS   = $clog2(PW_BIAS_GROUP_SIZE),//偏移量组号位宽
+    parameter PW_BIAS_CH_BITS      = $clog2(PW_OUT_CH), //每个通道对应一个BIAS
+    parameter PW_MULT_CNT          = (PINGPONG_ROUNDS + 1),  // 量化乘数个数，每层一个乘数
+    parameter [11:0] PW_MULT_FACTOR0 = 12'sd406, // layer1_pw
+    parameter [11:0] PW_MULT_FACTOR1 = 12'sd461,// layer2_pw
+    parameter [11:0] PW_MULT_FACTOR2 = 12'sd442,// layer3_pw
+    parameter [11:0] PW_MULT_FACTOR3 = 12'sd623,// layer4_pw
+    parameter PW_FIFO_DEPTH        = 4,//输出数据缓存深度(不要过高)，2的幂次
+    parameter PW_FIFO_AF_LEVEL     = 2,//输出数据缓存将满阈值，用于反压
 
     // ---------------- accumulator / RAM ----------------  
-    parameter integer RAM_SEGMENTS          = 1,//RAM分段数目，时间换空间，1时全并行，要保证OUT_CH能被整除
-    parameter integer RAM_ONE_DATA_W        = PW_SUM_W + $clog2(PW_OUT_CH),//存储在RAM中单个有效数据位宽（不对应一次读写位宽）
-    parameter integer OUT_PIXEL_WIDTH       = 8//最终输出像素位宽
+    parameter RAM_SEGMENTS          = 1,//RAM分段数目，时间换空间，1时全并行，要保证OUT_CH能被整除
+    parameter RAM_ONE_DATA_W        = PW_SUM_W + $clog2(PW_OUT_CH),//存储在RAM中单个有效数据位宽（不对应一次读写位宽）
+    parameter OUT_PIXEL_WIDTH       = 8//最终输出像素位宽
 )(
     input  wire                                clk,
     input  wire                                rst_n,
@@ -287,6 +287,7 @@ module dw_pw_pingpong #(
         .DW_BIAS_GROUP_BITS(DW_BIAS_GROUP_BITS),
         .DW_BIAS_GROUP_SIZE(DW_BIAS_GROUP_SIZE),
         .DW_BIAS_CH_BITS(DW_BIAS_CH_BITS),
+        .DW_BIAS_INIT_FILE(DW_BIAS_INIT_FILE),
         .DW_MULT_CNT(DW_MULT_CNT),
         .DW_MULT_FACTOR0(DW_MULT_FACTOR0),
         .DW_MULT_FACTOR1(DW_MULT_FACTOR1),

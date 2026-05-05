@@ -13,57 +13,57 @@
 //==============================================================================
 module dw2pw_mult #(
 	// ---------------- DW stage ----------------
-	parameter integer IN_DATA_W            = 8,
-	parameter integer DW_COEFF_W           = 8,
-	parameter integer DW_K_H               = 3,
-	parameter integer DW_K_W               = 3,
-	parameter integer DW_MUL_W             = IN_DATA_W + DW_COEFF_W,
-	parameter integer DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),
-	parameter integer DW_COL               = 5,
-	parameter integer DW_ROW               = 25,
-	parameter integer DW_STRIDE            = 1,
-	parameter integer DW_PAD_TOP           = (DW_K_H-1)/2,
-	parameter integer DW_PAD_BOTTOM        = (DW_K_H)/2,
-	parameter integer DW_PAD_LEFT          = (DW_K_W-1)/2,
-	parameter integer DW_PAD_RIGHT         = (DW_K_W)/2,
-	parameter integer DW_COEFF_GRP_NUM     = 64 * 4,//一层计算64通道，复用4层系数
-	parameter integer DW_FRAME_GRP_NUM     = 64,
-	parameter integer DW_MAC_PIPELINE      = 1,
+	parameter IN_DATA_W            = 8,
+	parameter DW_COEFF_W           = 8,
+	parameter DW_K_H               = 3,
+	parameter DW_K_W               = 3,
+	parameter DW_MUL_W             = IN_DATA_W + DW_COEFF_W,
+	parameter DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),
+	parameter DW_COL               = 5,
+	parameter DW_ROW               = 25,
+	parameter DW_STRIDE            = 1,
+	parameter DW_PAD_TOP           = (DW_K_H-1)/2,
+	parameter DW_PAD_BOTTOM        = (DW_K_H)/2,
+	parameter DW_PAD_LEFT          = (DW_K_W-1)/2,
+	parameter DW_PAD_RIGHT         = (DW_K_W)/2,
+	parameter DW_COEFF_GRP_NUM     = 64 * 4,//一层计算64通道，复用4层系数
+	parameter DW_FRAME_GRP_NUM     = 64,
+	parameter DW_MAC_PIPELINE      = 1,
 	parameter         DW_COEFF_INIT_FILE   = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh",
 	parameter         DW_BIAS_INIT_FILE    = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw_pingpong_bias.hex",
-	parameter integer DW_OUT_WIDTH         = 8,
-	parameter integer DW_SHIFT_VAL         = 16,
-	parameter integer DW_BIAS_GROUP_BITS   = 2,
-	parameter integer DW_BIAS_GROUP_SIZE   = 4, //复用4层系数
-	parameter integer DW_BIAS_CH_BITS      = 6, //每层64个BIAS 
+	parameter DW_OUT_WIDTH         = 8,
+	parameter DW_SHIFT_VAL         = 16,
+	parameter DW_BIAS_GROUP_BITS   = 2,
+	parameter DW_BIAS_GROUP_SIZE   = 4, //复用4层系数
+	parameter DW_BIAS_CH_BITS      = 6, //每层64个BIAS 
  	parameter         DW_MULT_CNT     = 4,  // 量化乘数个数
-	parameter signed [11:0] DW_MULT_FACTOR0 = 12'sd915,  // 乘数0
-	parameter signed [11:0] DW_MULT_FACTOR1 = 12'sd768,  // 乘数1
-	parameter signed [11:0] DW_MULT_FACTOR2 = 12'sd640,  // 乘数2
-	parameter signed [11:0] DW_MULT_FACTOR3 = 12'sd512,  // 乘数3
-	parameter integer DW_FIFO_DEPTH        = 16,
-	parameter integer DW_FIFO_AF_LEVEL     = 10,
+	parameter [11:0] DW_MULT_FACTOR0 = 12'sd915,  // 乘数0
+	parameter [11:0] DW_MULT_FACTOR1 = 12'sd768,  // 乘数1
+	parameter [11:0] DW_MULT_FACTOR2 = 12'sd640,  // 乘数2
+	parameter [11:0] DW_MULT_FACTOR3 = 12'sd512,  // 乘数3
+	parameter DW_FIFO_DEPTH        = 16,
+	parameter DW_FIFO_AF_LEVEL     = 10,
 
 	// ---------------- PW matrix stage ----------------
-	parameter integer PW_OUT_CH            = 64,
-	parameter integer PW_COEFF_W           = 8,
-	parameter integer PW_K_H               = 1,
-	parameter integer PW_K_W               = 1,
-	parameter integer PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W,
-	parameter integer PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),
-	parameter integer PW_COL               = DW_COL,
-	parameter integer PW_ROW               = DW_ROW,
-	parameter integer PW_STRIDE            = 1,
-	parameter integer PW_PAD_TOP           = (PW_K_H-1)/2,
-	parameter integer PW_PAD_BOTTOM        = (PW_K_H)/2,
-	parameter integer PW_PAD_LEFT          = (PW_K_W-1)/2,
-	parameter integer PW_PAD_RIGHT         = (PW_K_W)/2,
-	parameter integer PW_COEFF_GRP_NUM     = 64*4,//每个frame的64个通道对应一组系数
-	parameter integer PW_FRAME_GRP_NUM     = 64,
-	parameter integer PW_MAC_PIPELINE      = 1,
+	parameter PW_OUT_CH            = 64,
+	parameter PW_COEFF_W           = 8,
+	parameter PW_K_H               = 1,
+	parameter PW_K_W               = 1,
+	parameter PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W,
+	parameter PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),
+	parameter PW_COL               = DW_COL,
+	parameter PW_ROW               = DW_ROW,
+	parameter PW_STRIDE            = 1,
+	parameter PW_PAD_TOP           = (PW_K_H-1)/2,
+	parameter PW_PAD_BOTTOM        = (PW_K_H)/2,
+	parameter PW_PAD_LEFT          = (PW_K_W-1)/2,
+	parameter PW_PAD_RIGHT         = (PW_K_W)/2,
+	parameter PW_COEFF_GRP_NUM     = 64*4,//每个frame的64个通道对应一组系数
+	parameter PW_FRAME_GRP_NUM     = 64,
+	parameter PW_MAC_PIPELINE      = 1,
 	parameter         PW_COEFF_INIT_FILE   =  "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_pw.memh",
-	parameter integer PW_FIFO_DEPTH        = 4,
-	parameter integer PW_FIFO_AF_LEVEL     = 2
+	parameter PW_FIFO_DEPTH        = 4,
+	parameter PW_FIFO_AF_LEVEL     = 2
 
 )(
 	input  wire                                  clk,
@@ -72,7 +72,7 @@ module dw2pw_mult #(
 	// 输入：按流输入原始特征图
 	input  wire                                  in_valid,
 	output wire                                  in_ready,
-	input  wire signed [IN_DATA_W-1:0]           in_pixel,
+	input  wire [IN_DATA_W-1:0]                  in_pixel,
 	input  wire                                  in_end_all_frame,
 
 	// PW 并行乘加中间结果（64通道并行）
@@ -88,6 +88,7 @@ module dw2pw_mult #(
 	wire                             dw_out_ready;
 	wire                             dw_out_end_frame;
 	wire                             dw_out_end_all_frame;
+	wire signed [IN_DATA_W-1:0]      in_pixel_s = $signed(in_pixel);
 	wire [DW_OUT_WIDTH-1:0]          dw_out_pixel_u;
 	wire signed [DW_OUT_WIDTH-1:0]   dw_out_pixel_s;
 
@@ -141,7 +142,7 @@ module dw2pw_mult #(
 		.rst_n(rst_n),
 		.in_valid(in_valid),
 		.in_ready(in_ready),
-		.in_pixel(in_pixel),
+		.in_pixel(in_pixel_s),
 		.in_end_all_frame(in_end_all_frame),
 		.out_pixel(dw_out_pixel_u),
 		.out_valid(dw_out_valid),

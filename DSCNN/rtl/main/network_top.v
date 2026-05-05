@@ -13,21 +13,21 @@ module network_top #(
     // 阶段 1：降采样层 (Downsample Layer - DS) 
     // 默认配置为 10x4 卷积核，步长 2
     // ==========================================
-    parameter integer DS_DATA_W        = 8,   // 输入像素位宽 
-    parameter integer DS_COEFF_W       = 8,   // 卷积系数位宽
-    parameter integer DS_K_H           = 10,  // 卷积核高度
-    parameter integer DS_K_W           = 4,   // 卷积核宽度
-    parameter integer DS_COL           = 10,  // 原始输入宽
-    parameter integer DS_ROW           = 49,  // 原始输入高
-    parameter integer DS_STRIDE        = 2,   // 核心降采样步长
-    parameter integer DS_PAD_TOP       = 4,   // 上边界补零 
-    parameter integer DS_PAD_BOTTOM    = 5,   // 下边界补零  
-    parameter integer DS_PAD_LEFT      = 1,   // 左边界补零 
-    parameter integer DS_PAD_RIGHT     = 2,   // 右边界补零
-    parameter integer DS_COEFF_GRP_NUM = 64,  // 输出 64 个通道(理论可以并行,但是总线压力大且数据流不一致,故单通道输出)
-    parameter integer DS_OUT_WIDTH     = 8,   // 降采样量化后的输出位宽
-    parameter         DS_COEFF_FILE    = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_dw0.memh",
-    parameter         DS_BIAS_FILE     = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw0_Fold_bias.hex",
+    parameter DS_DATA_W        = 8,   // 输入像素位宽 
+    parameter DS_COEFF_W       = 8,   // 卷积系数位宽
+    parameter DS_K_H           = 10,  // 卷积核高度
+    parameter DS_K_W           = 4,   // 卷积核宽度
+    parameter DS_COL           = 10,  // 原始输入宽
+    parameter DS_ROW           = 49,  // 原始输入高
+    parameter DS_STRIDE        = 2,   // 核心降采样步长
+    parameter DS_PAD_TOP       = 4,   // 上边界补零 
+    parameter DS_PAD_BOTTOM    = 5,   // 下边界补零  
+    parameter DS_PAD_LEFT      = 1,   // 左边界补零 
+    parameter DS_PAD_RIGHT     = 2,   // 右边界补零
+    parameter DS_COEFF_GRP_NUM = 64,  // 输出 64 个通道(理论可以并行,但是总线压力大且数据流不一致,故单通道输出)
+    parameter DS_OUT_WIDTH     = 8,   // 降采样量化后的输出位宽
+    parameter         DS_COEFF_FILE    = "./data/weights/DS-CNN_dw0.memh",
+    parameter         DS_BIAS_FILE     = "./data/bias/DS-CNN_dw0_Fold_bias.hex",
     parameter         DS_MULT_CNT      = 1,   // 乘数个数
     parameter         DS_MULT_FACTOR0  = 12'sd915, // 乘数0
 
@@ -35,16 +35,16 @@ module network_top #(
     // 阶段 2：乒乓流水线 (Ping-Pong Module - PP)
     // 默认处理 25x5 特征图
     // ==========================================
-    parameter integer PP_ROUNDS        = 3,   // 乒乓轮数(不包括第一层)
-    parameter integer PP_PIXEL_DEPTH   = 125, // 25 x 5 降采样后的面积
-    parameter integer PP_IN_FRAME_SIZE = 64,  // 承接前级的 64 个通道
-    parameter integer PP_DW_K_H        = 3,   // DW 卷积核高度
-    parameter integer PP_DW_K_W        = 3,   // DW 卷积核宽度
-    parameter integer PP_OUT_PIXEL_W   = 8,   // 最终网络输出位宽
-    parameter         PP_DW_COEFF_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh",
-    parameter         PP_PW_COEFF_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_pw.memh",
-    parameter         PP_DW_BIAS_FILE  = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw_pingpong_bias.hex",
-    parameter         PP_PW_BIAS_FILE  = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_pw_pingpong_bias.hex"
+    parameter PP_ROUNDS        = 3,   // 乒乓轮数(不包括第一层)
+    parameter PP_PIXEL_DEPTH   = 125, // 25 x 5 降采样后的面积
+    parameter PP_IN_FRAME_SIZE = 64,  // 承接前级的 64 个通道
+    parameter PP_DW_K_H        = 3,   // DW 卷积核高度
+    parameter PP_DW_K_W        = 3,   // DW 卷积核宽度
+    parameter PP_OUT_PIXEL_W   = 8,   // 最终网络输出位宽
+    parameter         PP_DW_COEFF_FILE = "./data/weights/DS-CNN_pingpong_dw.memh",
+    parameter         PP_PW_COEFF_FILE = "./data/weights/DS-CNN_pingpong_pw.memh",
+    parameter         PP_DW_BIAS_FILE  = "./data/bias/DS-CNN_dw_pingpong_bias.hex",
+    parameter         PP_PW_BIAS_FILE  = "./data/bias/DS-CNN_pw_pingpong_bias.hex"
 )(
     input  wire                               clk,
     input  wire                               rst_n,

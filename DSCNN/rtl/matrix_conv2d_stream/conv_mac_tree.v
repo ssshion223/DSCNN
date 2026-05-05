@@ -13,21 +13,21 @@
 //   归约树可通过 PIPELINE 参数选择组合或流水实现（0组合/1流水），强烈建议使用流水线实现。
 //==============================================================================
 module conv_mac_tree #(
-    parameter integer DATA_W  = 8,                      // 输入数据位宽
-    parameter integer COEFF_W = 8,                      // 系数位宽
-    parameter integer K_H     = 3,                      // 卷积核高度
-    parameter integer K_W     = 3,                      // 卷积核宽度
-    parameter integer MUL_W   = DATA_W + COEFF_W,       // 乘法结果位宽
-    parameter integer SUM_W   = MUL_W + $clog2(K_H*K_W),// 累加输出位宽
-    parameter integer USER_W  = 1,                      // 用户侧带位宽
-    parameter integer PIPELINE = 1                      // 加法树模式：0组合/1流水
+    parameter DATA_W  = 8,                      // 输入数据位宽
+    parameter COEFF_W = 8,                      // 系数位宽
+    parameter K_H     = 3,                      // 卷积核高度
+    parameter K_W     = 3,                      // 卷积核宽度
+    parameter MUL_W   = DATA_W + COEFF_W,       // 乘法结果位宽
+    parameter SUM_W   = MUL_W + $clog2(K_H*K_W),// 累加输出位宽
+    parameter USER_W  = 1,                      // 用户侧带位宽
+    parameter PIPELINE = 1                      // 加法树模式：0组合/1流水
 )(
     input  wire                          clk,        // 时钟信号
     input  wire                          rst_n,      // 低有效复位
     input  wire                          in_valid,   // 输入有效
     input  wire [USER_W-1:0]             in_user,    // 输入侧带信息
-    input  wire signed [K_H*K_W*DATA_W-1:0]   window_bus, // 输入窗口数据
-    input  wire signed [K_H*K_W*COEFF_W-1:0]  coeff_bus,  // 输入系数数据
+    input  wire [K_H*K_W*DATA_W-1:0]          window_bus, // 输入窗口数据
+    input  wire [K_H*K_W*COEFF_W-1:0]         coeff_bus,  // 输入系数数据
     output wire signed [SUM_W-1:0]        mac_sum,   // MAC 累加结果
     output wire                          out_valid,  // 输出有效
     output wire [USER_W-1:0]             out_user    // 输出侧带信息
@@ -81,14 +81,14 @@ endmodule
 //   纯组合数据通路。
 //==============================================================================
 module conv_mult_products #(
-    parameter integer DATA_W  = 8,                // 输入数据位宽
-    parameter integer COEFF_W = 8,                // 系数位宽
-    parameter integer OUT_W   = DATA_W + COEFF_W, // 乘法结果位宽
-    parameter integer K_H     = 3,                // 卷积核高度
-    parameter integer K_W     = 3                 // 卷积核宽度
+    parameter DATA_W  = 8,                // 输入数据位宽
+    parameter COEFF_W = 8,                // 系数位宽
+    parameter OUT_W   = DATA_W + COEFF_W, // 乘法结果位宽
+    parameter K_H     = 3,                // 卷积核高度
+    parameter K_W     = 3                 // 卷积核宽度
 )(
-    input  wire signed [K_H*K_W*DATA_W-1:0]  window_bus,  // 输入窗口展开总线
-    input  wire signed [K_H*K_W*COEFF_W-1:0] coeff_bus,   // 输入系数展开总线
+    input  wire [K_H*K_W*DATA_W-1:0]         window_bus,  // 输入窗口展开总线
+    input  wire [K_H*K_W*COEFF_W-1:0]        coeff_bus,   // 输入系数展开总线
     output wire signed [K_H*K_W*OUT_W-1:0]   product_bus  // 点乘结果展开总线
 );
     localparam integer WIN_SIZE = K_H * K_W;
@@ -126,18 +126,18 @@ endmodule
 //   由 PIPELINE 控制：0 为组合树，1 为寄存流水树。
 //==============================================================================
 module conv_adder_tree #(
-    parameter integer IN_W = 16,                      // 输入乘积位宽
-    parameter integer K_H   = 3,                      // 卷积核高度
-    parameter integer K_W   = 3,                      // 卷积核宽度
-    parameter integer OUT_W = (IN_W + $clog2(K_H*K_W)), // 输出累加位宽
-    parameter integer USER_W = 1,                     // 用户侧带位宽
-    parameter integer PIPELINE = 1                    // 加法树模式：0组合/1流水
+    parameter IN_W = 16,                      // 输入乘积位宽
+    parameter K_H   = 3,                      // 卷积核高度
+    parameter K_W   = 3,                      // 卷积核宽度
+    parameter OUT_W = (IN_W + $clog2(K_H*K_W)), // 输出累加位宽
+    parameter USER_W = 1,                     // 用户侧带位宽
+    parameter PIPELINE = 1                    // 加法树模式：0组合/1流水
 ) (
     input  wire                          clk,        // 时钟信号
     input  wire                          rst_n,      // 低有效复位
     input  wire                          in_valid,   // 输入有效
     input  wire [USER_W-1:0]             in_user,    // 输入侧带
-    input  wire signed [K_H*K_W*IN_W-1:0]  product_bus, // 输入乘积总线
+    input  wire [K_H*K_W*IN_W-1:0]         product_bus, // 输入乘积总线
     output reg  signed [OUT_W-1:0]      sum_out,    // 累加输出
     output reg                           out_valid,  // 输出有效
     output reg [USER_W-1:0]             out_user    // 输出侧带
@@ -223,12 +223,12 @@ endmodule
 //   单级纯组合逻辑。
 //==============================================================================
 module adder_comb #(
-    parameter integer IN_W = 16,       // 输入元素位宽
-    parameter integer OUT_W = IN_W + 1,// 输出元素位宽
-    parameter integer IN_NUM = 9,       // 输入元素个数
-    parameter integer OUT_NUM = 5       // 输出元素个数
+    parameter IN_W = 16,       // 输入元素位宽
+    parameter OUT_W = IN_W + 1,// 输出元素位宽
+    parameter IN_NUM = 9,       // 输入元素个数
+    parameter OUT_NUM = 5       // 输出元素个数
 )(
-    input  wire signed [IN_NUM*IN_W-1:0]   product_bus, // 输入向量
+    input  wire [IN_NUM*IN_W-1:0]          product_bus, // 输入向量
     output wire signed [OUT_NUM*OUT_W-1:0] sum_out      // 两两相加后的输出向量
 );
     generate
@@ -262,11 +262,11 @@ endmodule
 //   全组合归约到最终和。
 //==============================================================================
 module conv_adder_tree_comb #(
-    parameter integer IN_W = 16,            // 输入元素位宽
-    parameter integer N     = 9,            // 输入元素总数
-    parameter integer OUT_W = IN_W + ((N<=1)?0:$clog2(N)) // 输出位宽
+    parameter IN_W = 16,            // 输入元素位宽
+    parameter N     = 9,            // 输入元素总数
+    parameter OUT_W = IN_W + ((N<=1)?0:$clog2(N)) // 输出位宽
 )(
-    input  wire signed [N*IN_W-1:0] product_bus, // 输入向量
+    input  wire [N*IN_W-1:0]        product_bus, // 输入向量
     output wire signed [OUT_W-1:0]  sum_out      // 组合树求和结果
 );
     localparam integer LEVEL = (N <= 1) ? 0 : $clog2(N);
@@ -328,17 +328,17 @@ endmodule
 //   单级流水寄存。
 //==============================================================================
 module adder_pipe #(
-    parameter integer IN_W = 16,        // 输入元素位宽
-    parameter integer OUT_W = IN_W + 1, // 输出元素位宽
-    parameter integer IN_NUM = 9,        // 输入元素个数
-    parameter integer OUT_NUM = 5,       // 输出元素个数
-    parameter integer USER_W = 1         // 用户侧带位宽
+    parameter IN_W = 16,        // 输入元素位宽
+    parameter OUT_W = IN_W + 1, // 输出元素位宽
+    parameter IN_NUM = 9,        // 输入元素个数
+    parameter OUT_NUM = 5,       // 输出元素个数
+    parameter USER_W = 1         // 用户侧带位宽
 )(
     input  wire                             clk,      // 时钟信号
     input  wire                             rst_n,    // 低有效复位
     input  wire                             in_valid, // 输入有效
     input  wire [USER_W-1:0]                in_user,  // 输入侧带
-    input  wire signed [IN_NUM*IN_W-1:0]    product_bus, // 输入向量
+    input  wire [IN_NUM*IN_W-1:0]           product_bus, // 输入向量
     output reg signed [OUT_NUM*OUT_W-1:0]   sum_out,  // 级联求和输出
     output reg                              out_valid,// 输出有效
     output reg [USER_W-1:0]                 out_user  // 输出侧带
@@ -389,16 +389,16 @@ endmodule
 //   延迟等于归约层数（$clog2(N)）。
 //==============================================================================
 module conv_adder_tree_pipe #(
-    parameter integer IN_W = 16,              // 输入元素位宽
-    parameter integer N     = 9,              // 输入元素总数
-    parameter integer OUT_W = IN_W + ((N<=1)?0:$clog2(N)), // 输出位宽
-    parameter integer USER_W = 1              // 用户侧带位宽
+    parameter IN_W = 16,              // 输入元素位宽
+    parameter N     = 9,              // 输入元素总数
+    parameter OUT_W = IN_W + ((N<=1)?0:$clog2(N)), // 输出位宽
+    parameter USER_W = 1              // 用户侧带位宽
 ) (
     input  wire                        clk,       // 时钟信号
     input  wire                        rst_n,     // 低有效复位
     input  wire                        in_valid,  // 输入有效
     input  wire [USER_W-1:0]           in_user,   // 输入侧带
-    input  wire signed [N*IN_W-1:0]   product_bus,// 输入向量
+    input  wire [N*IN_W-1:0]          product_bus,// 输入向量
     output wire signed [OUT_W-1:0]    sum_out,    // 流水树求和输出
     output wire                       out_valid,   // 输出有效
     output wire [USER_W-1:0]          out_user     // 输出侧带
