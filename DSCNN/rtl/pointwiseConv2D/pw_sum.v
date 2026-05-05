@@ -10,7 +10,7 @@ module pw_sum #(
     parameter SEGMENTS      = 4,   // 分块数 (例如 4块，每块处理16个通道)
     parameter PIXEL_DEPTH = 125,  // 空间像素数 (25x5)
     parameter RAM_DATA_W    = 22*(CHANNELS/SEGMENTS),  // RAM 中存储的部分和累加位宽
-    parameter RAM_ADDR_W = $clog2(PIXEL_DEPTH * SEGMENTS), // RAM 地址位宽
+    parameter RAM_ADDR_W = $clog2(PIXEL_DEPTH*SEGMENTS), // RAM 地址位宽
     parameter IN_FRAME_SIZE= 64
 )(
     input  wire clk,

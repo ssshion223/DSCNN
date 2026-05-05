@@ -13,8 +13,8 @@ module dw_pw_cac #(
 	parameter DW_COEFF_W           = 8,
 	parameter DW_K_H               = 3,
 	parameter DW_K_W               = 3,
-	parameter DW_MUL_W             = IN_DATA_W + DW_COEFF_W,
-	parameter DW_SUM_W             = DW_MUL_W + $clog2(DW_K_H*DW_K_W),
+	parameter DW_MUL_W             = IN_DATA_W+DW_COEFF_W,
+	parameter DW_SUM_W             = DW_MUL_W+$clog2(DW_K_H*DW_K_W),
 	parameter DW_COL               = 5,
 	parameter DW_ROW               = 25,
 	parameter DW_STRIDE            = 1,
@@ -43,8 +43,8 @@ module dw_pw_cac #(
 	parameter PW_COEFF_W           = 8,
 	parameter PW_K_H               = 1,
 	parameter PW_K_W               = 1,
-	parameter PW_MUL_W             = DW_OUT_WIDTH + PW_COEFF_W,
-	parameter PW_SUM_W             = PW_MUL_W + $clog2(PW_K_H*PW_K_W),
+	parameter PW_MUL_W             = DW_OUT_WIDTH+PW_COEFF_W,
+	parameter PW_SUM_W             = PW_MUL_W+$clog2(PW_K_H*PW_K_W),
 	parameter PW_COEFF_GRP_NUM     = 64,
 	parameter PW_FRAME_GRP_NUM     = 64,
 	parameter PW_MAC_PIPELINE      = 1,
@@ -54,8 +54,8 @@ module dw_pw_cac #(
 	// ---------------- pw_sum parameters ----------------
 	parameter RAM_ONE_DATA_W       = PW_SUM_W+$clog2(PW_OUT_CH),
 	parameter SEGMENTS             = 4,
-	parameter PIXEL_DEPTH          = ((DW_COL + DW_PAD_LEFT + DW_PAD_RIGHT - DW_K_W) / DW_STRIDE + 1) * ((DW_ROW + DW_PAD_TOP + DW_PAD_BOTTOM - DW_K_H) / DW_STRIDE + 1),
-	parameter RAM_ADDR_W       = $clog2(PIXEL_DEPTH * SEGMENTS),
+	parameter PIXEL_DEPTH          = ((DW_COL+DW_PAD_LEFT+DW_PAD_RIGHT-DW_K_W)/DW_STRIDE+1)*((DW_ROW+DW_PAD_TOP+DW_PAD_BOTTOM-DW_K_H)/DW_STRIDE+1),
+	parameter RAM_ADDR_W       = $clog2(PIXEL_DEPTH*SEGMENTS),
 	parameter IN_FRAME_SIZE        = 64
 )(
 	input  wire                                         clk,
