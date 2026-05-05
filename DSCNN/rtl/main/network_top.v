@@ -26,8 +26,8 @@ module network_top #(
     parameter DS_PAD_RIGHT     = 2,   // 右边界补零
     parameter DS_COEFF_GRP_NUM = 64,  // 输出 64 个通道(理论可以并行,但是总线压力大且数据流不一致,故单通道输出)
     parameter DS_OUT_WIDTH     = 8,   // 降采样量化后的输出位宽
-    parameter         DS_COEFF_FILE    = "./data/weights/DS-CNN_dw0.memh",
-    parameter         DS_BIAS_FILE     = "./data/bias/DS-CNN_dw0_Fold_bias.hex",
+    parameter         DS_COEFF_FILE    = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_dw0.memh",
+    parameter         DS_BIAS_FILE     = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw0_Fold_bias.hex",
     parameter         DS_MULT_CNT      = 1,   // 乘数个数
     parameter         DS_MULT_FACTOR0  = 12'sd915, // 乘数0
 
@@ -41,10 +41,10 @@ module network_top #(
     parameter PP_DW_K_H        = 3,   // DW 卷积核高度
     parameter PP_DW_K_W        = 3,   // DW 卷积核宽度
     parameter PP_OUT_PIXEL_W   = 8,   // 最终网络输出位宽
-    parameter         PP_DW_COEFF_FILE = "./data/weights/DS-CNN_pingpong_dw.memh",
-    parameter         PP_PW_COEFF_FILE = "./data/weights/DS-CNN_pingpong_pw.memh",
-    parameter         PP_DW_BIAS_FILE  = "./data/bias/DS-CNN_dw_pingpong_bias.hex",
-    parameter         PP_PW_BIAS_FILE  = "./data/bias/DS-CNN_pw_pingpong_bias.hex"
+    parameter         PP_DW_COEFF_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_dw.memh",
+    parameter         PP_PW_COEFF_FILE = "D:/vivado/exp/DSCNN/data/weights/DS-CNN_pingpong_pw.memh",
+    parameter         PP_DW_BIAS_FILE  = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_dw_pingpong_bias.hex",
+    parameter         PP_PW_BIAS_FILE  = "D:/vivado/exp/DSCNN/data/bias/DS-CNN_pw_pingpong_bias.hex"
 )(
     input  wire                               clk,
     input  wire                               rst_n,
@@ -73,42 +73,6 @@ module network_top #(
 );
 
     // ==========================================
-    // 状态机控制
-    // ==========================================
-    localparam  IN_PIXEL_MAX = DS_COL * DS_ROW * DS_COEFF_GRP_NUM; // 490
-    localparam  IN_PIXEL_W = $clog2(IN_PIXEL_MAX); // 9 位地址宽度足够寻址 490 个输入像素
-    wire in_fire = in_valid && in_ready; // 输入数据有效且被接受的时钟周期
-    wire out_fire = out_valid && out_ready; // 输出数据有效且被接受的时钟周期
-    reg start_flag , input_processing; // 内部处理状态标志
-    reg [IN_PIXEL_W-1:0] in_pixel_cnt; // 输入像素计数器
-    wire in_pixel_cnt_wrap = (in_pixel_cnt == IN_PIXEL_MAX - 1);
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            start_flag <= 1'b0;
-        end else if (start && !busy) begin
-            start_flag <= 1'b1;
-        end else begin
-            start_flag <= 1'b0;
-        end
-    end
-    always @(posedge clk or negedge rst_n) begin
-        if (!rst_n) begin
-            in_pixel_cnt <= {IN_PIXEL_W{1'b0}};
-            input_processing <= 1'b0;
-        end else if (start_flag) begin
-            in_pixel_cnt <= {IN_PIXEL_W{1'b0}}; 
-            input_processing <= 1'b1; // 启动后进入处理状态
-        end else if (in_fire) begin
-            if(in_pixel_cnt_wrap) begin
-                in_pixel_cnt <= {IN_PIXEL_W{1'b0}}; // 输入像素计数器回绕
-                input_processing <= 1'b0; // 继续保持处理状态
-            end else begin
-                in_pixel_cnt <= in_pixel_cnt + 1'b1; // 正常计数
-            end
-        end
-    end   
-
-    // ==========================================
     // 内部总线：连接 DS(降采样层) 与 PP(乒乓层)
     // ==========================================
     wire                      ds_in_valid;
@@ -120,11 +84,28 @@ module network_top #(
     wire [DS_OUT_WIDTH-1:0]   ds_out_pixel;
     wire                      ds_out_end_frame;
     wire                      ds_out_end_all_frame;
+    wire                      pp_start;
 
-    assign in_ready = input_processing ? ds_in_ready : 1'b0; // 处理状态时准备接受输入
-    assign ds_in_valid = input_processing ? in_valid : 1'b0; // 处理状态时传递输入有效信号
-    assign ds_in_pixel = $signed(in_pixel); // 输入像素直接传递给降采样层
-    assign ds_in_end_all_frame = in_pixel_cnt_wrap;
+    network_top_ctrl #(
+        .DS_DATA_W(DS_DATA_W),
+        .DS_COL(DS_COL),
+        .DS_ROW(DS_ROW),
+        .DS_COEFF_GRP_NUM(DS_COEFF_GRP_NUM)
+    ) u_ctrl (
+        .clk(clk),
+        .rst_n(rst_n),
+        .start(start),
+        .busy(busy),
+        .in_valid(in_valid),
+        .in_pixel(in_pixel),
+        .in_ready(in_ready),
+        .ds_in_ready(ds_in_ready),
+        .ds_in_valid(ds_in_valid),
+        .ds_in_pixel(ds_in_pixel),
+        .ds_in_end_all_frame(ds_in_end_all_frame),
+        .pp_start(pp_start)
+    );
+
     // ==========================================
     // 第一级：降采样 Depthwise 卷积引擎
     // ==========================================
@@ -187,7 +168,7 @@ module network_top #(
         .rst_n               (rst_n),
 
         // 顶层状态机控制
-        .start               (start_flag),
+        .start               (pp_start),
         .busy                (busy),
 
         // 接收前级的中间流
