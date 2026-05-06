@@ -1,0 +1,71 @@
+// =====================================================================
+// File: D:/python_test/test/data/DS-CNN_dw4.memh
+// CONFIG: GRP=64, CH=1, WIN_SIZE=9
+// BUS_WIDTH: 320 bits (80 Hex Characters per line)
+// FORMAT (Left to Right): [W39 (MSB)] ... [W1] [W0 (LSB)]
+// =====================================================================
+
+514c4a0e0d0f314050
+39413a020a0e2e2d30
+c3eaddecfcf3e6fbda
+2f394301020f473e5a
+343a2204060a403f37
+3427320c0305463535
+d79517fde416e9bd26
+3e5c4bf400ff2a4c31
+d6dede07120dded1cb
+f3ddcb03fe0bc4c6e3
+0910b7f3ff81e7f0de
+11271e1b140b314141
+dedcd7ff06fed0ecc9
+cec7c6fbeff4d7d1d6
+effbfae9e1dce3c9c8
+e7c3f9f0b8ee02d1f1
+070000fef1f5c7cbc7
+322b2d06f702403b42
+e0f1dff903fedbc8c8
+d3e4d703fbfedddcd5
+3f4450f2fef236424b
+3d3f3d101a1d24322d
+d6000dc3e7f1d8e8f7
+cbb9d9fdf702dbbce4
+2e324e05ecdefbd884
+1f28260c0f1935353f
+4a5555e6f4d9364143
+d2dbcc080d08dbd8d5
+dcced0eae2e6f2d9d3
+ded6b7fe00f3e8ead7
+02faeefdeac8fddaaa
+c4d0e4e7cee7e7e2d6
+392e31110f1a2e3126
+d4b7e0c8e00b01272d
+d3ecd3e310ecefede4
+252c25090b0f293533
+223833fc0604274433
+c72acede30c2ea238b
+423a49f503ff3d4047
+e7e4e5e5e7e6f4f5ea
+363f370e1602373f3b
+544c4307110a414450
+4b4d5d0bf1f24a465e
+212f32081c0e3a5236
+074a5219fe1c55342a
+dfc9bebfcabd0902fc
+2e4741f6ff012d3c2c
+e7dccfeff3fce3d8ce
+dd03d6cc0fd1e817d1
+3a3b380709093b404d
+17212f16120f292a2e
+d0f0e0c9dae5b7afec
+2e344003fd0d575e72
+bbe706dddb0bbfd807
+06fffecbed080705e9
+38413f060704393736
+c4d1cddfded0d9c7c5
+2e314409080c46434e
+e2d1cce5d7d8eed6d9
+dcddd3f8ff09e2e2e4
+e5dcddf9efecf0e8e8
+3b344a12151440394a
+d7d4d80a100ddfdacc
+d7d1cb0e010eddddd4
