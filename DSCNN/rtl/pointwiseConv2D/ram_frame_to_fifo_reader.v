@@ -5,11 +5,11 @@ module ram_frame_to_fifo_reader #(
     parameter PIXELS_PER_FRAME  = 125,
     parameter SEGMENTS          = 4,
     parameter CHANNELS          = 64,
-    parameter RAM_DATA_W        = 22 * (CHANNELS/SEGMENTS),
-    parameter RAM_ADDR_W        = $clog2(PIXELS_PER_FRAME * SEGMENTS),
+    parameter RAM_DATA_W        = 22*(CHANNELS/SEGMENTS),
+    parameter RAM_ADDR_W        = $clog2(PIXELS_PER_FRAME*SEGMENTS),
     parameter FIFO_DEPTH        = 16,
     parameter FIFO_AF_LEVEL     = 10,
-    parameter OUT_W = RAM_DATA_W / (CHANNELS/SEGMENTS)
+    parameter OUT_W = RAM_DATA_W/(CHANNELS/SEGMENTS)
 
 )(
     input  wire                         clk,
