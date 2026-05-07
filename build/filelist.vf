@@ -1,2 +1,14 @@
-E:/WorkSpace/Robei/DSCNN/build/matrix_conv2d_stream_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/bias_process_wrapper_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/depthwiseconv2d_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/dw_pw_cac_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/dw_pw_pingpong_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/dw_pw_pingpong_ctrl_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/fc_argmax_stream_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/global_avg_pool_stream_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/inference_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/network_top_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/network_top_ctrl_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/psum_ram_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/ram_frame_to_fifo_reader_cg.v
+D:/RobeiProjects/ds_cnnn_clean/build/tb_dscnn_perf_report_formal.v
 
