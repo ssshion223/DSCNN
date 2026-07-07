@@ -1,37 +1,35 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_power_spectrum (
     input  wire                              clk,
     input  wire                              rst_n,
     input  wire                              in_valid,
     output wire                              in_ready,
-    input  wire [`MFCC10_FFT_ADDR_W-1:0]     in_index,
-    input  wire signed [`MFCC10_FFT_OUT_W-1:0] in_re,
-    input  wire signed [`MFCC10_FFT_OUT_W-1:0] in_im,
+    input  wire [9-1:0]     in_index,
+    input  wire signed [36-1:0] in_re,
+    input  wire signed [36-1:0] in_im,
     output reg                               out_valid,
     input  wire                              out_ready,
-    output reg  [`MFCC10_POWER_ADDR_W-1:0]   out_index,
-    output reg  [`MFCC10_POWER_W-1:0]        out_power,
+    output reg  [9-1:0]   out_index,
+    output reg  [74-1:0]        out_power,
     output reg                               out_last,
     output reg                               frame_done
 );
 
-    localparam integer SQ_W = 2 * `MFCC10_FFT_OUT_W;
-    localparam integer SUM_W = SQ_W + 1;
+    localparam SQ_W = 2 * 36;
+    localparam SUM_W = SQ_W + 1;
 
     reg                              s0_valid;
-    reg [`MFCC10_POWER_ADDR_W-1:0]   s0_index;
-    reg signed [`MFCC10_FFT_OUT_W-1:0] s0_re;
-    reg signed [`MFCC10_FFT_OUT_W-1:0] s0_im;
+    reg [9-1:0]   s0_index;
+    reg signed [36-1:0] s0_re;
+    reg signed [36-1:0] s0_im;
 
     reg                              s1_valid;
-    reg [`MFCC10_POWER_ADDR_W-1:0]   s1_index;
+    reg [9-1:0]   s1_index;
     reg [SQ_W-1:0]                   s1_re_sq;
     reg [SQ_W-1:0]                   s1_im_sq;
 
     reg                              s2_valid;
-    reg [`MFCC10_POWER_ADDR_W-1:0]   s2_index;
+    reg [9-1:0]   s2_index;
     reg [SUM_W-1:0]                  s2_power_full;
 
     wire                             pipe_ce;
@@ -41,33 +39,33 @@ module mfcc10_power_spectrum (
 
     assign pipe_ce = !out_valid || out_ready;
     assign in_ready = pipe_ce;
-    assign in_fire = in_valid && in_ready && (in_index < `MFCC10_POWER_BINS);
+    assign in_fire = in_valid && in_ready && (in_index < 257);
     assign re_sq_wire = s0_re * s0_re;
     assign im_sq_wire = s0_im * s0_im;
 
-    function [`MFCC10_POWER_W-1:0] sat_power;
+    function [74-1:0] sat_power;
         input [SUM_W-1:0] value;
         begin
-            sat_power = {{(`MFCC10_POWER_W-SUM_W){1'b0}}, value};
+            sat_power = {{(74-SUM_W){1'b0}}, value};
         end
     endfunction
 
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             s0_valid     <= 1'b0;
-            s0_index     <= {`MFCC10_POWER_ADDR_W{1'b0}};
-            s0_re        <= {`MFCC10_FFT_OUT_W{1'b0}};
-            s0_im        <= {`MFCC10_FFT_OUT_W{1'b0}};
+            s0_index     <= {9{1'b0}};
+            s0_re        <= {36{1'b0}};
+            s0_im        <= {36{1'b0}};
             s1_valid     <= 1'b0;
-            s1_index     <= {`MFCC10_POWER_ADDR_W{1'b0}};
+            s1_index     <= {9{1'b0}};
             s1_re_sq     <= {SQ_W{1'b0}};
             s1_im_sq     <= {SQ_W{1'b0}};
             s2_valid     <= 1'b0;
-            s2_index     <= {`MFCC10_POWER_ADDR_W{1'b0}};
+            s2_index     <= {9{1'b0}};
             s2_power_full <= {SUM_W{1'b0}};
             out_valid    <= 1'b0;
-            out_index    <= {`MFCC10_POWER_ADDR_W{1'b0}};
-            out_power    <= {`MFCC10_POWER_W{1'b0}};
+            out_index    <= {9{1'b0}};
+            out_power    <= {74{1'b0}};
             out_last     <= 1'b0;
             frame_done   <= 1'b0;
         end else begin
@@ -76,7 +74,7 @@ module mfcc10_power_spectrum (
             if (pipe_ce) begin
                 s0_valid <= in_fire;
                 if (in_fire) begin
-                    s0_index <= in_index[`MFCC10_POWER_ADDR_W-1:0];
+                    s0_index <= in_index[9-1:0];
                     s0_re    <= in_re;
                     s0_im    <= in_im;
                 end
@@ -98,8 +96,8 @@ module mfcc10_power_spectrum (
                 if (s2_valid) begin
                     out_index <= s2_index;
                     out_power <= sat_power(s2_power_full);
-                    out_last  <= (s2_index == (`MFCC10_POWER_BINS - 1));
-                    if (s2_index == (`MFCC10_POWER_BINS - 1)) begin
+                    out_last  <= (s2_index == (257 - 1));
+                    if (s2_index == (257 - 1)) begin
                         frame_done <= 1'b1;
                     end
                 end else begin

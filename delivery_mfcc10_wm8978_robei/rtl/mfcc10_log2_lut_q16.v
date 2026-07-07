@@ -1,6 +1,4 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_log2_lut_q16 (
     input  wire [3:0]  addr,
     output reg  signed [17:0] y0_q16,

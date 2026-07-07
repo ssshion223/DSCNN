@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 module mfcc10_wm8978_init_adc #(
-    parameter integer CLK_HZ = 50000000,
-    parameter integer I2C_HZ = 10000
+    parameter CLK_HZ = 50000000,
+    parameter I2C_HZ = 10000
 ) (
     input  wire clk,
     input  wire rst_n,
@@ -17,8 +17,8 @@ module mfcc10_wm8978_init_adc #(
     output reg [1:0] fail_ack_byte
 );
 
-    localparam integer INIT_COUNT = 15;
-    localparam integer DELAY_CYCLES = CLK_HZ / 100;
+    localparam INIT_COUNT = 15;
+    localparam DELAY_CYCLES = CLK_HZ / 100;
 
     localparam [2:0] S_DELAY      = 3'd0;
     localparam [2:0] S_LOAD       = 3'd1;

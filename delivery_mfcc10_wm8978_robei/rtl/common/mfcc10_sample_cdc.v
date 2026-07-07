@@ -1,11 +1,9 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_sample_cdc (
     input  wire                               src_clk,
     input  wire                               src_rst_n,
     input  wire                               src_valid,
-    input  wire signed [`MFCC10_SAMPLE_W-1:0] src_sample,
+    input  wire signed [24-1:0] src_sample,
     output wire                               src_ready,
     output reg                                src_overflow,
 
@@ -13,13 +11,13 @@ module mfcc10_sample_cdc (
     input  wire                               dst_rst_n,
     output reg                                dst_valid,
     input  wire                               dst_ready,
-    output reg signed [`MFCC10_SAMPLE_W-1:0]  dst_sample
+    output reg signed [24-1:0]  dst_sample
 );
 
     reg req_toggle_src;
     reg ack_sync_src_0;
     reg ack_sync_src_1;
-    reg signed [`MFCC10_SAMPLE_W-1:0] sample_hold_src;
+    reg signed [24-1:0] sample_hold_src;
 
     reg req_sync_dst_0;
     reg req_sync_dst_1;
@@ -40,7 +38,7 @@ module mfcc10_sample_cdc (
             req_toggle_src  <= 1'b0;
             ack_sync_src_0  <= 1'b0;
             ack_sync_src_1  <= 1'b0;
-            sample_hold_src <= {`MFCC10_SAMPLE_W{1'b0}};
+            sample_hold_src <= {24{1'b0}};
             src_overflow    <= 1'b0;
         end else begin
             ack_sync_src_0 <= ack_toggle_dst;
@@ -62,7 +60,7 @@ module mfcc10_sample_cdc (
             req_seen_dst   <= 1'b0;
             ack_toggle_dst <= 1'b0;
             dst_valid      <= 1'b0;
-            dst_sample     <= {`MFCC10_SAMPLE_W{1'b0}};
+            dst_sample     <= {24{1'b0}};
         end else begin
             req_sync_dst_0 <= req_toggle_src;
             req_sync_dst_1 <= req_sync_dst_0;

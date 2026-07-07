@@ -1,19 +1,17 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_sparse_mel_rom #(
     parameter ROM_FILE = "rom/sparse_mel128_16000_512_q17.mem"
 ) (
     input  wire                               clk,
-    input  wire [`MFCC10_POWER_ADDR_W-1:0] addr,
-    output reg  [`MFCC10_MEL_IDX_W-1:0]    mel_a,
-    output reg  [`MFCC10_MEL_WEIGHT_W-1:0] weight_a_q17,
-    output reg  [`MFCC10_MEL_IDX_W-1:0]    mel_b,
-    output reg  [`MFCC10_MEL_WEIGHT_W-1:0] weight_b_q17
+    input  wire [9-1:0] addr,
+    output reg  [7-1:0]    mel_a,
+    output reg  [18-1:0] weight_a_q17,
+    output reg  [7-1:0]    mel_b,
+    output reg  [18-1:0] weight_b_q17
 );
 
-    (* rom_style = "block" *) reg [`MFCC10_MEL_ROM_W-1:0] rom [0:`MFCC10_POWER_BINS-1];
-    reg [`MFCC10_MEL_ROM_W-1:0] rom_word;
+    (* rom_style = "block" *) reg [50-1:0] rom [0:257-1];
+    reg [50-1:0] rom_word;
 
     initial begin
         $readmemh(ROM_FILE, rom);

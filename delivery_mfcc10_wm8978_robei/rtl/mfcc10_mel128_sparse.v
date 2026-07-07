@@ -1,6 +1,4 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_mel128_sparse #(
     parameter ROM_FILE = "rom/sparse_mel128_16000_512_q17.mem"
 ) (
@@ -9,13 +7,13 @@ module mfcc10_mel128_sparse #(
 
     input  wire                               power_valid,
     output wire                               power_ready,
-    input  wire [`MFCC10_POWER_ADDR_W-1:0]    power_index,
-    input  wire [`MFCC10_POWER_W-1:0]         power_data,
+    input  wire [9-1:0]    power_index,
+    input  wire [74-1:0]         power_data,
     input  wire                               power_last,
 
     output reg                                mel_valid,
-    output reg  [`MFCC10_MEL_IDX_W-1:0]       mel_index,
-    output reg  [`MFCC10_MEL_ACC_W-1:0]       mel_data,
+    output reg  [7-1:0]       mel_index,
+    output reg  [84-1:0]       mel_data,
     output reg                                frame_done
 );
 
@@ -33,44 +31,44 @@ module mfcc10_mel128_sparse #(
 
     reg [3:0] state;
 
-    (* ram_style = "block" *) reg [`MFCC10_MEL_ACC_W-1:0] acc_a_ram [0:`MFCC10_NUM_MELS-1];
-    (* ram_style = "block" *) reg [`MFCC10_MEL_ACC_W-1:0] acc_b_ram [0:`MFCC10_NUM_MELS-1];
+    (* ram_style = "block" *) reg [84-1:0] acc_a_ram [0:128-1];
+    (* ram_style = "block" *) reg [84-1:0] acc_b_ram [0:128-1];
 
-    reg [`MFCC10_POWER_ADDR_W-1:0] rom_addr;
-    reg [`MFCC10_POWER_W-1:0]      bin_power_r;
+    reg [9-1:0] rom_addr;
+    reg [74-1:0]      bin_power_r;
     reg                            bin_last_r;
 
-    reg [`MFCC10_MEL_IDX_W-1:0]    clear_idx;
-    reg [`MFCC10_MEL_IDX_W-1:0]    out_idx;
-    reg [`MFCC10_MEL_IDX_W-1:0]    mel_a_r;
-    reg [`MFCC10_MEL_WEIGHT_W-1:0] weight_a_r;
-    reg [`MFCC10_MEL_IDX_W-1:0]    mel_b_r;
-    reg [`MFCC10_MEL_WEIGHT_W-1:0] weight_b_r;
-    reg [`MFCC10_POWER_W-1:0]      contrib_a_r;
-    reg [`MFCC10_POWER_W-1:0]      contrib_b_r;
-    reg [`MFCC10_MEL_ACC_W-1:0]    acc_a_rd_data;
-    reg [`MFCC10_MEL_ACC_W-1:0]    acc_b_rd_data;
+    reg [7-1:0]    clear_idx;
+    reg [7-1:0]    out_idx;
+    reg [7-1:0]    mel_a_r;
+    reg [18-1:0] weight_a_r;
+    reg [7-1:0]    mel_b_r;
+    reg [18-1:0] weight_b_r;
+    reg [74-1:0]      contrib_a_r;
+    reg [74-1:0]      contrib_b_r;
+    reg [84-1:0]    acc_a_rd_data;
+    reg [84-1:0]    acc_b_rd_data;
 
-    wire [`MFCC10_MEL_IDX_W-1:0]    mel_a;
-    wire [`MFCC10_MEL_WEIGHT_W-1:0] weight_a_q17;
-    wire [`MFCC10_MEL_IDX_W-1:0]    mel_b;
-    wire [`MFCC10_MEL_WEIGHT_W-1:0] weight_b_q17;
+    wire [7-1:0]    mel_a;
+    wire [18-1:0] weight_a_q17;
+    wire [7-1:0]    mel_b;
+    wire [18-1:0] weight_b_q17;
 
-    wire [(`MFCC10_POWER_W+`MFCC10_MEL_WEIGHT_W)-1:0] prod_a_wire;
-    wire [(`MFCC10_POWER_W+`MFCC10_MEL_WEIGHT_W)-1:0] prod_b_wire;
-    wire [`MFCC10_POWER_W-1:0] contrib_a_wire;
-    wire [`MFCC10_POWER_W-1:0] contrib_b_wire;
+    wire [(74+18)-1:0] prod_a_wire;
+    wire [(74+18)-1:0] prod_b_wire;
+    wire [74-1:0] contrib_a_wire;
+    wire [74-1:0] contrib_b_wire;
     wire power_fire;
     reg                             acc_a_rd_en;
     reg                             acc_b_rd_en;
     reg                             acc_a_wr_en;
     reg                             acc_b_wr_en;
-    reg [`MFCC10_MEL_IDX_W-1:0]     acc_a_rd_addr;
-    reg [`MFCC10_MEL_IDX_W-1:0]     acc_b_rd_addr;
-    reg [`MFCC10_MEL_IDX_W-1:0]     acc_a_wr_addr;
-    reg [`MFCC10_MEL_IDX_W-1:0]     acc_b_wr_addr;
-    reg [`MFCC10_MEL_ACC_W-1:0]     acc_a_wr_data;
-    reg [`MFCC10_MEL_ACC_W-1:0]     acc_b_wr_data;
+    reg [7-1:0]     acc_a_rd_addr;
+    reg [7-1:0]     acc_b_rd_addr;
+    reg [7-1:0]     acc_a_wr_addr;
+    reg [7-1:0]     acc_b_wr_addr;
+    reg [84-1:0]     acc_a_wr_data;
+    reg [84-1:0]     acc_b_wr_data;
 
     mfcc10_sparse_mel_rom #(
         .ROM_FILE(ROM_FILE)
@@ -85,10 +83,10 @@ module mfcc10_mel128_sparse #(
 
     assign prod_a_wire = bin_power_r * weight_a_r;
     assign prod_b_wire = bin_power_r * weight_b_r;
-    assign contrib_a_wire = (prod_a_wire + ({{(`MFCC10_POWER_W){1'b0}}, 1'b1} << (`MFCC10_MEL_WEIGHT_FRAC_W - 1)))
-                            >> `MFCC10_MEL_WEIGHT_FRAC_W;
-    assign contrib_b_wire = (prod_b_wire + ({{(`MFCC10_POWER_W){1'b0}}, 1'b1} << (`MFCC10_MEL_WEIGHT_FRAC_W - 1)))
-                            >> `MFCC10_MEL_WEIGHT_FRAC_W;
+    assign contrib_a_wire = (prod_a_wire + ({{(74){1'b0}}, 1'b1} << (17 - 1)))
+                            >> 17;
+    assign contrib_b_wire = (prod_b_wire + ({{(74){1'b0}}, 1'b1} << (17 - 1)))
+                            >> 17;
     assign power_ready = (state == S_WAIT_POWER);
     assign power_fire  = power_valid && power_ready;
 
@@ -97,12 +95,12 @@ module mfcc10_mel128_sparse #(
         acc_b_rd_en   = 1'b0;
         acc_a_wr_en   = 1'b0;
         acc_b_wr_en   = 1'b0;
-        acc_a_rd_addr = {`MFCC10_MEL_IDX_W{1'b0}};
-        acc_b_rd_addr = {`MFCC10_MEL_IDX_W{1'b0}};
-        acc_a_wr_addr = {`MFCC10_MEL_IDX_W{1'b0}};
-        acc_b_wr_addr = {`MFCC10_MEL_IDX_W{1'b0}};
-        acc_a_wr_data = {`MFCC10_MEL_ACC_W{1'b0}};
-        acc_b_wr_data = {`MFCC10_MEL_ACC_W{1'b0}};
+        acc_a_rd_addr = {7{1'b0}};
+        acc_b_rd_addr = {7{1'b0}};
+        acc_a_wr_addr = {7{1'b0}};
+        acc_b_wr_addr = {7{1'b0}};
+        acc_a_wr_data = {84{1'b0}};
+        acc_b_wr_data = {84{1'b0}};
 
         case (state)
             S_CLEAR: begin
@@ -120,18 +118,18 @@ module mfcc10_mel128_sparse #(
             end
 
             S_ACC_WRITE: begin
-                if (weight_a_r != {`MFCC10_MEL_WEIGHT_W{1'b0}}) begin
+                if (weight_a_r != {18{1'b0}}) begin
                     acc_a_wr_en   = 1'b1;
                     acc_a_wr_addr = mel_a_r;
                     acc_a_wr_data = acc_a_rd_data +
-                                    {{(`MFCC10_MEL_ACC_W-`MFCC10_POWER_W){1'b0}}, contrib_a_r};
+                                    {{(84-74){1'b0}}, contrib_a_r};
                 end
 
-                if (weight_b_r != {`MFCC10_MEL_WEIGHT_W{1'b0}}) begin
+                if (weight_b_r != {18{1'b0}}) begin
                     acc_b_wr_en   = 1'b1;
                     acc_b_wr_addr = mel_b_r;
                     acc_b_wr_data = acc_b_rd_data +
-                                    {{(`MFCC10_MEL_ACC_W-`MFCC10_POWER_W){1'b0}}, contrib_b_r};
+                                    {{(84-74){1'b0}}, contrib_b_r};
                 end
             end
 
@@ -167,20 +165,20 @@ module mfcc10_mel128_sparse #(
     always @(posedge clk or negedge rst_n) begin
         if (!rst_n) begin
             state            <= S_CLEAR;
-            rom_addr         <= {`MFCC10_POWER_ADDR_W{1'b0}};
-            bin_power_r      <= {`MFCC10_POWER_W{1'b0}};
+            rom_addr         <= {9{1'b0}};
+            bin_power_r      <= {74{1'b0}};
             bin_last_r       <= 1'b0;
-            clear_idx        <= {`MFCC10_MEL_IDX_W{1'b0}};
-            out_idx          <= {`MFCC10_MEL_IDX_W{1'b0}};
-            mel_a_r          <= {`MFCC10_MEL_IDX_W{1'b0}};
-            weight_a_r       <= {`MFCC10_MEL_WEIGHT_W{1'b0}};
-            mel_b_r          <= {`MFCC10_MEL_IDX_W{1'b0}};
-            weight_b_r       <= {`MFCC10_MEL_WEIGHT_W{1'b0}};
-            contrib_a_r      <= {`MFCC10_POWER_W{1'b0}};
-            contrib_b_r      <= {`MFCC10_POWER_W{1'b0}};
+            clear_idx        <= {7{1'b0}};
+            out_idx          <= {7{1'b0}};
+            mel_a_r          <= {7{1'b0}};
+            weight_a_r       <= {18{1'b0}};
+            mel_b_r          <= {7{1'b0}};
+            weight_b_r       <= {18{1'b0}};
+            contrib_a_r      <= {74{1'b0}};
+            contrib_b_r      <= {74{1'b0}};
             mel_valid        <= 1'b0;
-            mel_index        <= {`MFCC10_MEL_IDX_W{1'b0}};
-            mel_data         <= {`MFCC10_MEL_ACC_W{1'b0}};
+            mel_index        <= {7{1'b0}};
+            mel_data         <= {84{1'b0}};
             frame_done       <= 1'b0;
         end else begin
             mel_valid  <= 1'b0;
@@ -188,8 +186,8 @@ module mfcc10_mel128_sparse #(
 
             case (state)
                 S_CLEAR: begin
-                    if (clear_idx == (`MFCC10_NUM_MELS - 1)) begin
-                        clear_idx <= {`MFCC10_MEL_IDX_W{1'b0}};
+                    if (clear_idx == (128 - 1)) begin
+                        clear_idx <= {7{1'b0}};
                         state     <= S_WAIT_POWER;
                     end else begin
                         clear_idx <= clear_idx + 1'b1;
@@ -237,7 +235,7 @@ module mfcc10_mel128_sparse #(
 
                 S_NEXT_BIN: begin
                     if (bin_last_r) begin
-                        out_idx <= {`MFCC10_MEL_IDX_W{1'b0}};
+                        out_idx <= {7{1'b0}};
                         state   <= S_OUT_READ;
                     end else begin
                         state <= S_WAIT_POWER;
@@ -253,10 +251,10 @@ module mfcc10_mel128_sparse #(
                     mel_index <= out_idx;
                     mel_data  <= acc_a_rd_data + acc_b_rd_data;
 
-                    if (out_idx == (`MFCC10_NUM_MELS - 1)) begin
+                    if (out_idx == (128 - 1)) begin
                         frame_done <= 1'b1;
-                        out_idx    <= {`MFCC10_MEL_IDX_W{1'b0}};
-                        clear_idx  <= {`MFCC10_MEL_IDX_W{1'b0}};
+                        out_idx    <= {7{1'b0}};
+                        clear_idx  <= {7{1'b0}};
                         state      <= S_CLEAR;
                     end else begin
                         out_idx <= out_idx + 1'b1;

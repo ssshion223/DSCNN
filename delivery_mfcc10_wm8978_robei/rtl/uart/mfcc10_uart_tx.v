@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 module mfcc10_uart_tx #(
-    parameter integer CLK_HZ = 50000000,
-    parameter integer BAUD   = 115200
+    parameter CLK_HZ = 50000000,
+    parameter BAUD   = 115200
 ) (
     input  wire       clk,
     input  wire       rst_n,
@@ -15,7 +15,7 @@ module mfcc10_uart_tx #(
     output reg        busy
 );
 
-    localparam integer CLKS_PER_BIT = CLK_HZ / BAUD;
+    localparam CLKS_PER_BIT = CLK_HZ / BAUD;
 
     reg [9:0]  shift_reg;
     reg [15:0] clk_count;

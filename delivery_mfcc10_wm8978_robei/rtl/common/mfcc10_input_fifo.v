@@ -1,30 +1,28 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_input_fifo #(
-    parameter integer DEPTH = 4096,
-    parameter integer ADDR_W = 12,
-    parameter integer COUNT_W = 13
+    parameter DEPTH = 4096,
+    parameter ADDR_W = 12,
+    parameter COUNT_W = 13
 ) (
     input  wire                               clk,
     input  wire                               rst_n,
 
     input  wire                               src_valid,
-    input  wire signed [`MFCC10_SAMPLE_W-1:0] src_sample,
+    input  wire signed [24-1:0] src_sample,
     output wire                               src_ready,
     output wire                               fifo_full,
     output wire [COUNT_W-1:0]                 data_count,
 
     output reg                                dst_valid,
     input  wire                               dst_ready,
-    output reg signed [`MFCC10_SAMPLE_W-1:0]  dst_sample,
+    output reg signed [24-1:0]  dst_sample,
     output wire                               fifo_empty
 );
 
     localparam [COUNT_W-1:0] DEPTH_COUNT = DEPTH[COUNT_W-1:0];
 
     (* ram_style = "block" *)
-    reg signed [`MFCC10_SAMPLE_W-1:0] mem [0:DEPTH-1];
+    reg signed [24-1:0] mem [0:DEPTH-1];
     reg [ADDR_W-1:0] wr_ptr;
     reg [ADDR_W-1:0] rd_ptr;
     reg [COUNT_W-1:0] count_r;

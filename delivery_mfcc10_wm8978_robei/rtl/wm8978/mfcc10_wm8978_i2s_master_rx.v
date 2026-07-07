@@ -1,9 +1,7 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_wm8978_i2s_master_rx #(
-    parameter integer SAMPLE_BITS = `MFCC10_SAMPLE_W,
-    parameter integer SLOT_BITS   = 32
+    parameter SAMPLE_BITS = 24,
+    parameter SLOT_BITS   = 32
 ) (
     input  wire audio_clk,
     input  wire rst_n,
@@ -14,7 +12,7 @@ module mfcc10_wm8978_i2s_master_rx #(
     output reg  lrclk,
 
     output reg                                sample_valid,
-    output reg signed [`MFCC10_SAMPLE_W-1:0]  sample_data
+    output reg signed [24-1:0]  sample_data
 );
 
     reg [2:0] audio_div_count;
@@ -67,7 +65,7 @@ module mfcc10_wm8978_i2s_master_rx #(
             shift_r       <= {SAMPLE_BITS{1'b0}};
             left_sample_r <= {SAMPLE_BITS{1'b0}};
             sample_valid  <= 1'b0;
-            sample_data   <= {`MFCC10_SAMPLE_W{1'b0}};
+            sample_data   <= {24{1'b0}};
         end else begin
             sample_valid <= 1'b0;
 

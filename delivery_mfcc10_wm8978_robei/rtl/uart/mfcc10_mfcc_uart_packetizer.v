@@ -1,17 +1,15 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_mfcc_uart_packetizer #(
-    parameter integer BLOCK_ID_W = 16
+    parameter BLOCK_ID_W = 16
 ) (
     input  wire                              clk,
     input  wire                              rst_n,
 
     input  wire                              coeff_valid,
     output wire                              coeff_ready,
-    input  wire [`MFCC10_FRAME_IDX_W-1:0]    coeff_frame_index,
-    input  wire [`MFCC10_MFCC_IDX_W-1:0]     coeff_index,
-    input  wire signed [`MFCC10_OUT_W-1:0]   coeff_data,
+    input  wire [6-1:0]    coeff_frame_index,
+    input  wire [4-1:0]     coeff_index,
+    input  wire signed [32-1:0]   coeff_data,
     input  wire                              block_done,
 
     output reg                               packet_valid,
@@ -23,17 +21,17 @@ module mfcc10_mfcc_uart_packetizer #(
     localparam S_COLLECT = 2'd0;
     localparam S_SEND    = 2'd1;
 
-    localparam integer COEFF_COUNT  = `MFCC10_FRAME_COUNT * `MFCC10_NUM_MFCC;
-    localparam integer HEADER_BYTES = 12;
-    localparam integer PACKET_BYTES = HEADER_BYTES + (COEFF_COUNT * 4);
-    localparam [15:0] FRAME_COUNT_U16 = `MFCC10_FRAME_COUNT;
-    localparam [15:0] NUM_MFCC_U16    = `MFCC10_NUM_MFCC;
+    localparam COEFF_COUNT  = 49 * 10;
+    localparam HEADER_BYTES = 12;
+    localparam PACKET_BYTES = HEADER_BYTES + (COEFF_COUNT * 4);
+    localparam [15:0] FRAME_COUNT_U16 = 49;
+    localparam [15:0] NUM_MFCC_U16    = 10;
     localparam [15:0] COEFF_COUNT_U16 = COEFF_COUNT;
 
     reg [1:0] state;
     reg [15:0] block_id;
     reg [11:0] send_index;
-    reg signed [`MFCC10_OUT_W-1:0] coeff_mem [0:COEFF_COUNT-1];
+    reg signed [32-1:0] coeff_mem [0:COEFF_COUNT-1];
 
     wire coeff_fire;
     wire send_fire;
@@ -47,7 +45,7 @@ module mfcc10_mfcc_uart_packetizer #(
     assign coeff_ready = (state == S_COLLECT);
     assign packet_busy = (state == S_SEND);
 
-    assign coeff_store_addr = (coeff_frame_index * `MFCC10_NUM_MFCC) + coeff_index;
+    assign coeff_store_addr = (coeff_frame_index * 10) + coeff_index;
     assign coeff_send_byte_index = send_index - HEADER_BYTES;
     assign coeff_send_index = coeff_send_byte_index[15:2];
     assign coeff_send_byte_sel = coeff_send_byte_index[1:0];

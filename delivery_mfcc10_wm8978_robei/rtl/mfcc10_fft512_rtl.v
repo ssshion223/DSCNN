@@ -1,11 +1,9 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_fft512_rtl #(
-    parameter IN_W     = `MFCC10_FFT_IN_W,
-    parameter FFT_IN_W = `MFCC10_FFT_CORE_IN_W,
-    parameter FFT_W    = `MFCC10_FFT_OUT_W,
-    parameter POINTS   = `MFCC10_FFT_LEN
+    parameter IN_W     = 24,
+    parameter FFT_IN_W = 24,
+    parameter FFT_W    = 36,
+    parameter POINTS   = 512
 ) (
     input  wire                           clk,
     input  wire                           rst_n,
@@ -18,16 +16,16 @@ module mfcc10_fft512_rtl #(
     output reg                            busy,
     output reg                            done,
     output reg                            out_valid,
-    output reg  [`MFCC10_FFT_ADDR_W-1:0]  out_index,
+    output reg  [9-1:0]  out_index,
     output reg signed [FFT_W-1:0]         out_re,
     output reg signed [FFT_W-1:0]         out_im,
     output reg                            out_last
 );
 
-    localparam integer NFFT   = 9;
-    localparam integer ADDR_W = `MFCC10_FFT_ADDR_W;
-    localparam integer TW_W   = `MFCC10_FFT_TW_W;
-    localparam integer MEM_W  = 2 * FFT_W;
+    localparam NFFT   = 9;
+    localparam ADDR_W = 9;
+    localparam TW_W   = 18;
+    localparam MEM_W  = 2 * FFT_W;
     localparam [ADDR_W:0] POINTS_EXT = POINTS;
 
     localparam S_IDLE        = 3'd0;
@@ -90,8 +88,8 @@ module mfcc10_fft512_rtl #(
                                            {prod_ii[FFT_W+TW_W-1], prod_ii};
     wire signed [FFT_W+TW_W:0] t_im_full = {prod_ri[FFT_W+TW_W-1], prod_ri} +
                                            {prod_ir[FFT_W+TW_W-1], prod_ir};
-    wire signed [FFT_W-1:0] t_re_calc = t_re_full >>> `MFCC10_FFT_TW_FRAC_W;
-    wire signed [FFT_W-1:0] t_im_calc = t_im_full >>> `MFCC10_FFT_TW_FRAC_W;
+    wire signed [FFT_W-1:0] t_re_calc = t_re_full >>> 17;
+    wire signed [FFT_W-1:0] t_im_calc = t_im_full >>> 17;
 
     wire signed [FFT_W-1:0] sum_re = u_re_r + t_re_r;
     wire signed [FFT_W-1:0] sum_im = u_im_r + t_im_r;

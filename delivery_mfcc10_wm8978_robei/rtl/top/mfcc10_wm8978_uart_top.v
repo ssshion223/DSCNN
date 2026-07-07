@@ -1,10 +1,8 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_wm8978_uart_top #(
-    parameter integer SYS_CLK_HZ    = 50000000,
-    parameter integer WM8978_I2C_HZ = 10000,
-    parameter integer UART_BAUD     = 115200
+    parameter SYS_CLK_HZ    = 50000000,
+    parameter WM8978_I2C_HZ = 10000,
+    parameter UART_BAUD     = 115200
 ) (
     input  wire                            sys_clk,
     input  wire                            sys_rst_n,
@@ -16,29 +14,28 @@ module mfcc10_wm8978_uart_top #(
     output wire                            wm8978_iic_scl,
     inout  wire                            wm8978_iic_sda,
 
-    output wire                            uart_txd,
-
-    output wire                            wm8978_init_done,
-    output wire                            wm8978_init_busy,
-    output wire                            wm8978_init_error,
-    output wire [4:0]                      wm8978_fail_init_idx,
-    output wire [1:0]                      wm8978_fail_ack_byte,
-    output wire                            sample_cdc_overflow,
-    output wire                            sample_fifo_full,
-    output wire                            uart_busy,
-    output wire                            packet_busy
+    output wire                            uart_txd
 );
 
     wire                              coeff_valid;
     wire                              coeff_ready;
-    wire [`MFCC10_FRAME_IDX_W-1:0]    coeff_frame_index;
-    wire [`MFCC10_MFCC_IDX_W-1:0]     coeff_index;
-    wire signed [`MFCC10_OUT_W-1:0]   coeff_data;
+    wire [6-1:0]    coeff_frame_index;
+    wire [4-1:0]     coeff_index;
+    wire signed [32-1:0]   coeff_data;
     wire                              block_done;
 
     wire                              packet_valid;
     wire                              packet_ready;
     wire [7:0]                        packet_data;
+    wire                              wm8978_init_done;
+    wire                              wm8978_init_busy;
+    wire                              wm8978_init_error;
+    wire [4:0]                        wm8978_fail_init_idx;
+    wire [1:0]                        wm8978_fail_ack_byte;
+    wire                              sample_cdc_overflow;
+    wire                              sample_fifo_full;
+    wire                              uart_busy;
+    wire                              packet_busy;
 
     mfcc10_wm8978_top #(
         .SYS_CLK_HZ    (SYS_CLK_HZ),

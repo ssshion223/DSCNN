@@ -1,9 +1,7 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_log2_pipe #(
-    parameter IN_W = `MFCC10_MEL_ACC_W,
-    parameter USER_W = `MFCC10_MEL_IDX_W
+    parameter IN_W = 84,
+    parameter USER_W = 7
 ) (
     input  wire                       clk,
     input  wire                       rst_n,
@@ -11,7 +9,7 @@ module mfcc10_log2_pipe #(
     input  wire [IN_W-1:0]            in_data,
     input  wire [USER_W-1:0]          in_user,
     output reg                        out_valid,
-    output reg  [`MFCC10_LOG_W-1:0]   out_log_q16,
+    output reg  [32-1:0]   out_log_q16,
     output reg  [USER_W-1:0]          out_user
 );
 
@@ -56,7 +54,7 @@ module mfcc10_log2_pipe #(
     assign in_clamped = (in_data == {IN_W{1'b0}}) ? {{(IN_W-1){1'b0}}, 1'b1} : in_data;
     assign lut_addr = s2_norm_q16[14:11];
     assign interp_wire = ($signed(s3_dy_q16) * $signed({1'b0, s3_frac})) >>> 12;
-    assign exp_q16_wire = $signed({33'd0, s4_exp_int}) <<< `MFCC10_LOG_FRAC_W;
+    assign exp_q16_wire = $signed({33'd0, s4_exp_int}) <<< 16;
 
     mfcc10_log2_lut_q16 u_lut (
         .addr   (lut_addr),
@@ -117,7 +115,7 @@ module mfcc10_log2_pipe #(
             s5_user     <= {USER_W{1'b0}};
             s5_log_q16  <= 40'sd0;
             out_valid   <= 1'b0;
-            out_log_q16 <= {`MFCC10_LOG_W{1'b0}};
+            out_log_q16 <= {32{1'b0}};
             out_user    <= {USER_W{1'b0}};
         end else begin
             s0_valid <= in_valid;
@@ -166,7 +164,7 @@ module mfcc10_log2_pipe #(
             out_valid <= s5_valid;
             if (s5_valid) begin
                 out_user    <= s5_user;
-                out_log_q16 <= s5_log_q16[`MFCC10_LOG_W-1:0];
+                out_log_q16 <= s5_log_q16[32-1:0];
             end
         end
     end

@@ -1,9 +1,7 @@
 `timescale 1ns / 1ps
-`include "mfcc10_defs.vh"
-
 module mfcc10_wm8978_top #(
-    parameter integer SYS_CLK_HZ    = 50000000,
-    parameter integer WM8978_I2C_HZ = 10000
+    parameter SYS_CLK_HZ    = 50000000,
+    parameter WM8978_I2C_HZ = 10000
 ) (
     input  wire                              sys_clk,
     input  wire                              sys_rst_n,
@@ -17,9 +15,9 @@ module mfcc10_wm8978_top #(
 
     output wire                              coeff_valid,
     input  wire                              coeff_ready,
-    output wire [`MFCC10_FRAME_IDX_W-1:0]    coeff_frame_index,
-    output wire [`MFCC10_MFCC_IDX_W-1:0]     coeff_index,
-    output wire signed [`MFCC10_OUT_W-1:0]   coeff_data,
+    output wire [6-1:0]    coeff_frame_index,
+    output wire [4-1:0]     coeff_index,
+    output wire signed [32-1:0]   coeff_data,
     output wire                              block_done,
 
     output wire                              wm8978_init_done,
@@ -41,14 +39,14 @@ module mfcc10_wm8978_top #(
     reg wm8978_init_done_audio_s1;
 
     wire                              i2s_sample_valid;
-    wire signed [`MFCC10_SAMPLE_W-1:0] i2s_sample_data;
+    wire signed [24-1:0] i2s_sample_data;
     wire                              sample_sys_valid;
     wire                              sample_sys_ready;
-    wire signed [`MFCC10_SAMPLE_W-1:0] sample_sys_data;
+    wire signed [24-1:0] sample_sys_data;
     wire [12:0]                       sample_fifo_count;
     wire                              mfcc_sample_valid;
     wire                              mfcc_sample_ready;
-    wire signed [`MFCC10_SAMPLE_W-1:0] mfcc_sample_data;
+    wire signed [24-1:0] mfcc_sample_data;
     wire                              sample_fifo_empty;
 
     assign core_rst_n = sys_rst_n & pll_locked;
@@ -79,7 +77,7 @@ module mfcc10_wm8978_top #(
     );
 
     mfcc10_wm8978_i2s_master_rx #(
-        .SAMPLE_BITS (`MFCC10_SAMPLE_W),
+        .SAMPLE_BITS (24),
         .SLOT_BITS   (32)
     ) u_wm8978_i2s_master_rx (
         .audio_clk    (audio_clk),

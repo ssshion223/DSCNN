@@ -1,8 +1,8 @@
 `timescale 1ns / 1ps
 
 module mfcc10_wm8978_i2c_write #(
-    parameter integer CLK_HZ = 50000000,
-    parameter integer I2C_HZ = 10000
+    parameter CLK_HZ = 50000000,
+    parameter I2C_HZ = 10000
 ) (
     input  wire       clk,
     input  wire       rst_n,
@@ -19,8 +19,8 @@ module mfcc10_wm8978_i2c_write #(
     inout  wire       iic_sda
 );
 
-    localparam integer HALF_DIV = CLK_HZ / (I2C_HZ * 2);
-    localparam integer DIV_W = 16;
+    localparam HALF_DIV = CLK_HZ / (I2C_HZ * 2);
+    localparam DIV_W = 16;
 
     localparam [3:0] S_IDLE      = 4'd0;
     localparam [3:0] S_START_A   = 4'd1;
